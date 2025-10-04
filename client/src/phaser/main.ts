@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import GameScene from './scenes/GameScene.ts';
+import GameScene from './scenes/test_scene.ts';
 
 
 const config: Phaser.Types.Core.GameConfig = 
@@ -16,3 +16,11 @@ const config: Phaser.Types.Core.GameConfig =
 };
 
 new Phaser.Game(config);
+
+/* FOR DEBUG */
+declare global {
+  interface Window {
+    myPlayer: Phaser.GameObjects.Sprite;
+    myScene: GameScene;
+  }
+}
