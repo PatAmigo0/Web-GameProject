@@ -1,6 +1,6 @@
 // src/network/NetworkManager.ts
 import Peer, { type DataConnection } from 'peerjs';
-import GameScene from '../phaser/scenes/test_scene';
+import GameScene from '../scenes/test_scene';
 
 export type GameData = 
 {

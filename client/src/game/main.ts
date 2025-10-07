@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import GameScene from './scenes/test_scene.ts';
-
+import test_scene2 from './scenes/test_scene2.ts';
 
 const config: Phaser.Types.Core.GameConfig = 
 {
@@ -8,10 +8,16 @@ const config: Phaser.Types.Core.GameConfig =
   width: 1280,
   height: 720,
   parent: 'app',
-  scene: [GameScene],
+  scene: [test_scene2],
   scale: {
     mode: Phaser.Scale.FIT, // fit to window
     autoCenter: Phaser.Scale.CENTER_BOTH // vertically and horizontally
+  },
+  physics: {
+    default: 'arcade',
+    arcade: {
+        debug: false
+    }
   }
 };
 

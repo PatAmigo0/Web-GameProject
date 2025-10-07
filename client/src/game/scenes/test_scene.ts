@@ -1,6 +1,6 @@
 // src/scenes/GameScene.ts
 import Phaser from 'phaser';
-import NetworkManager, { type GameData } from '../../network/NetworkManager';
+import NetworkManager, { type GameData } from '../network/NetworkManager';
 
 export default class GameScene extends Phaser.Scene 
 {
