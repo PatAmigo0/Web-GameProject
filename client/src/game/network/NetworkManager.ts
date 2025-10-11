@@ -1,19 +1,8 @@
 // src/network/NetworkManager.ts
 import Peer, { type DataConnection } from 'peerjs';
 import GameScene from '../scenes/test_scene';
+import type { GameData } from '../types/types';
 
-export type GameData = 
-{
-  type: 'move';
-  x: number;
-  y: number;
-} 
-| 
-{
-  type: 'spawn';
-  x: number;
-  y: number;
-};
 
 class NetworkManager 
 {

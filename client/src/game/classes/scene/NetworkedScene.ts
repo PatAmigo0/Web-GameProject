@@ -1,5 +1,5 @@
-import { type GameData } from "../network/NetworkManager";
-import { BasicGameScene } from "./BasicGameScene";
+import { type GameData } from "../../types/types.ts";
+import { BasicGameScene } from "./BasicGameScene.ts";
 
 /**
  * NetworkedScene - абстрактный класс.

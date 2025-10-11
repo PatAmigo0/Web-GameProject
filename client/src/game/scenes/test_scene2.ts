@@ -1,43 +1,26 @@
-import type { GameData } from "../network/NetworkManager";
-import { NetworkedScene } from "../classes/NetworkedScene";
+import type { GameData } from "../types/types";
+import { NetworkedScene } from "../classes/scene/NetworkedScene";
 import obstacleImg from "../assets/images/typescript.svg";
-import playerImg from "../assets/images/vite.svg";
-import map from "../assets/maps//json/cave_map_new.json";
-import tilesetImg from "../assets/maps/png/Hanzo_B.png";
+import playerImg from "../assets/images/hero.png";
 
 class test_scene2 extends NetworkedScene
 {
-    private player! : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
+    static readonly sceneName = "cave_map";
+    private keys! : { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
 
     constructor()
     {
-        super("test_scene2");
+        super(test_scene2.sceneName);
     }
     
     onPreload()
     {
         this.load.image('obstacle', obstacleImg);
         this.load.image('player', playerImg);
-        this.load.image('tiles', tilesetImg);
-        this.load.tilemapTiledJSON('cave_map', map);
     }
 
     onCreate()
     {
-        const map = this.make.tilemap({ key: 'cave_map' });
-        const tileset = map.addTilesetImage('Hanzo_B', 'tiles');
-
-        if (tileset === null) {
-            console.error("Failed to load tileset.");
-            return;
-        }
-
-        map.layers.forEach(layerData => {
-            map.createLayer(layerData.name, tileset, 0, 0);
-        });
-
-
         const obstacle = this.add.image(400, 300, 'obstacle');
 
         this.tweens.add(
@@ -54,13 +37,13 @@ class test_scene2 extends NetworkedScene
         this.player = this.physics.add.sprite(800, 300, 'player');
         this.keys = this.input.keyboard?.addKeys('W,A,S,D') as { [key: string]: Phaser.Input.Keyboard.Key };
         this.cameras.main.startFollow(this.player);
-
+        this.cameras.main.setZoom(8);
 
     }
 
     heartbeat(time: number, delta: number): void 
     {
-        const moveSpeed = 160;
+        const moveSpeed = 200;
 
         this.player.setVelocity(0);
 

@@ -1,6 +1,7 @@
 // src/scenes/GameScene.ts
 import Phaser from 'phaser';
-import NetworkManager, { type GameData } from '../network/NetworkManager';
+import NetworkManager from '../network/NetworkManager' 
+import { type GameData } from '../types/types';
 
 export default class GameScene extends Phaser.Scene 
 {
@@ -23,9 +24,7 @@ export default class GameScene extends Phaser.Scene
     this.network = new NetworkManager(this);
 
     this.localPlayer = this.add.sprite(200, 200, 'player');
-    window.myPlayer = this.localPlayer;
-    window.myScene = this; 
-
+   
     this.connectPlayers();
   }
 
