@@ -1,3 +1,6 @@
-import test_scene2 from "./test_scene2";
+// src/scenes/index.ts
 
-export const scenes = [test_scene2];
+import test_scene2 from './test_scene2';
+import { BootScene } from './BootScene';
+
+export const scenes = [BootScene, test_scene2];

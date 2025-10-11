@@ -50,7 +50,7 @@
         {
          "columns":12,
          "firstgid":1,
-         "image":"..\/png\/tileset_basic_terrain.png",
+         "image":"..\/tilesets\/tileset_basic_terrain.png",
          "imageheight":704,
          "imagewidth":192,
          "margin":0,
@@ -63,7 +63,7 @@
         {
          "columns":47,
          "firstgid":529,
-         "image":"..\/png\/tileset_cave.png",
+         "image":"..\/tilesets\/tileset_cave.png",
          "imageheight":592,
          "imagewidth":752,
          "margin":0,

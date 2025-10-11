@@ -1,5 +1,7 @@
-import { type GameData } from "../../types/types.ts";
-import { BasicGameScene } from "./BasicGameScene.ts";
+// src/scene/NetworkedScene.ts
+
+import { type GameData } from '../../types/types.ts';
+import { BasicGameScene } from './BasicGameScene.ts';
 
 /**
  * NetworkedScene - абстрактный класс.
@@ -7,16 +9,15 @@ import { BasicGameScene } from "./BasicGameScene.ts";
  * которые могут взаимодейстовать с игроками (т.е игровые сцены)
  */
 
-export abstract class NetworkedScene extends BasicGameScene
-{
-    protected connectedPlayers: Set<string> = new Set();
+export abstract class NetworkedScene extends BasicGameScene {
+	protected connectedPlayers: Set<string> = new Set();
 
-    abstract onPlayerConnected(peerId: string): void;
-    abstract onPlayerDisconnected(peerId: string): void;
-    abstract handleNetworkData(peerId: string, data: GameData): void;
+	abstract onPlayerConnected(peerId: string): void;
+	abstract onPlayerDisconnected(peerId: string): void;
+	abstract handleNetworkData(peerId: string, data: GameData): void;
 
-    protected logNetworkEvent(message: string): void {
-        const timestamp = new Date().toLocaleTimeString();
-        console.log(`[${this.scene.key} @ ${timestamp}] ${message}`);
-    }
+	protected logNetworkEvent(message: string): void {
+		const timestamp = new Date().toLocaleTimeString();
+		console.log(`[${this.scene.key} @ ${timestamp}] ${message}`);
+	}
 }

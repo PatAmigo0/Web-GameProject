@@ -1,89 +1,72 @@
-import { WorkingWithScene } from "../ABC/WorkingWithScene";
+// src/manager/MapManager.ts
 
-export class MapManager extends WorkingWithScene 
-{
-    /* CLASS FIELDS */
-    private map! : Phaser.Tilemaps.Tilemap; // Поле хранит ссылку на класс 'карта' из сцены
-    
-    // Metadata
-    private mapTextures : Map<string, string> = new Map(); // Для хранения всех url текстурок, используемых картой
-    private tilesets : Phaser.Tilemaps.Tileset[] = []; 
-    private collidable : Phaser.Tilemaps.TilemapLayer[] = [];
+import { WorkingWithScene } from '../ABC/WorkingWithScene';
 
-    /* PUBLIC METHODS */
-    public preloadMap() : void // Автоматически запускается при предварительной загрузки ассетов для сцены
-    {
-        this.scene.assetManager.getMapTilesets().forEach(url => 
-        {
-            console.log(`Loading asset: ${url}`);
-            
-            const pathParts = url.split('/');
-            const tilesetName = pathParts[pathParts.length - 1].split('.')[0]; // Получаем имя текстурки без расширения .png ([<file_name>, <extension>])
+export class MapManager extends WorkingWithScene {
+	private map!: Phaser.Tilemaps.Tilemap;
+	private tilesets: Phaser.Tilemaps.Tileset[] = [];
+	private collidable: Phaser.Tilemaps.TilemapLayer[] = [];
 
-            this.scene.load.image(tilesetName, url);
-            this.mapTextures.set(tilesetName, url);
-        });
+	/**
+	 * Создает карту из заранее загруженных ассетов
+	 */
+	public createMap(): Phaser.Tilemaps.Tilemap {
+		this.map = this.scene.make.tilemap({ key: this.sceneKey });
 
-        console.log(this.scene.load.tilemapTiledJSON(this.sceneName, this.scene.assetManager.getMapJSON()));
-    }
+		this.map.tilesets.forEach((tileset) =>
+			this._addTilesetImage(tileset.name)
+		);
+		this.map.layers.forEach((layerData) => this._createLayer(layerData));
 
-    public loadMap() : Phaser.Tilemaps.Tilemap // Автоматически запускается при загрузке (на экран) заранее подгруженных ассетов карты из preloadMap
-    {
-        this.map = this.scene.make.tilemap({key: this.sceneName});
+		console.log(`[MapManager] Карта для сцены ${this.sceneKey} создана`);
+		return this.map;
+	}
 
-        this.map.tilesets.forEach(tileset => this._addTilesetImage(tileset.name)); // Загружаем текстурки для tileset-ов
-        this.map.layers.forEach(layerData => this._createLayer(layerData)); // Создаем слои на основе наших tileset-ов
+	public initMapPhysics(): void {
+		this.collidable.forEach((layer) => {
+			const player = this.scene.getPlayer();
+			if (player) {
+				this.scene.physics.add.collider(player, layer);
+			} else {
+				console.error(
+					'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики'
+				);
+			}
+		});
+	}
 
-        // [DEBUG]
-        this.map.tilesets.forEach(tileset => 
-        {
-            console.log(`  - Tileset Name: ${tileset.name}`);
-            console.log(`  - Tile Size: ${tileset.tileWidth}x${tileset.tileHeight}`);
-            console.log(`  - First GID: ${tileset.firstgid}`);
-            console.log(`  - Image Texture Key: ${tileset.image?.key}`);
-        });
+	/* PRIVATE METHODS */
+	private _addTilesetImage(tilesetName: string): void {
+		// Я предполагаю что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
+		// И вообще по хорошему так и должно быть
+		const tileset = this.map.addTilesetImage(tilesetName, tilesetName);
 
-        return this.map;
-    }
+		if (tileset) this.tilesets.push(tileset);
+		else
+			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
+            > Правильный ли ключ текстуры
+            > Был ли он загружен через AssetManager
+            > Совпадает ли имя в редакторе Tiled с именем файла`);
+	}
 
-    public initMapPhysics(): void // Автоматически запускается после onCreate для полной инициализации физики мира
-    {
-        console.log(this.collidable);
-        this.collidable.forEach(layer => 
-        {
-            const plr = this.scene.getPlayer();
-            if (plr) this.scene.physics.add.collider(plr, layer);
-            else 
-            {
-                console.error("Не удалось получить игрока сцены. Он точно был инициализирован?");
-                return;
-            }
-        });
-    }
+	private _createLayer(layerData: Phaser.Tilemaps.LayerData): void {
+		const layer = this.map.createLayer(layerData.name, this.tilesets, 0, 0);
+		if (!layer) {
+			console.warn(
+				`[MapManager] Не удалось создать слой: "${layerData.name}"`
+			);
+			return;
+		}
 
-    /* PRIVATE METHODS */
-    private _addTilesetImage(tilesetName: string) : void
-    {
-        const tileset = this.map.addTilesetImage(tilesetName, tilesetName, 16, 16);
-        if (tileset) this.tilesets.push(tileset);
-        else console.warn("Ошибка при создании tileset. !ОСТОРОЖНО!");
-    }
-
-    private _createLayer(layerData: Phaser.Tilemaps.LayerData) : void
-    {
-        const layer = this.map.createLayer(layerData.name, this.tilesets, 0, 0);
-        const properties = layerData.properties as [{name?: string, type?: string, value? : boolean}];
- 
-        if (!Array.isArray(properties))
-        {
-            console.error("Используется старый формат свойств. Работать ничего не будет");
-            return;
-        }
-        else if (layer && properties.find(p => p.name == 'collides')?.value == true) 
-        {   
-            layer.setCollisionByExclusion([-1]);
-            this.collidable.push(layer);   
-        }
-        else if (!layer) console.warn("Ошибка создания слоя на карте");
-    }
+		const properties = layerData.properties as [
+			{ name?: string; value?: boolean }
+		];
+		if (
+			Array.isArray(properties) &&
+			properties.find((p) => p.name === 'collides')?.value === true
+		) {
+			layer.setCollisionByExclusion([-1]);
+			this.collidable.push(layer);
+		}
+	}
 }

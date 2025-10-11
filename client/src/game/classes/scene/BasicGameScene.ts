@@ -1,57 +1,50 @@
-import { SceneEventHandler } from "./SceneEventHandler";
-import { AssetManager } from "../manager/AssetManager"
-import { MapManager } from "../manager/MapManager";
- 
-/**
- * BasicGameScene - абстрактный класс.
- * Его главная задача - служить шаблонов для всех игровых сцен
- */
-export abstract class BasicGameScene extends Phaser.Scene 
-{
-    protected eventHandler! : SceneEventHandler;
-    public assetManager! : AssetManager;
-    protected mapManager! : MapManager;
-    protected map! : Phaser.Tilemaps.Tilemap;
-    protected player! : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+// src/scene/BasicGameScene.ts
 
-    abstract onPreload(): void;
-    abstract onCreate(): void;
-    abstract heartbeat(time: number, delta: number) : void;
+import { AssetManager } from '../manager/AssetManager';
+import { MapManager } from '../manager/MapManager';
+import { SceneEventHandler } from './SceneEventHandler';
 
-    constructor(sceneKey: string)
-    {
-        super(sceneKey);
-    }
+export abstract class BasicGameScene extends Phaser.Scene {
+	protected eventHandler!: SceneEventHandler;
+	public assetManager!: AssetManager;
+	protected mapManager!: MapManager;
+	protected map!: Phaser.Tilemaps.Tilemap;
+	protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
-    preload(): void 
-    {
+	// Абстрактные методы
+	abstract onPreload(): void;
+	abstract onCreate(): void;
+	abstract heartbeat(time: number, delta: number): void;
 
-        this.assetManager = new AssetManager(this);
-        this.mapManager = new MapManager(this);
+	constructor(sceneKey: string) {
+		super(sceneKey);
+	}
 
-        this.mapManager.preloadMap();
-        this.onPreload();
-    }
+	preload(): void {
+		// Создаём экземпляры менеджеров
+		this.assetManager = new AssetManager(this);
+		this.mapManager = new MapManager(this);
 
-    create(): void 
-    {
-        this.eventHandler = new SceneEventHandler(this);
-        this.eventHandler.setupCommonListeners();
+		this.assetManager.loadMapAssets();
+		this.onPreload();
+	}
 
-        this.map = this.mapManager.loadMap()
+	create(): void {
+		this.eventHandler = new SceneEventHandler(this);
+		this.eventHandler.setupCommonListeners();
 
-        this.onCreate();
+		this.map = this.mapManager.createMap();
 
-        this.mapManager.initMapPhysics();
-    }
+		this.onCreate();
 
-    update(time: number, delta: number): void 
-    {
-        this.heartbeat(time, delta)
-    }
+		this.mapManager.initMapPhysics();
+	}
 
-    public getPlayer() : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null
-    {
-        return this.player;
-    }
+	update(time: number, delta: number): void {
+		this.heartbeat(time, delta);
+	}
+
+	public getPlayer(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null {
+		return this.player || null;
+	}
 }

@@ -1,4 +1,3 @@
-export class Player 
-{
-    public playerID! : string;
+export class Player {
+    public playerID!: string;
 }

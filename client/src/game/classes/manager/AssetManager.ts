@@ -1,82 +1,145 @@
-import { WorkingWithScene } from "../ABC/WorkingWithScene";
-import type { BasicGameScene } from "../scene/BasicGameScene";
+// src/manager/AssetManager.ts
 
-// Внутренние типы только для AssetManager
-type TextureGroups = Record<string, string[]>;
-type StringDict = Record<string, string>;
+import { WorkingWithScene } from '../ABC/WorkingWithScene';
+import type { BasicGameScene } from '../scene/BasicGameScene';
 
-export class AssetManager extends WorkingWithScene
-{
-    private groupedTextures: TextureGroups = {};
-    private jsonFiles: StringDict = {};
+/**
+ * Чучуть теории:
+ * Манифест - 'инструкция по сборке'
+ */
 
-    constructor(scene: BasicGameScene) 
-    {
-        super(scene);
-        this.processAllTextures();
-    }
+// Интерфейсы для типобезопасности
+interface TiledTileset {
+	image: string;
+}
 
-    private processAllTextures() : void
-    {
-        const allTextureModules: StringDict = import.meta.glob('/src/game/assets/maps/png/**/*.png', 
-        {
-            eager: true,
-            query: '?url',
-            import: 'default'
-        });
+interface TiledMapJson {
+	tilesets: TiledTileset[];
+}
 
-        for (const path in allTextureModules) 
-        {
-            const url = allTextureModules[path];
-            const pathParts = path.split('/');
-            const folderName = pathParts[pathParts.length - 2]; // [..., <folder_name>, <tileset_name>]
+// Определяет структуру для заранее собранного списка ассетов для одной карты
+interface MapAssetManifest {
+	mapJsonUrl: string;
+	tilesetUrls: string[];
+}
 
-            if (!this.groupedTextures[folderName])
-                this.groupedTextures[folderName] = [];
-            this.groupedTextures[folderName].push(url);
-        }
+export class AssetManager extends WorkingWithScene {
+	// Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
+	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
+	private static readonly assetManifest: Record<string, MapAssetManifest> =
+		{};
+	private static manifestBuilt = false;
 
-        const allJSONFiles: StringDict = import.meta.glob('/src/game/assets/maps/json/*.json',
-        {
-            eager: true,
-            query: '?url',
-            import: 'default'
-        });
+	constructor(scene: BasicGameScene) {
+		super(scene);
+		if (!AssetManager.manifestBuilt)
+			console.error(
+				'Ошибка [AssetManager]: Манифест ассетов еще не был создан, кто не вызовал AssetManager.buildManifest() в загрузочной сцене??'
+			);
+	}
 
-        for (const path in allJSONFiles)
-        {
-            const url = allJSONFiles[path];
-            const pathParts = path.split('/');
-            const jsonName = pathParts[pathParts.length - 1];
+	/**
+	 * СИНХРОННО: Загружает ассеты для текущей сцены, используя запись
+	 * из предварительно созданного манифеста
+	 * Вызывайте этот метод из preload() вашей игровой сцены
+	 */
+	public loadMapAssets(): void {
+		const manifestEntry = AssetManager.assetManifest[this.sceneKey];
 
-            this.jsonFiles[jsonName.split('.')[0]] = url
-        }
-    }
+		if (!manifestEntry) {
+			console.error(
+				`[AssetManager] Не найдена запись в манифесте для сцены: ${this.sceneKey}`
+			);
+			return;
+		}
 
-    public getMapTilesets(): string[] 
-    {
-        console.log(this.groupedTextures);
-        const tilesetUrls = this.groupedTextures[this.scene.scene.key];
-        
-        if (!tilesetUrls) 
-        {
-            console.error(`No textures found for scene key: "${this.scene.scene.key}"`);
-            return [];
-        }
-        
-        return tilesetUrls;
-    }
+		console.log(
+			`[AssetManager] Загрузка ассетов для сцены: ${this.sceneKey}`
+		);
 
-    public getMapJSON(): string
-    {
-        const mapJSON = this.jsonFiles[this.scene.scene.key];
-        if (!mapJSON)
-        {
-            console.error(`No JSON file found for scene key: ${this.scene.scene.key}`);
-            return "";
-        }
+		// Загружаем все необходимые изображения тайлсетов
+		for (const url of manifestEntry.tilesetUrls) {
+			const tilesetKey = url.split('/').pop()!.replace('.png', '');
+			if (!this.scene.textures.exists(tilesetKey))
+				this.scene.load.image(tilesetKey, url);
+		}
 
-        return mapJSON;
-    }
+		// Загружаем JSON карту
+		this.scene.load.tilemapTiledJSON(
+			this.sceneKey,
+			manifestEntry.mapJsonUrl
+		);
+	}
 
+	/**
+	 * АСИНХРОННО: Этот метод должен быть вызван ОДИН РАЗ при запуске игры
+	 * Он находит все карты, получает их, анализирует зависимости
+	 * и создает полный assetManifest
+	 */
+	public static async buildManifest(): Promise<void> {
+		if (this.manifestBuilt) return;
+
+		console.log('[AssetManager] Начинаем создание манифеста ассетов');
+
+		// 1 Находим все доступные файлы JSON и PNG
+		const jsonFiles = import.meta.glob(
+			'/src/game/assets/maps/json/*.json',
+			{ query: '?url', import: 'default' }
+		);
+		const textureFiles = import.meta.glob(
+			'/src/game/assets/maps/tilesets/*.png',
+			{ query: '?url', import: 'default' }
+		);
+
+		// Создаем карту для быстрого поиска полных URL-адресов тайлсетов по их именам и расиширением
+		const availableTilesets = new Map<string, string>();
+		for (const path in textureFiles) {
+			const getUrl = textureFiles[path] as () => Promise<string>;
+			const url = await getUrl();
+			const filename = path.split('/').pop()!;
+
+			availableTilesets.set(filename, url);
+		}
+
+		// 2 Обрабатываем все JSON-файлы одновременно
+		const manifestPromises = Object.entries(jsonFiles).map(
+			async ([path, getUrl]) => {
+				const url = await (getUrl as () => Promise<string>)();
+				const sceneKey = path.split('/').pop()!.replace('.json', ''); // Получаем имя файла и удаляем из него его расширение
+
+				try {
+					const response = await fetch(url);
+					const mapData: TiledMapJson = await response.json();
+
+					const requiredTilesetUrls = mapData.tilesets
+						.map((tileset) => {
+							const filename = tileset?.image.split('/').pop()!;
+							return availableTilesets.get(filename);
+						})
+						.filter((foundUrl): foundUrl is string => !!foundUrl); // Отфильтровываем все ненайденные
+
+					// Сохраняем результат в наш манифест
+					this.assetManifest[sceneKey] = {
+						mapJsonUrl: url,
+						tilesetUrls: requiredTilesetUrls,
+					};
+				} catch (error) {
+					console.error(
+						`Не удалось создать манифест для ${sceneKey}:`,
+						error
+					);
+				}
+			}
+		);
+
+		// Ждем, пока все обработки закончатся
+		await Promise.all(manifestPromises);
+
+		// Завершаем создание манифеста ассетов
+		this.manifestBuilt = true;
+		console.log(
+			'[AssetManager] Манифест ассетов успешно создан',
+			this.assetManifest
+		);
+	}
 }
