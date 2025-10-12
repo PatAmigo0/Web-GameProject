@@ -14,22 +14,30 @@ export class MapManager extends WorkingWithScene {
 		this.map = this.scene.make.tilemap({ key: this.sceneKey });
 
 		this.map.tilesets.forEach((tileset) =>
-			this._addTilesetImage(tileset.name)
+			this._addTilesetImage(tileset.name),
 		);
 		this.map.layers.forEach((layerData) => this._createLayer(layerData));
+		console.log(this.map.objects);
 
 		console.log(`[MapManager] Карта для сцены ${this.sceneKey} создана`);
 		return this.map;
 	}
 
 	public initMapPhysics(): void {
+		this.scene.physics.world.setBounds(
+			0,
+			0,
+			this.map.widthInPixels,
+			this.map.heightInPixels,
+		);
+		this.scene.getPlayer()?.setCollideWorldBounds(true);
 		this.collidable.forEach((layer) => {
 			const player = this.scene.getPlayer();
 			if (player) {
 				this.scene.physics.add.collider(player, layer);
 			} else {
 				console.error(
-					'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики'
+					'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики',
 				);
 			}
 		});
@@ -53,13 +61,14 @@ export class MapManager extends WorkingWithScene {
 		const layer = this.map.createLayer(layerData.name, this.tilesets, 0, 0);
 		if (!layer) {
 			console.warn(
-				`[MapManager] Не удалось создать слой: "${layerData.name}"`
+				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
 			);
 			return;
 		}
 
+		// Ишем все 'твердые' слои
 		const properties = layerData.properties as [
-			{ name?: string; value?: boolean }
+			{ name?: string; value?: boolean },
 		];
 		if (
 			Array.isArray(properties) &&

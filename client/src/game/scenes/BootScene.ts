@@ -14,13 +14,13 @@ export class BootScene extends Scene {
 				this.cameras.main.width / 2,
 				this.cameras.main.height / 2,
 				'Загрузка игровых данных...',
-				{ color: '#ffffff', fontSize: '24px' }
+				{ color: '#ffffff', fontSize: '24px' },
 			)
 			.setOrigin(0.5);
 	}
 
 	async create() {
 		await AssetManager.buildManifest();
-		this.scene.start('cave_map');
+		this.scene.start('MainMenuScene');
 	}
 }

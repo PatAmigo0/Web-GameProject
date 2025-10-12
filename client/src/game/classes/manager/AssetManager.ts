@@ -34,7 +34,7 @@ export class AssetManager extends WorkingWithScene {
 		super(scene);
 		if (!AssetManager.manifestBuilt)
 			console.error(
-				'Ошибка [AssetManager]: Манифест ассетов еще не был создан, кто не вызовал AssetManager.buildManifest() в загрузочной сцене??'
+				'Ошибка [AssetManager]: Манифест ассетов еще не был создан, кто не вызовал AssetManager.buildManifest() в загрузочной сцене??',
 			);
 	}
 
@@ -48,13 +48,13 @@ export class AssetManager extends WorkingWithScene {
 
 		if (!manifestEntry) {
 			console.error(
-				`[AssetManager] Не найдена запись в манифесте для сцены: ${this.sceneKey}`
+				`[AssetManager] Не найдена запись в манифесте для сцены: ${this.sceneKey}`,
 			);
 			return;
 		}
 
 		console.log(
-			`[AssetManager] Загрузка ассетов для сцены: ${this.sceneKey}`
+			`[AssetManager] Загрузка ассетов для сцены: ${this.sceneKey}`,
 		);
 
 		// Загружаем все необходимые изображения тайлсетов
@@ -67,7 +67,7 @@ export class AssetManager extends WorkingWithScene {
 		// Загружаем JSON карту
 		this.scene.load.tilemapTiledJSON(
 			this.sceneKey,
-			manifestEntry.mapJsonUrl
+			manifestEntry.mapJsonUrl,
 		);
 	}
 
@@ -79,16 +79,16 @@ export class AssetManager extends WorkingWithScene {
 	public static async buildManifest(): Promise<void> {
 		if (this.manifestBuilt) return;
 
-		console.log('[AssetManager] Начинаем создание манифеста ассетов');
+		console.log('[AssetManager] Начинаю создание манифеста ассетов');
 
 		// 1 Находим все доступные файлы JSON и PNG
 		const jsonFiles = import.meta.glob(
 			'/src/game/assets/maps/json/*.json',
-			{ query: '?url', import: 'default' }
+			{ query: '?url', import: 'default' },
 		);
 		const textureFiles = import.meta.glob(
 			'/src/game/assets/maps/tilesets/*.png',
-			{ query: '?url', import: 'default' }
+			{ query: '?url', import: 'default' },
 		);
 
 		// Создаем карту для быстрого поиска полных URL-адресов тайлсетов по их именам и расиширением
@@ -126,10 +126,10 @@ export class AssetManager extends WorkingWithScene {
 				} catch (error) {
 					console.error(
 						`Не удалось создать манифест для ${sceneKey}:`,
-						error
+						error,
 					);
 				}
-			}
+			},
 		);
 
 		// Ждем, пока все обработки закончатся
@@ -139,7 +139,7 @@ export class AssetManager extends WorkingWithScene {
 		this.manifestBuilt = true;
 		console.log(
 			'[AssetManager] Манифест ассетов успешно создан',
-			this.assetManifest
+			this.assetManifest,
 		);
 	}
 }

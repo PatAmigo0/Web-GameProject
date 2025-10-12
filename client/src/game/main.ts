@@ -1,4 +1,4 @@
 import { Game } from './services/Game';
 import { config } from './config';
 
-new Game(config);
+export const game = new Game(config);

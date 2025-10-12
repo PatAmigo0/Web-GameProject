@@ -1,10 +1,10 @@
 import type { GameData } from '../types/types';
 import { NetworkedScene } from '../classes/scene/NetworkedScene';
 import obstacleImg from '../assets/images/typescript.svg';
-import playerImg from '../assets/images/vite.svg';
+import playerImg from '../assets/images/hero.png';
 
 class test_scene2 extends NetworkedScene {
-	static readonly sceneName = 'cave_map';
+	static readonly sceneName = 'test_place';
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
 
 	constructor() {
@@ -28,12 +28,12 @@ class test_scene2 extends NetworkedScene {
 			loop: -1,
 		});
 
-		this.player = this.physics.add.sprite(800, 300, 'player');
+		this.player = this.physics.add.sprite(0, 0, 'player');
 		this.keys = this.input.keyboard?.addKeys('W,A,S,D') as {
 			[key: string]: Phaser.Input.Keyboard.Key;
 		};
 		this.cameras.main.startFollow(this.player);
-		this.cameras.main.setZoom(0.5);
+		this.cameras.main.setZoom(4);
 	}
 
 	heartbeat(time: number, delta: number): void {
