@@ -3,9 +3,8 @@
 import { AssetManager } from '../manager/AssetManager';
 import { MapManager } from '../manager/MapManager';
 import { SceneEventHandler } from '../scene_utils/SceneEventHandler';
-import { NamedScene } from './NamedScene';
 
-export abstract class BasicGameScene extends NamedScene {
+export abstract class BasicGameScene extends Phaser.Scene {
 	protected eventHandler!: SceneEventHandler;
 	public assetManager!: AssetManager;
 	protected mapManager!: MapManager;
@@ -16,6 +15,10 @@ export abstract class BasicGameScene extends NamedScene {
 	abstract onPreload(): void;
 	abstract onCreate(): void;
 	abstract heartbeat(time: number, delta: number): void;
+
+	constructor(sceneKey: string) {
+		super(sceneKey);
+	}
 
 	preload(): void {
 		// Создаём экземпляры менеджеров

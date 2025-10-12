@@ -7,6 +7,10 @@ class test_scene2 extends NetworkedScene {
 	static readonly sceneName = 'test_place';
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
 
+	constructor() {
+		super(test_scene2.sceneName);
+	}
+
 	onPreload() {
 		this.load.image('obstacle', obstacleImg);
 		this.load.image('player', playerImg);

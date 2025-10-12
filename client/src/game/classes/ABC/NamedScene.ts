@@ -1,7 +1,8 @@
 export abstract class NamedScene extends Phaser.Scene {
-	static readonly sceneKey: string;
+	public readonly sceneKey!: string;
 
-	constructor() {
-		super(NamedScene.sceneKey);
+	constructor(sceneKey: string) {
+		super(sceneKey);
+		this.sceneKey = sceneKey;
 	}
 }

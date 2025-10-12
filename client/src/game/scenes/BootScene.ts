@@ -1,9 +1,9 @@
 // src/scenes/BootScene.ts
 
-import { Scene } from 'phaser';
 import { AssetManager } from '../classes/manager/AssetManager';
+import { NamedScene } from '../classes/ABC/NamedScene';
 
-export class BootScene extends Scene {
+export class BootScene extends NamedScene {
 	constructor() {
 		super('BootScene');
 	}
