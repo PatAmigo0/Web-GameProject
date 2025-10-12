@@ -47,7 +47,12 @@ export class MapManager extends WorkingWithScene {
 	private _addTilesetImage(tilesetName: string): void {
 		// Я предполагаю что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
 		// И вообще по хорошему так и должно быть
-		const tileset = this.map.addTilesetImage(tilesetName, tilesetName);
+		const tileset = this.map.addTilesetImage(
+			tilesetName,
+			tilesetName,
+			16,
+			16,
+		);
 
 		if (tileset) this.tilesets.push(tileset);
 		else

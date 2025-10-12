@@ -1,15 +1,11 @@
 import type { GameData } from '../types/types';
-import { NetworkedScene } from '../classes/scene/NetworkedScene';
+import { NetworkedScene } from '../classes/ABC/NetworkedScene';
 import obstacleImg from '../assets/images/typescript.svg';
 import playerImg from '../assets/images/hero.png';
 
 class test_scene2 extends NetworkedScene {
 	static readonly sceneName = 'test_place';
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
-
-	constructor() {
-		super(test_scene2.sceneName);
-	}
 
 	onPreload() {
 		this.load.image('obstacle', obstacleImg);

@@ -8,7 +8,6 @@ import { BasicGameScene } from './BasicGameScene.ts';
  * Его главная задача - служить шаблонов для всех сцен,
  * которые могут взаимодейстовать с игроками (т.е игровые сцены)
  */
-
 export abstract class NetworkedScene extends BasicGameScene {
 	protected connectedPlayers: Set<string> = new Set();
 

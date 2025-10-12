@@ -1,7 +1,7 @@
 // src/manager/AssetManager.ts
 
 import { WorkingWithScene } from '../ABC/WorkingWithScene';
-import type { BasicGameScene } from '../scene/BasicGameScene';
+import type { BasicGameScene } from '../ABC/BasicGameScene';
 
 /**
  * Чучуть теории:

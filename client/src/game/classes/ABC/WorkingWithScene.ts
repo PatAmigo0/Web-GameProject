@@ -1,4 +1,4 @@
-import type { BasicGameScene } from '../scene/BasicGameScene';
+import type { BasicGameScene } from './BasicGameScene';
 
 export abstract class WorkingWithScene {
 	protected scene!: BasicGameScene;
