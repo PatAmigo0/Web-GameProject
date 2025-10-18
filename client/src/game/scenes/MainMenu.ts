@@ -50,7 +50,7 @@ export class MainMenuScene extends Scene {
 				`Игра создана! Ваш ID: ${myId}\n(Сообщите его друзьям)`,
 			);
 
-			this.scene.start('test_place');
+			this.scene.start('test_place2');
 		});
 
 		document
