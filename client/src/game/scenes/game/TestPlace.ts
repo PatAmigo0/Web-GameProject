@@ -7,7 +7,7 @@ import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
 import { SceneKeys } from '../../types';
 
 @SceneKey(SceneKeys.TestPlace)
-class test_scene2 extends NetworkedScene {
+export class TestPlace extends NetworkedScene {
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
 
 	onPreload() {
@@ -59,5 +59,3 @@ class test_scene2 extends NetworkedScene {
 
 	handleNetworkData(peerId: string, data: GameData): void {}
 }
-
-export default test_scene2;
