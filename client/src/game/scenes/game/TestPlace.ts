@@ -1,10 +1,12 @@
-import type { GameData } from '../types/types';
-import { NetworkedScene } from '../utils/ABC/NetworkedScene';
-import obstacleImg from '../assets/images/typescript.svg';
-import playerImg from '../assets/images/hero.png';
-import { SceneKey } from '../utils/decorator/SceneKey.decorator';
+import type { GameData } from '../../types/game.types';
+import { NetworkedScene } from '../../core/abstracts/NetworkedScene';
+import obstacleImg from '../../../assets/images/typescript.svg';
+import playerImg from '../../../assets/images/hero.png';
+import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
+// import { StaticSceneKey } from '../../utils/decorators/StaticSceneKey.decorator';
+import { SceneKeys } from '../../types';
 
-@SceneKey('test_place')
+@SceneKey(SceneKeys.TestPlace)
 class test_scene2 extends NetworkedScene {
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
 

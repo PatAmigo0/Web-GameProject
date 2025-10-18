@@ -1,5 +1,5 @@
-import type { NetworkService } from '../services/NetworkService';
-import { SceneKey } from '../utils/decorator/SceneKey.decorator';
+import type { NetworkService } from '../../services/NetworkService';
+import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
 
 @SceneKey('TMainMenuScene')
 export class TMainMenuScene extends Phaser.Scene {

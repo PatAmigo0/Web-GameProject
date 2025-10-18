@@ -1,10 +1,12 @@
 // scene/MainMenuScene.ts
 
-import { NetworkService } from '../services/NetworkService';
-import { NamedScene } from '../utils/ABC/NamedScene';
-import { SceneKey } from '../utils/decorator/SceneKey.decorator';
+import { NetworkService } from '../../services/NetworkService';
+import { NamedScene } from '../../core/abstracts/NamedScene';
+import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
+import { SceneKeys } from '../../types';
+// import { StaticSceneKey } from '../../utils/decorators/StaticSceneKey.decorator';
 
-@SceneKey('MainMenuScene')
+@SceneKey(SceneKeys.MainMenu)
 export class MainMenuScene extends NamedScene {
 	private NetworkService!: NetworkService;
 	private myIdText!: Phaser.GameObjects.Text;
@@ -48,7 +50,7 @@ export class MainMenuScene extends NamedScene {
 				`Игра создана! Ваш ID: ${myId}\n(Сообщите его друзьям)`,
 			);
 
-			this.scene.start('test_place');
+			this.scene.start(SceneKeys.TestPlace);
 		});
 
 		document
@@ -63,7 +65,7 @@ export class MainMenuScene extends NamedScene {
 				console.log(`Присоединяюсь к хосту ${hostId}...`);
 				await this.NetworkService.startPeer(false, hostId);
 
-				this.scene.start('test_scene2');
+				this.scene.start(SceneKeys.TestPlace);
 			});
 	}
 

@@ -1,4 +1,4 @@
-import { Player } from '../utils/player/Player';
+import { Player } from '../components/Player';
 
 export class Players {
 	private players: Player[] = [];

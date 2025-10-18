@@ -1,8 +1,8 @@
 // src/game/utils/ABC/BasicGameScene.ts
 
-import { AssetManager } from '../manager/AssetManager';
-import { MapManager } from '../manager/MapManager';
-import { SceneEventHandler } from '../scene_utils/SceneEventHandler';
+import { AssetManager } from '../../services/AssetManager';
+import { MapManager } from '../../services/MapManager';
+import { SceneEventHandler } from '../handlers/SceneEventHandler';
 import { NamedScene } from './NamedScene';
 
 export abstract class BasicGameScene extends NamedScene {
