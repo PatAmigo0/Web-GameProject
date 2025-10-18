@@ -24,5 +24,3 @@ export const config: Phaser.Types.Core.GameConfig = {
 		createContainer: true,
 	},
 };
-
-console.warn(scenes);

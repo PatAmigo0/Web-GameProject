@@ -1,4 +1,4 @@
-// src/scene/NetworkedScene.ts
+// src/game/utils/ABC/NetworkedScene.ts
 
 import { type GameData } from '../../types/types.ts';
 import { BasicGameScene } from './BasicGameScene.ts';

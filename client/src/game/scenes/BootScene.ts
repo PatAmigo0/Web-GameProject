@@ -1,13 +1,11 @@
-// src/scenes/BootScene.ts
+// src/utils/BootScene.ts
 
-import { AssetManager } from '../classes/manager/AssetManager';
-import { NamedScene } from '../classes/ABC/NamedScene';
+import { AssetManager } from '../utils/manager/AssetManager';
+import { NamedScene } from '../utils/ABC/NamedScene';
+import { SceneKey } from '../utils/decorator/SceneKey.decorator';
 
+@SceneKey('BootScene')
 export class BootScene extends NamedScene {
-	constructor() {
-		super('BootScene');
-	}
-
 	preload() {
 		this.add
 			.text(
@@ -21,6 +19,6 @@ export class BootScene extends NamedScene {
 
 	async create() {
 		await AssetManager.buildManifest();
-		this.scene.start('MainMenuScene');
+		this.scene.start('TMainMenuScene');
 	}
 }

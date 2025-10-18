@@ -1,9 +1,9 @@
-import { Player } from '../classes/player/Player';
+import { Player } from '../utils/player/Player';
 
 export class Players {
-    private players: Player[] = [];
+	private players: Player[] = [];
 
-    public getPlayerByID(playerID: string): Player | undefined {
-        return this.players.find((plr) => plr.playerID == playerID);
-    }
+	public getPlayerByID(playerID: string): Player | undefined {
+		return this.players.find((plr) => plr.playerID == playerID);
+	}
 }

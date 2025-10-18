@@ -1,16 +1,14 @@
 // scene/MainMenuScene.ts
 
-import { Scene } from 'phaser';
 import { NetworkService } from '../services/NetworkService';
+import { NamedScene } from '../utils/ABC/NamedScene';
+import { SceneKey } from '../utils/decorator/SceneKey.decorator';
 
-export class MainMenuScene extends Scene {
+@SceneKey('MainMenuScene')
+export class MainMenuScene extends NamedScene {
 	private NetworkService!: NetworkService;
 	private myIdText!: Phaser.GameObjects.Text;
 	private hostIdInput!: HTMLInputElement;
-
-	constructor() {
-		super('MainMenuScene');
-	}
 
 	create() {
 		// Получаем наш NetworkService, который был создан в BootScene
