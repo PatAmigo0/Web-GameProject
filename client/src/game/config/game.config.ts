@@ -28,3 +28,4 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 
 export const STARTING_MENU = SceneKeys.TMainMenu;
 export const STARTING_SCENE = SceneKeys.TestPlace;
+export const MOVE_SPEED = 70;

@@ -1,3 +1,5 @@
+// src/game/core/abstracts/BasicGameScene.ts
+
 import type { Map } from '../../components/entities/GameMap';
 import { AssetManager } from '../../services/AssetManager';
 import { MapManager } from '../../services/MapManager';
