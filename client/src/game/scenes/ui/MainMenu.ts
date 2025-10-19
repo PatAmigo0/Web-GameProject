@@ -11,6 +11,7 @@ export class TMainMenuScene extends NamedScene {
 	// buttons
 	private createGameHost!: Phaser.GameObjects.Text;
 	private createGameLocal!: Phaser.GameObjects.Text;
+	private isStarting = false;
 
 	async create(): Promise<void> {
 		this.NetworkService = this.registry.get('NetworkService');
@@ -33,9 +34,12 @@ export class TMainMenuScene extends NamedScene {
 			console.log('Начинаю создавать игру!');
 
 			try {
-				const id = await this.NetworkService.startPeer(true);
-				console.log(`Ваш id: ${id}`);
-				this.scene.start(STARTING_SCENE);
+				if (!this.isStarting) {
+					this.isStarting = true;
+					const id = await this.NetworkService.startPeer(true);
+					console.log(`Ваш id: ${id}`);
+					this.scene.start(STARTING_SCENE);
+				}
 			} catch (error) {
 				console.warn(error);
 				this._showErrorMessage();
@@ -46,14 +50,18 @@ export class TMainMenuScene extends NamedScene {
 		this.createGameLocal = this.add
 			.text(this.cameras.main.centerX, 400, 'Создать игру (локально)', {
 				fontSize: '28px',
+				padding: { x: 10, y: 5 },
 				backgroundColor: 'blue',
 			})
 			.setOrigin(0.5)
 			.setInteractive({ useHandCursor: true });
 
 		this.createGameLocal.on('pointerdown', () => {
-			console.log('Начинаю игру вне сети');
-			this.scene.start(STARTING_SCENE);
+			if (!this.isStarting) {
+				this.isStarting = true;
+				console.log('Начинаю игру вне сети');
+				this.scene.start(STARTING_SCENE);
+			}
 		});
 	}
 
@@ -88,6 +96,7 @@ export class TMainMenuScene extends NamedScene {
 		setTimeout(() => {
 			errorText.remove();
 			background.remove();
+			this.isStarting = false;
 		}, 5000);
 	}
 }

@@ -50,6 +50,7 @@ export abstract class BasicGameScene extends NamedScene {
 			ASSET_KEYS.PLAYER_SPRITE,
 		);
 		this.player.setCollideWorldBounds(true);
+		this.player.setDepth(100);
 
 		this.onCreate();
 
