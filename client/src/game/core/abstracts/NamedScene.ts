@@ -1,5 +1,7 @@
+// src/game/utils/ABC/NamedScene.ts
+
 export abstract class NamedScene extends Phaser.Scene {
-	public readonly sceneKey!: string;
+	public sceneKey!: string;
 
 	constructor(sceneKey: string) {
 		super(sceneKey);

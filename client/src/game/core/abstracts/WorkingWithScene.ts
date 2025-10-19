@@ -1,3 +1,5 @@
+// src/game/utils/ABC/WorkingWithScene.ts
+
 import type { BasicGameScene } from './BasicGameScene';
 
 export abstract class WorkingWithScene {
@@ -6,6 +8,6 @@ export abstract class WorkingWithScene {
 
 	constructor(scene: BasicGameScene) {
 		this.scene = scene;
-		this.sceneKey = scene.scene.key;
+		this.sceneKey = scene.sceneKey; // alias для scene.sceneKey
 	}
 }

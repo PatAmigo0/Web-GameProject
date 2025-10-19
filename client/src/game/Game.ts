@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import { Players } from './Players';
-import { NetworkService } from './NetworkService';
+import { Players } from './services/PlayerService';
+import { NetworkService } from './services/NetworkService';
 
 export class Game extends Phaser.Game {
 	public Players = new Players();
