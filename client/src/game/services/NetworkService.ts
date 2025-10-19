@@ -15,7 +15,7 @@ export class NetworkService extends Phaser.Events.EventEmitter {
 	}
 
 	public startPeer(isHost: boolean, hostId?: string): Promise<string> {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			this.peer = new Peer('', {
 				host: 'localhost',
 				port: 9000,
@@ -24,7 +24,7 @@ export class NetworkService extends Phaser.Events.EventEmitter {
 
 			this.peer.on('open', (id) => {
 				this.id = id;
-				console.log('My Peer ID is:', id);
+				// console.log('My Peer ID is:', id);
 				if (isHost) {
 					this.hostId = id;
 				}
@@ -34,6 +34,10 @@ export class NetworkService extends Phaser.Events.EventEmitter {
 			this.peer.on('connection', (conn) => {
 				console.log(`Incoming connection from ${conn.peer}`);
 				this.setupConnection(conn);
+			});
+
+			this.peer.on('error', (err) => {
+				reject(err);
 			});
 
 			if (!isHost && hostId) {

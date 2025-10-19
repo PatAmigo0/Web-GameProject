@@ -1,3 +1,5 @@
+// src/game/types/player.types.ts
+
 export type Direction = {
 	readonly NORTH: unique symbol;
 	readonly SOUTH: unique symbol;

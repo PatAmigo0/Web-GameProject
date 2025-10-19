@@ -3,8 +3,8 @@
 import { AssetManager } from '../../services/AssetManager';
 import { NamedScene } from '../../core/abstracts/NamedScene';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
-// import { StaticSceneKey } from '../../utils/decorators/StaticSceneKey.decorator';
 import { SceneKeys } from '../../types';
+import { STARTING_MENU } from '../../config/game.config';
 
 @SceneKey(SceneKeys.BootScene)
 export class BootScene extends NamedScene {
@@ -21,6 +21,6 @@ export class BootScene extends NamedScene {
 
 	async create() {
 		await AssetManager.buildManifest();
-		this.scene.start(SceneKeys.MainMenu);
+		this.scene.start(STARTING_MENU);
 	}
 }
