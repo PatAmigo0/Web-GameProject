@@ -10,7 +10,7 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 	version: import.meta.env.VERSION || '0.0.1',
 	scene: scenes,
 	scale: {
-		mode: Phaser.Scale.FIT, // fit to window
+		mode: Phaser.Scale.ENVELOP, // fit to window
 		autoCenter: Phaser.Scale.CENTER_BOTH, // vertically and horizontally
 	},
 	pixelArt: true,

@@ -1,9 +1,12 @@
+// импортируем константы для Tiled, чтоб не писать строки руками
 import {
 	LAYER_PROPERTIE_COLLIDES,
 	OBJECT_SPAWNS_LAYER,
 	PLAYER_SPAWN,
 } from '../config/tiled.config';
+// импортируем наш кастомный класс Map
 import { Map } from '../components/entities/GameMap';
+// импортируем типы, чтоб TypeScript не ругался
 import type { BooleanPropertie } from '../types/layer.types';
 import type { NamedScene } from '../core/abstracts/NamedScene';
 import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
@@ -11,47 +14,60 @@ import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
 /**
  * Статический класс-менеджер для создания и настройки карт Tiled
  * Работает как набор утилит, не хранит состояниe
+ * Типа "библиотека" функций чисто для карт
  */
 export class MapManager {
 	/**
 	 * Основной метод, который создает карту и все ее компоненты
+	 * Вызываешь его, а он тебе возвращает готовый "пакет" со всем нужным
 	 * @param scene - Сцена, в которой создается карта
 	 * @returns Объект, содержащий созданную карту, слои для коллизий и точку спавна игрока
 	 */
 	public static createMap(scene: NamedScene): {
-		map: Map;
-		collidableLayers: Phaser.Tilemaps.TilemapLayer[];
-		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null;
+		map: Map; // сама карта
+		collidableLayers: Phaser.Tilemaps.TilemapLayer[]; // слои, в которые можно врезаться
+		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null; // где появляется игрок
 	} {
+		// создаем экземпляр нашего класса Map, который внутри себя создает Tilemap
 		const map = new Map(scene);
+		// пустые "коробки" для тайлсетов и слоев
 		const tilesets: Phaser.Tilemaps.Tileset[] = [];
 		const collidableLayers: Phaser.Tilemaps.TilemapLayer[] = [];
 
 		// 1. Добавляем тайлсеты
+		// бежим по всем тайлсетам, которые есть в json'е карты
 		map.tilesets.forEach((tilesetData) => {
+			// _addTilesetImage - это наш приватный хелпер (помощник) внизу
 			const tileset = this._addTilesetImage(map, tilesetData.name);
+			// если тайлсет успешно создался, кидаем его в нашу "коробку"
 			if (tileset) {
 				tilesets.push(tileset);
 			}
 		});
 
 		// 2. Создаем слои
-		console.log(map.layers);
+		console.log(map.layers); // позырить в консоли, какие слои вообще есть
+		// теперь бежим по всем слоям из json'а
 		map.layers.forEach((layerData) => {
+			// _createLayer - еще один хелпер, он создает слой и говорит, коллайдится ли он
 			const result = this._createLayer(map, layerData, tilesets);
+			// если слой создался И он коллайдится (типа стена)
 			if (result && result.isCollidable) {
+				// кидаем его во вторую "коробку" для коллизий
 				collidableLayers.push(result.layer);
 			}
 		});
 
 		// 3. Находим объекты, например, точку спавна
+		// _findPlayerSpawn - третий хелпер, ищет объект спавна
 		const playerSpawn = this._findPlayerSpawn(map);
 		if (!playerSpawn) {
+			// если не нашли, надо бы предупредить
 			console.warn('[MapManager] Не удалось найти объект спавна игрока');
 		}
-
 		console.log(`[MapManager] Карта для сцены ${scene.sceneKey} создана`);
 
+		// возвращаем тот самый "пакет" со всем добром
 		return { map, collidableLayers, playerSpawn };
 	}
 
@@ -62,10 +78,11 @@ export class MapManager {
 	 * @param collidableLayers - Массив слоев, с которыми должен сталкиваться игрок
 	 */
 	public static initMapPhysics(
-		scene: BasicGameScene,
+		scene: BasicGameScene, // тут нужен BasicGameScene, тк в нем есть getPlayer()
 		map: Map,
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[],
 	): void {
+		// устанавливаем границы мира по размеру карты, чтоб игрок не улетел в бесконечность
 		scene.physics.world.setBounds(
 			0,
 			0,
@@ -73,34 +90,44 @@ export class MapManager {
 			map.heightInPixels,
 		);
 
+		// получаем игрока из сцены
 		const player = scene.getPlayer();
 		if (!player) {
+			// если игрока нет, то и физику настраивать не для кого
 			console.error(
 				'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики',
 			);
 			return;
 		}
 
+		// говорим игроку, чтоб он бился о границы мира (которые мы выше поставили)
 		player.setCollideWorldBounds(true);
+		// а теперь говорим ему биться о каждый слой из нашего списка
 		collidableLayers.forEach((layer) => {
-			scene.physics.add.collider(player, layer);
+			scene.physics.add.collider(player, layer); // вот эта строка и создает коллизию
 		});
 	}
 
-	/* PRIVATE STATIC HELPERS */
+	/* * PRIVATE STATIC HELPERS
+	 * Это типа внутренние функции, которые помогают createMap,
+	 * снаружи они не нужны, поэтому приватные
+	 */
 
 	private static _addTilesetImage(
 		map: Map,
-		tilesetName: string,
+		tilesetName: string, // 'grass', 'water' и тд
 	): Phaser.Tilemaps.Tileset | null {
 		// Предполагаем, что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
+		// типа, картинка 'grass.png' в Tiled называется 'grass', и в Phaser мы ее загрузили как 'grass'
+		// 16, 16 - это размер тайла, можно было бы тоже из Tiled тащить, но пока хардкод
 		const tileset = map.addTilesetImage(tilesetName, tilesetName, 16, 16);
 
 		if (!tileset) {
+			// если фейл, пишем в консоль, что могло пойти не так
 			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
-            > Правильный ли ключ текстуры?
-            > Был ли он загружен?
-            > Совпадает ли имя в Tiled с именем файла?`);
+			> Правильный ли ключ текстуры?
+			> Был ли он загружен?
+			> Совпадает ли имя в Tiled с именем файла?`);
 		}
 		return tileset;
 	}
@@ -110,33 +137,44 @@ export class MapManager {
 		layerData: Phaser.Tilemaps.LayerData,
 		tilesets: Phaser.Tilemaps.Tileset[],
 	): { layer: Phaser.Tilemaps.TilemapLayer; isCollidable: boolean } | null {
+		// это магия Phaser - создает видимый слой
 		const layer = map.createLayer(layerData.name, tilesets, 0, 0);
 		if (!layer) {
+			// если не смог, ругаемся
 			console.warn(
 				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
 			);
 			return null;
 		}
 
+		// по дефолту слой не коллайдится
 		let isCollidable = false;
+		// берем кастомные проперти слоя из Tiled
 		const properties = layerData.properties as BooleanPropertie[];
+
+		// ищем проперти 'collides' и проверяем, что оно 'true'
 		if (
-			Array.isArray(properties) &&
-			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES)
-				?.value === true
+			Array.isArray(properties) && // на всякий случай, вдруг там не массив
+			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES) // ищем
+				?.value === true // проверяем
 		) {
+			// если да - вуаля!
+			// setCollisionByExclusion([-1]) - это хитрый способ сказать "коллайдить со всеми тайлами"
 			layer.setCollisionByExclusion([-1]);
-			isCollidable = true;
+			isCollidable = true; // ставим флаг
 		}
+		// возвращаем и слой, и флаг
 		return { layer, isCollidable };
 	}
 
 	private static _findPlayerSpawn(
 		map: Map,
 	): Phaser.Types.Tilemaps.TiledObject | null {
+		// ищем в слое объектов (у нас он называется 'spawns')
+		// объект, у которого имя 'PlayerSpawn'
 		return map.findObject(
-			OBJECT_SPAWNS_LAYER,
-			(obj) => obj.name === PLAYER_SPAWN,
+			OBJECT_SPAWNS_LAYER, // 'spawns'
+			(obj) => obj.name === PLAYER_SPAWN, // 'PlayerSpawn'
 		);
 	}
 }
