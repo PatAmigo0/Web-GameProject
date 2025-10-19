@@ -95,6 +95,14 @@ export class TestPlace extends NetworkedScene {
 			velocityY = MOVE_SPEED;
 		}
 
+		// если диагонально то уменьшаем скорость
+		// 0.7 - магическое число которое я подобрал случайно с первого раза лол
+		const isDiagonal = velocityX !== 0 && velocityY !== 0;
+		if (isDiagonal) {
+			velocityX *= 0.73;
+			velocityY *= 0.73;
+		}
+
 		// 3. Применяем скорость к телу
 		this.player.setVelocity(velocityX, velocityY);
 
