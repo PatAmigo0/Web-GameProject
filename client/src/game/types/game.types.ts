@@ -1,3 +1,5 @@
+// src/game/types/game.types.ts
+
 export type GameData =
 	| {
 			type: 'move';

@@ -1,6 +1,7 @@
-import { scenes } from './scenes';
+import { scenes } from '../scenes';
+import { SceneKeys } from '../types';
 
-export const config: Phaser.Types.Core.GameConfig = {
+export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	width: 1280,
 	height: 720,
@@ -24,3 +25,6 @@ export const config: Phaser.Types.Core.GameConfig = {
 		createContainer: true,
 	},
 };
+
+export const STARTING_MENU = SceneKeys.TMainMenu;
+export const STARTING_SCENE = SceneKeys.TestPlace;

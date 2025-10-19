@@ -1,41 +1,39 @@
-import type { GameData } from '../../types/game.types';
+// src/game/scenes/game/TestPlace.ts
+
+// import type { GameData } from '../../types/game.types';
 import { NetworkedScene } from '../../core/abstracts/NetworkedScene';
 import obstacleImg from '../../../assets/images/typescript.svg';
-import playerImg from '../../../assets/images/hero.png';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
-// import { StaticSceneKey } from '../../utils/decorators/StaticSceneKey.decorator';
 import { SceneKeys } from '../../types';
+import { ASSET_KEYS } from '../../config/assets.config';
 
 @SceneKey(SceneKeys.TestPlace)
 export class TestPlace extends NetworkedScene {
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key } | undefined;
+	private obstaclesGroup!: Phaser.Physics.Arcade.StaticGroup;
 
 	onPreload() {
 		this.load.image('obstacle', obstacleImg);
-		this.load.image('player', playerImg);
 	}
 
 	onCreate() {
-		const obstacle = this.add.image(400, 300, 'obstacle');
+		this.obstaclesGroup = this.physics.add.staticGroup();
+		const obstacle = this.obstaclesGroup.create(
+			this.player.x + 30,
+			this.player.y + 50,
+			ASSET_KEYS.PLAYER_SPRITE,
+		);
+		this.physics.add.collider(this.player, this.obstaclesGroup);
 
-		this.tweens.add({
-			targets: obstacle,
-			y: 500,
-			duration: 2000,
-			ease: 'Power2',
-			yoyo: true,
-			loop: -1,
-		});
-
-		this.player = this.physics.add.sprite(0, 0, 'player');
 		this.keys = this.input.keyboard?.addKeys('W,A,S,D') as {
 			[key: string]: Phaser.Input.Keyboard.Key;
 		};
+
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(4);
 	}
 
-	heartbeat(time: number, delta: number): void {
+	heartbeat(): void {
 		const moveSpeed = 200;
 
 		this.player.setVelocity(0);
@@ -53,9 +51,9 @@ export class TestPlace extends NetworkedScene {
 		}
 	}
 
-	onPlayerConnected(peerId: string): void {}
+	onPlayerConnected(): void {}
 
-	onPlayerDisconnected(peerId: string): void {}
+	onPlayerDisconnected(): void {}
 
-	handleNetworkData(peerId: string, data: GameData): void {}
+	handleNetworkData(): void {}
 }

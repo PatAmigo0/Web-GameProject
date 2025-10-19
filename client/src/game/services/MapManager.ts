@@ -1,86 +1,142 @@
-// src/manager/MapManager.ts
+import {
+	LAYER_PROPERTIE_COLLIDES,
+	OBJECT_SPAWNS_LAYER,
+	PLAYER_SPAWN,
+} from '../config/tiled.config';
+import { Map } from '../components/entities/GameMap';
+import type { BooleanPropertie } from '../types/layer.types';
+import type { NamedScene } from '../core/abstracts/NamedScene';
+import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
 
-import { WorkingWithScene } from '../core/abstracts/WorkingWithScene';
-
-export class MapManager extends WorkingWithScene {
-	private map!: Phaser.Tilemaps.Tilemap;
-	private tilesets: Phaser.Tilemaps.Tileset[] = [];
-	private collidable: Phaser.Tilemaps.TilemapLayer[] = [];
-
+/**
+ * Статический класс-менеджер для создания и настройки карт Tiled
+ * Работает как набор утилит, не хранит состояниe
+ */
+export class MapManager {
 	/**
-	 * Создает карту из заранее загруженных ассетов
+	 * Основной метод, который создает карту и все ее компоненты
+	 * @param scene - Сцена, в которой создается карта
+	 * @returns Объект, содержащий созданную карту, слои для коллизий и точку спавна игрока
 	 */
-	public createMap(): Phaser.Tilemaps.Tilemap {
-		this.map = this.scene.make.tilemap({ key: this.sceneKey });
+	public static createMap(scene: NamedScene): {
+		map: Map;
+		collidableLayers: Phaser.Tilemaps.TilemapLayer[];
+		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null;
+	} {
+		const map = new Map(scene);
+		const tilesets: Phaser.Tilemaps.Tileset[] = [];
+		const collidableLayers: Phaser.Tilemaps.TilemapLayer[] = [];
 
-		this.map.tilesets.forEach((tileset) =>
-			this._addTilesetImage(tileset.name),
-		);
-		this.map.layers.forEach((layerData) => this._createLayer(layerData));
-		console.log(this.map.objects);
-
-		console.log(`[MapManager] Карта для сцены ${this.sceneKey} создана`);
-		return this.map;
-	}
-
-	public initMapPhysics(): void {
-		this.scene.physics.world.setBounds(
-			0,
-			0,
-			this.map.widthInPixels,
-			this.map.heightInPixels,
-		);
-		this.scene.getPlayer()?.setCollideWorldBounds(true);
-		this.collidable.forEach((layer) => {
-			const player = this.scene.getPlayer();
-			if (player) {
-				this.scene.physics.add.collider(player, layer);
-			} else {
-				console.error(
-					'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики',
-				);
+		// 1. Добавляем тайлсеты
+		map.tilesets.forEach((tilesetData) => {
+			const tileset = this._addTilesetImage(map, tilesetData.name);
+			if (tileset) {
+				tilesets.push(tileset);
 			}
 		});
+
+		// 2. Создаем слои
+		console.log(map.layers);
+		map.layers.forEach((layerData) => {
+			const result = this._createLayer(map, layerData, tilesets);
+			if (result && result.isCollidable) {
+				collidableLayers.push(result.layer);
+			}
+		});
+
+		// 3. Находим объекты, например, точку спавна
+		const playerSpawn = this._findPlayerSpawn(map);
+		if (!playerSpawn) {
+			console.warn('[MapManager] Не удалось найти объект спавна игрока');
+		}
+
+		console.log(`[MapManager] Карта для сцены ${scene.sceneKey} создана`);
+
+		return { map, collidableLayers, playerSpawn };
 	}
 
-	/* PRIVATE METHODS */
-	private _addTilesetImage(tilesetName: string): void {
-		// Я предполагаю что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
-		// И вообще по хорошему так и должно быть
-		const tileset = this.map.addTilesetImage(
-			tilesetName,
-			tilesetName,
-			16,
-			16,
+	/**
+	 * Инициализирует физику для карты и игрока
+	 * @param scene - Сцена, в которой настраивается физика
+	 * @param map - Объект карты
+	 * @param collidableLayers - Массив слоев, с которыми должен сталкиваться игрок
+	 */
+	public static initMapPhysics(
+		scene: BasicGameScene,
+		map: Map,
+		collidableLayers: Phaser.Tilemaps.TilemapLayer[],
+	): void {
+		scene.physics.world.setBounds(
+			0,
+			0,
+			map.widthInPixels,
+			map.heightInPixels,
 		);
 
-		if (tileset) this.tilesets.push(tileset);
-		else
-			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
-            > Правильный ли ключ текстуры
-            > Был ли он загружен через AssetManager
-            > Совпадает ли имя в редакторе Tiled с именем файла`);
-	}
-
-	private _createLayer(layerData: Phaser.Tilemaps.LayerData): void {
-		const layer = this.map.createLayer(layerData.name, this.tilesets, 0, 0);
-		if (!layer) {
-			console.warn(
-				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
+		const player = scene.getPlayer();
+		if (!player) {
+			console.error(
+				'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики',
 			);
 			return;
 		}
 
-		// Ишем все 'твердые' слои
-		const properties = layerData.properties as [
-			{ name?: string; value?: boolean },
-		];
+		player.setCollideWorldBounds(true);
+		collidableLayers.forEach((layer) => {
+			scene.physics.add.collider(player, layer);
+		});
+	}
+
+	/* PRIVATE STATIC HELPERS */
+
+	private static _addTilesetImage(
+		map: Map,
+		tilesetName: string,
+	): Phaser.Tilemaps.Tileset | null {
+		// Предполагаем, что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
+		const tileset = map.addTilesetImage(tilesetName, tilesetName, 16, 16);
+
+		if (!tileset) {
+			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
+            > Правильный ли ключ текстуры?
+            > Был ли он загружен?
+            > Совпадает ли имя в Tiled с именем файла?`);
+		}
+		return tileset;
+	}
+
+	private static _createLayer(
+		map: Map,
+		layerData: Phaser.Tilemaps.LayerData,
+		tilesets: Phaser.Tilemaps.Tileset[],
+	): { layer: Phaser.Tilemaps.TilemapLayer; isCollidable: boolean } | null {
+		const layer = map.createLayer(layerData.name, tilesets, 0, 0);
+		if (!layer) {
+			console.warn(
+				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
+			);
+			return null;
+		}
+
+		let isCollidable = false;
+		const properties = layerData.properties as BooleanPropertie[];
 		if (
 			Array.isArray(properties) &&
-			properties.find((p) => p.name === 'collides')?.value === true
+			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES)
+				?.value === true
 		) {
 			layer.setCollisionByExclusion([-1]);
-			this.collidable.push(layer);
+			isCollidable = true;
 		}
+		return { layer, isCollidable };
+	}
+
+	private static _findPlayerSpawn(
+		map: Map,
+	): Phaser.Types.Tilemaps.TiledObject | null {
+		return map.findObject(
+			OBJECT_SPAWNS_LAYER,
+			(obj) => obj.name === PLAYER_SPAWN,
+		);
 	}
 }
