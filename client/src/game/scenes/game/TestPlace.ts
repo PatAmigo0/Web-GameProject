@@ -26,6 +26,11 @@ export class TestPlace extends NetworkedScene {
 				frameHeight: 32,
 			},
 		);
+		this.load.spritesheet(
+			ASSET_KEYS.PLAYER_IDLE, // ← новый ключ
+			ASSET_URLS[ASSET_KEYS.PLAYER_IDLE],
+			{ frameWidth: 16, frameHeight: 32 },
+		);
 	}
 
 	onCreate() {
@@ -77,29 +82,33 @@ export class TestPlace extends NetworkedScene {
 	/**
 	 * Обновляет анимацию игрока на основе его итоговой скорости
 	 */
+	private lastDirection: 'down' | 'up' | 'left' | 'right' | 'diag' = 'down';
+
 	private _updatePlayerAnimation(vx: number, vy: number): void {
-		// Стоим на месте
 		if (vx === 0 && vy === 0) {
-			this.player.play('idle', true);
+			// Воспроизводим анимацию покоя в последнем направлении
+			this.player.play(`idle-${this.lastDirection}`, true);
 			return;
 		}
 
-		// Определяем поворот спрайта (flipX)
-		if (vx < 0) {
-			this.player.flipX = false;
-		} else if (vx > 0) {
-			this.player.flipX = true;
+		// Определяем направление
+		if (vy < 0) {
+			this.lastDirection = vx === 0 ? 'up' : 'diag';
+		} else if (vy > 0) {
+			this.lastDirection = vx === 0 ? 'down' : 'diag';
+		} else {
+			this.lastDirection = vx < 0 ? 'left' : 'right';
 		}
 
-		// Играем анимации
+		// Устанавливаем flipX
+		this.player.flipX = vx > 0;
+
+		// Воспроизводим анимацию ходьбы
 		if (vy < 0) {
-			// Движемся вверх (прямо или по диагонали)
 			this.player.play(vx === 0 ? 'walk-up' : 'walk-up-diag', true);
 		} else if (vy > 0) {
-			// Движемся вниз (прямо или по диагонали)
 			this.player.play(vx === 0 ? 'walk-down' : 'walk-down-diag', true);
 		} else {
-			// Движемся только по горизонтали (vy === 0)
 			this.player.play('walk-side', true);
 		}
 	}
@@ -181,10 +190,54 @@ export class TestPlace extends NetworkedScene {
 			repeat: -1,
 		});
 
+		// Анимации покоя
 		this.anims.create({
-			key: 'idle',
-			frames: [{ key: ASSET_KEYS.NEW_PLAYER_SPRITE, frame: 0 }],
-			frameRate: 1,
+			key: 'idle-down',
+			frames: this.anims.generateFrameNumbers(ASSET_KEYS.PLAYER_IDLE, {
+				start: 0,
+				end: 3,
+			}),
+			frameRate: 3,
+			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'idle-up',
+			frames: this.anims.generateFrameNumbers(ASSET_KEYS.PLAYER_IDLE, {
+				start: 16,
+				end: 19,
+			}),
+			frameRate: 3,
+			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'idle-left',
+			frames: this.anims.generateFrameNumbers(ASSET_KEYS.PLAYER_IDLE, {
+				start: 8,
+				end: 11,
+			}),
+			frameRate: 3,
+			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'idle-diag-up',
+			frames: this.anims.generateFrameNumbers(ASSET_KEYS.PLAYER_IDLE, {
+				start: 12,
+				end: 15,
+			}),
+			frameRate: 3,
+			repeat: -1,
+		});
+
+		this.anims.create({
+			key: 'idle-diag-down',
+			frames: this.anims.generateFrameNumbers(ASSET_KEYS.PLAYER_IDLE, {
+				start: 4,
+				end: 7,
+			}),
+			frameRate: 3,
 			repeat: -1,
 		});
 	}
