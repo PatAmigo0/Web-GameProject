@@ -1,6 +1,6 @@
 // src/manager/MapManager.ts
 
-import { WorkingWithScene } from '../ABC/WorkingWithScene';
+import { WorkingWithScene } from '../core/abstracts/WorkingWithScene';
 
 export class MapManager extends WorkingWithScene {
 	private map!: Phaser.Tilemaps.Tilemap;

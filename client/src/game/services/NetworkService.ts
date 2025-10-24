@@ -1,7 +1,7 @@
 // src/network/NetworkService.ts
 
 import Peer, { type DataConnection } from 'peerjs';
-import type { GameData } from '../types/types';
+import type { GameData } from '../types/game.types';
 import Phaser from 'phaser';
 
 export class NetworkService extends Phaser.Events.EventEmitter {

@@ -1,7 +1,7 @@
 // src/manager/AssetManager.ts
 
-import { WorkingWithScene } from '../ABC/WorkingWithScene';
-import type { BasicGameScene } from '../ABC/BasicGameScene';
+import { WorkingWithScene } from '../core/abstracts/WorkingWithScene';
+import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
 
 /**
  * Чучуть теории:
@@ -82,12 +82,12 @@ export class AssetManager extends WorkingWithScene {
 		console.log('[AssetManager] Начинаю создание манифеста ассетов');
 
 		// 1 Находим все доступные файлы JSON и PNG
-		const jsonFiles = import.meta.glob(
-			'/src/game/assets/maps/json/*.json',
-			{ query: '?url', import: 'default' },
-		);
+		const jsonFiles = import.meta.glob('/src/assets/maps/json/*.json', {
+			query: '?url',
+			import: 'default',
+		});
 		const textureFiles = import.meta.glob(
-			'/src/game/assets/maps/tilesets/*.png',
+			'/src/assets/maps/tilesets/*.png',
 			{ query: '?url', import: 'default' },
 		);
 
