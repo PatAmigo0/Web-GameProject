@@ -36,6 +36,10 @@ export class NetworkService extends Phaser.Events.EventEmitter {
 				this.setupConnection(conn);
 			});
 
+			this.peer.on('disconnected', (id) => {
+				console.log(`${id} has disconnected`);
+			});
+
 			this.peer.on('error', (err) => {
 				reject(err);
 			});

@@ -7,6 +7,7 @@ import { SceneEventHandler } from '../handlers/SceneEventHandler';
 import { NamedScene } from './NamedScene';
 import { TiledConverter } from '../../utils'; // Импортируем нашу утилиту
 import { ASSET_KEYS, ASSET_URLS } from '../../config/assets.config';
+import { PLAYER_DEPTH } from '../../config/game.config';
 
 export abstract class BasicGameScene extends NamedScene {
 	protected eventHandler!: SceneEventHandler;
@@ -46,11 +47,11 @@ export abstract class BasicGameScene extends NamedScene {
 
 		this.player = this.physics.add.sprite(
 			playerPosition.x,
-			playerPosition.y,
+			playerPosition.y - spawnPoint.height! / 2,
 			ASSET_KEYS.PLAYER_SPRITE,
 		);
 		this.player.setCollideWorldBounds(true);
-		this.player.setDepth(100);
+		this.player.setDepth(PLAYER_DEPTH);
 
 		this.onCreate();
 

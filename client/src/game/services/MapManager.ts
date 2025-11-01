@@ -1,5 +1,6 @@
 // импортируем константы для Tiled, чтоб не писать строки руками
 import {
+	DEPTH_PROPERTIE_NAME,
 	LAYER_PROPERTIE_COLLIDES,
 	OBJECT_SPAWNS_LAYER,
 	PLAYER_SPAWN,
@@ -7,9 +8,10 @@ import {
 // импортируем наш кастомный класс Map
 import { Map } from '../components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
-import type { BooleanPropertie } from '../types/layer.types';
+import type { BooleanPropertie, Propertie } from '../types/layer.types';
 import type { NamedScene } from '../core/abstracts/NamedScene';
 import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
+import { TILE_SIZE } from '../config/game.config';
 
 /**
  * Статический класс-менеджер для создания и настройки карт Tiled
@@ -90,7 +92,6 @@ export class MapManager {
 			map.heightInPixels,
 		);
 
-		// получаем игрока из сцены
 		const player = scene.getPlayer();
 		if (!player) {
 			// если игрока нет, то и физику настраивать не для кого
@@ -109,7 +110,7 @@ export class MapManager {
 	}
 
 	/* * PRIVATE STATIC HELPERS
-	 * Это типа внутренние функции, которые помогают createMap,
+	 * Это внутренние функции, которые помогают createMap,
 	 * снаружи они не нужны, поэтому приватные
 	 */
 
@@ -119,8 +120,12 @@ export class MapManager {
 	): Phaser.Tilemaps.Tileset | null {
 		// Предполагаем, что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
 		// типа, картинка 'grass.png' в Tiled называется 'grass', и в Phaser мы ее загрузили как 'grass'
-		// 16, 16 - это размер тайла, можно было бы тоже из Tiled тащить, но пока хардкод
-		const tileset = map.addTilesetImage(tilesetName, tilesetName, 16, 16);
+		const tileset = map.addTilesetImage(
+			tilesetName,
+			tilesetName,
+			TILE_SIZE.width,
+			TILE_SIZE.height,
+		);
 
 		if (!tileset) {
 			// если фейл, пишем в консоль, что могло пойти не так
@@ -137,10 +142,8 @@ export class MapManager {
 		layerData: Phaser.Tilemaps.LayerData,
 		tilesets: Phaser.Tilemaps.Tileset[],
 	): { layer: Phaser.Tilemaps.TilemapLayer; isCollidable: boolean } | null {
-		// это магия Phaser - создает видимый слой
 		const layer = map.createLayer(layerData.name, tilesets, 0, 0);
 		if (!layer) {
-			// если не смог, ругаемся
 			console.warn(
 				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
 			);
@@ -153,25 +156,42 @@ export class MapManager {
 		const properties = layerData.properties as BooleanPropertie[];
 
 		// ищем проперти 'collides' и проверяем, что оно 'true'
-		if (
-			Array.isArray(properties) && // на всякий случай, вдруг там не массив
-			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES) // ищем
-				?.value === true // проверяем
-		) {
-			// если да - вуаля!
-			// setCollisionByExclusion([-1]) - это хитрый способ сказать "коллайдить со всеми тайлами"
-			layer.setCollisionByExclusion([-1]);
-			isCollidable = true; // ставим флаг
+		if (Array.isArray(properties)) {
+			isCollidable = MapManager._initLayer(
+				layer,
+				properties,
+			).isCollidable;
 		}
 		// возвращаем и слой, и флаг
 		return { layer, isCollidable };
 	}
 
+	private static _initLayer(
+		layer: Phaser.Tilemaps.TilemapLayer,
+		properties: Propertie[],
+	): { isCollidable: boolean } {
+		let isCollidable = false;
+		if (
+			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES)
+				?.value === true
+		) {
+			layer.setCollisionByExclusion([-1]);
+			isCollidable = true;
+		}
+
+		layer.setDepth(
+			properties.find((p) => p.name === DEPTH_PROPERTIE_NAME)?.value ||
+				layer.depth,
+		);
+
+		console.log(`${layer.name} depth: ${layer.depth}`);
+
+		return { isCollidable };
+	}
+
 	private static _findPlayerSpawn(
 		map: Map,
 	): Phaser.Types.Tilemaps.TiledObject | null {
-		// ищем в слое объектов (у нас он называется 'spawns')
-		// объект, у которого имя 'PlayerSpawn'
 		return map.findObject(
 			OBJECT_SPAWNS_LAYER, // 'spawns'
 			(obj) => obj.name === PLAYER_SPAWN, // 'PlayerSpawn'

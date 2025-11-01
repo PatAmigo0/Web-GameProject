@@ -4,12 +4,15 @@ import { AssetManager } from '../../services/AssetManager';
 import { NamedScene } from '../../core/abstracts/NamedScene';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
 import { SceneKeys } from '../../types';
-import { STARTING_MENU } from '../../config/game.config';
+import { Game } from '../../main';
+import { EventTypes } from '../../config/events.config';
 
 @SceneKey(SceneKeys.BootScene)
 export class BootScene extends NamedScene {
+	private loadingText!: Phaser.GameObjects.Text;
+
 	preload() {
-		this.add
+		this.loadingText = this.add
 			.text(
 				this.cameras.main.width / 2,
 				this.cameras.main.height / 2,
@@ -19,8 +22,12 @@ export class BootScene extends NamedScene {
 			.setOrigin(0.5);
 	}
 
-	async create() {
+	shutdown() {
+		this.loadingText.destroy();
+	}
+
+	public async loadAssets() {
 		await AssetManager.buildManifest();
-		this.scene.start(STARTING_MENU);
+		Game.EventService.emit(EventTypes.BOOT);
 	}
 }

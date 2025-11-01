@@ -1,5 +1,7 @@
 // scene/MainMenuScene.ts
 
+// DEPRRECATED!
+
 import { NetworkService } from '../../services/NetworkService';
 import { NamedScene } from '../../core/abstracts/NamedScene';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';

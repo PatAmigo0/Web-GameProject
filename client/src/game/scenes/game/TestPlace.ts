@@ -1,7 +1,7 @@
 /**
  * ЭТОТ ФАЙЛ СЛУЖИТ ХАРД КОДОМ
  * ДЛЯ ФУНКЦИЙ, КОТОРЫЕ ПОСЛЕ БУДУТ ОПТИМИЗИРОВАНЫ
- * В ОТДЕЛЬНЫЕ МОДУЛИ!
+ * В ОТДЕЛЬНЫЕ МОДУЛИ В БУДУЩЕМ!
  */
 
 import type { GameData } from '../../types/game.types';
@@ -10,7 +10,12 @@ import obstacleImg from '../../../assets/images/typescript.svg';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
 import { SceneKeys } from '../../types';
 import { CAMERA_ZOOM } from '../../config/settings.config';
-import { MOVE_SPEED } from '../../config/game.config';
+import {
+	IDLE_ANIM_LOCK_DURATION,
+	MOVE_SPEED,
+	PLAYER_CONFIG,
+	PLAYER_DEPTH,
+} from '../../config/game.config';
 import { ASSET_KEYS, ASSET_URLS } from '../../config/assets.config';
 
 @SceneKey(SceneKeys.TestPlace)
@@ -23,9 +28,6 @@ export class TestPlace extends NetworkedScene {
 	private lastFlipX: boolean = false;
 	// Таймер "блокировки" диагональной анимации
 	private idleAnimLockTimer: number = 0;
-	// Длительность блокировки в мс (можешь поменять на 100 или 120, если 80 мало)
-	private readonly IDLE_ANIM_LOCK_DURATION = 80;
-	// ---
 
 	//================================================================
 	// ПАБЛИК МЕТОДЫ PHASER (ЖИЗНЕННЫЙ ЦИКЛ)
@@ -62,6 +64,9 @@ export class TestPlace extends NetworkedScene {
 	 * Он просто вызывает один метод, отвечающий за всю логику кадра
 	 */
 	heartbeat(_: number, delta: number): void {
+		this.player.setDepth(
+			(this.player.y > 0 && this.player.y) || PLAYER_DEPTH,
+		);
 		this._handlePlayerMovement(delta);
 	}
 
@@ -123,7 +128,7 @@ export class TestPlace extends NetworkedScene {
 
 			if (isDiagonal) {
 				// --- 1a: Идем по диагонали ---
-				this.idleAnimLockTimer = this.IDLE_ANIM_LOCK_DURATION; // Включаем "лок"
+				this.idleAnimLockTimer = IDLE_ANIM_LOCK_DURATION; // Включаем "лок"
 				if (vy < 0) {
 					this.player.play('walk-up-diag', true);
 					this.lastIdleAnim = 'idle-diag-up';
@@ -237,7 +242,7 @@ export class TestPlace extends NetworkedScene {
 		this.obstaclesGroup = this.physics.add.staticGroup();
 		this.obstaclesGroup.create(
 			this.player.x + 30,
-			this.player.y + 50,
+			this.player.y + 50 + PLAYER_CONFIG.height / 2,
 			'obstacle',
 		);
 		this.physics.add.collider(this.player, this.obstaclesGroup);
