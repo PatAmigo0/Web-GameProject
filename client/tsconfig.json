@@ -5,7 +5,7 @@
 		"module": "ESNext",
 		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 		"types": ["vite/client", "node"],
-		"typeRoots": ["./node_modules/@types", "./src/types"],
+		"typeRoots": ["./node_modules/@types"],
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
@@ -25,7 +25,28 @@
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": false,
 		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
+		"noUncheckedSideEffectImports": true,
+		"allowJs": true,
+		"checkJs": true,
+
+		/* Path aliases */
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": ["*"],
+			"@components/*": ["components/*"],
+			"@scenes/*": ["scenes/*"],
+			"@services/*": ["services/*"],
+			"@config/*": ["config/*"],
+			"@utils/*": ["utils/*"],
+			"@gametypes/*": ["types/*"],
+			"@core/*": ["core/*"],
+			"@styles/*": ["styles/*"],
+
+			// single
+			"@main": ["main"],
+			"@game": ["Game"]
+		}
 	},
-	"include": ["src/game/types/phaser.d.ts", "src", "vite-env.d.ts"]
+
+	"include": ["src/types/phaser.d.ts", "src", "vite-env.d.ts"]
 }
