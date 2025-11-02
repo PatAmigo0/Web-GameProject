@@ -3,9 +3,11 @@
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import type { TypedScene } from '@core/abstracts/TypedScene';
 import type { MapAssetManifest } from '@gametypes/phaser.types';
+
 //#endregion
 
 //#region CLASS DEFINITION
+
 /**
  * Статический класс для управления ассетами
  * Отвечает за создание манифеста (списка всех ассетов) при запуске
@@ -17,18 +19,21 @@ export class AssetManager {
 	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
 	private static readonly assetManifest: Record<string, MapAssetManifest> =
 		{};
+
 	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
 	private static manifestBuilt = false;
 	//#endregion
 
 	//#region PUBLIC STATIC METHODS
 	/**
-	 * СИНХРОННО: Загружает ассеты для указанной сцены, используя запись
-	 * из предварительно созданного манифеста
-	 * @param scene Сцена, в которую нужно загрузить ассеты
-	 */
+     * СИНХРОННО: Загружает ассеты для указанной сцены, используя запись
+     * из предварительно созданного манифеста
+     * @param scene Сцена, в которую нужно загрузить ассеты
+
+     */
 	public static loadMapAssets(scene: TypedScene): void {
 		// проверочка, что buildManifest() уже отработал
+
 		if (!this.manifestBuilt) {
 			console.error(
 				'Ошибка [AssetManager]: Манифест ассетов еще не был создан. Вызовите AssetManager.buildManifest() в загрузочной сцене',
@@ -38,7 +43,6 @@ export class AssetManager {
 
 		// по ключу сцены (типа 'test_place') находим нужные ей ассеты
 		const manifestEntry = this.assetManifest[scene.sceneKey];
-
 		if (!manifestEntry) {
 			console.error(
 				`[AssetManager] Не найдена запись в манифесте для сцены: ${scene.sceneKey}`,
@@ -54,6 +58,7 @@ export class AssetManager {
 		for (const url of manifestEntry.tilesetUrls) {
 			// ключ для Phaser - это просто имя файла без расширения
 			const tilesetKey = url.split('/').pop()!.replace('.png', '');
+
 			// мелкая оптимизация: не грузить картинку, если она уже есть
 			if (!scene.textures.exists(tilesetKey))
 				scene.load.image(tilesetKey, url);
@@ -71,20 +76,17 @@ export class AssetManager {
 		if (this.manifestBuilt) return;
 
 		const response = await fetch(ASSET_URLS[ASSET_KEYS.MAPS_MANIFEST]);
-		const manifestData = await response.json();
+		const manifestData = (await response.json()) as Record<
+			string,
+			MapAssetManifest
+		>;
 
-		const manifestPromises = Object.entries(manifestData).map(
-			async ([sceneKey, info]) => {
-				const infoObject = info as MapAssetManifest;
-				this.assetManifest[sceneKey] = infoObject;
-			},
-		);
-		await Promise.all(manifestPromises);
-		console.log(this.assetManifest);
+		Object.assign(this.assetManifest, manifestData);
 
 		this.manifestBuilt = true;
 		console.log(
 			'[AssetManager] Манифест ассетов успешно создан',
+
 			this.assetManifest,
 		);
 	}

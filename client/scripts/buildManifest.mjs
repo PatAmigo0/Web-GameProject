@@ -8,7 +8,10 @@ const OUTPUT_DIR = path.join(CWD, 'public/assets/manifest.json');
 
 const assetManifest = {};
 try {
-	const mapFiles = fs.readdirSync(JSON_DIR);
+	const mapFiles = fs
+		.readdirSync(JSON_DIR)
+		.filter((filename) => filename.endsWith('json'));
+	console.log(mapFiles);
 
 	for (const mapFile of mapFiles) {
 		const sceneKey = mapFile.replace('.json', '');
@@ -36,7 +39,10 @@ try {
 				mapJsonUrl: `/assets/maps/json/${mapFile}`,
 				tilesetUrls: requiredTilesets,
 			};
-		} else console.warn(`${mapFile} поврежден и не читаем`);
+		} else
+			console.warn(
+				`${mapFile} поврежден и не подлежит правильному чтению`,
+			);
 	}
 
 	fs.writeFileSync(OUTPUT_DIR, JSON.stringify(assetManifest, null, 2));

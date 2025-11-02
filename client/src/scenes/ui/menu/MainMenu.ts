@@ -36,6 +36,9 @@ export class MainMenuScene extends TypedScene {
 		this.div = this.add
 			.dom(this.cameras.main.centerX, this.cameras.main.centerY)
 			.createFromCache('MainMenu');
+		this.div
+			.setPosition(this.cameras.main.centerX, this.cameras.main.centerY)
+			.setOrigin(0.5, 0.5);
 	}
 	//#endregion
 
