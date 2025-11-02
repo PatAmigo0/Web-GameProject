@@ -9,7 +9,7 @@ import { NetworkedScene } from '../../core/abstracts/NetworkedScene';
 import obstacleImg from '../../../assets/images/typescript.svg';
 import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
 import { SceneKeys } from '../../types';
-import { CAMERA_ZOOM } from '../../config/settings.config';
+import { CAMERA_ZOOM } from '../../config/game.config';
 import {
 	IDLE_ANIM_LOCK_DURATION,
 	MOVE_SPEED,
@@ -17,11 +17,15 @@ import {
 	PLAYER_DEPTH,
 } from '../../config/game.config';
 import { ASSET_KEYS, ASSET_URLS } from '../../config/assets.config';
+import { RoomIDDisplay } from '../../components/ui/RoomIDDisplay';
+import { Game } from '../../main';
+import { CoordinatesConverter } from '../../utils/CoordinatesConverter';
 
 @SceneKey(SceneKeys.TestPlace)
 export class TestPlace extends NetworkedScene {
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key };
 	private obstaclesGroup!: Phaser.Physics.Arcade.StaticGroup;
+	private idText!: RoomIDDisplay;
 
 	// переменная для хранения последней анимации покоя
 	private lastIdleAnim: string = 'idle-down';
@@ -52,6 +56,8 @@ export class TestPlace extends NetworkedScene {
 	}
 
 	onCreate() {
+		this._initUI();
+		this.scale.on('resize', this.onResize, this);
 		this._initPlayer();
 		this._initAnimations();
 		this._initObstacles();
@@ -184,6 +190,14 @@ export class TestPlace extends NetworkedScene {
 	// ПРИВАТНЫЕ МЕТОДЫ ИНИЦИАЛИЗАЦИИ
 	//================================================================
 
+	private _initUI(): void {
+		this.idText = new RoomIDDisplay(this, 15, 15);
+		if (Game.online) {
+			console.log('Работаю в режиме онлайн!');
+			this.idText.show(Game.id);
+		}
+	}
+
 	private _initPlayer(): void {
 		this.player.setTexture(ASSET_KEYS.NEW_PLAYER_SPRITE);
 		this.player.setFrame(0);
@@ -257,6 +271,17 @@ export class TestPlace extends NetworkedScene {
 	private _initCamera(): void {
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(CAMERA_ZOOM);
+	}
+
+	// ДРУГОЕ
+	private onResize(): void {
+		console.warn('RESIZING!');
+		const vector = CoordinatesConverter.convertXY(
+			this,
+			this.idText.realVector.x,
+			this.idText.realVector.y,
+		);
+		this.idText.setPosition(vector.x, vector.y);
 	}
 
 	//================================================================

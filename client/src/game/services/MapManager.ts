@@ -48,7 +48,7 @@ export class MapManager {
 		});
 
 		// 2. Создаем слои
-		console.log(map.layers); // позырить в консоли, какие слои вообще есть
+		console.debug(map.layers); // позырить в консоли, какие слои вообще есть
 		// теперь бежим по всем слоям из json'а
 		map.layers.forEach((layerData) => {
 			// _createLayer - еще один хелпер, он создает слой и говорит, коллайдится ли он
@@ -184,7 +184,7 @@ export class MapManager {
 				layer.depth,
 		);
 
-		console.log(`${layer.name} depth: ${layer.depth}`);
+		console.debug(`${layer.name} depth: ${layer.depth}`);
 
 		return { isCollidable };
 	}

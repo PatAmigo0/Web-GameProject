@@ -34,3 +34,5 @@ export const PLAYER_CONFIG = { width: 16, height: 32 };
 export const PLAYER_DEPTH = 100;
 export const TILE_SIZE = { width: 16, height: 16 };
 export const IDLE_ANIM_LOCK_DURATION = 80;
+export const MAX_DEPTH = 999;
+export const CAMERA_ZOOM = 1;

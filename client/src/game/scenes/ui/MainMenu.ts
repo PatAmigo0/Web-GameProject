@@ -1,21 +1,18 @@
 import { STARTING_SCENE } from '../../config/game.config';
 import { NamedScene } from '../../core/abstracts/NamedScene';
+import { Game } from '../../main';
 import type { NetworkService } from '../../services/NetworkService';
 import { SceneKeys } from '../../types';
 import { SceneKey } from '../../utils';
 
 @SceneKey(SceneKeys.TMainMenu)
 export class TMainMenuScene extends NamedScene {
-	private NetworkService!: NetworkService;
-
 	// buttons
 	private createGameHost!: Phaser.GameObjects.Text;
 	private createGameLocal!: Phaser.GameObjects.Text;
 	private isStarting = false;
 
 	async create(): Promise<void> {
-		this.NetworkService = this.registry.get('NetworkService');
-
 		// Кнопка создать игру как хост
 		this.createGameHost = this.add
 			.text(
@@ -31,19 +28,10 @@ export class TMainMenuScene extends NamedScene {
 			.setInteractive({ useHandCursor: true });
 
 		this.createGameHost.on('pointerdown', async () => {
-			console.log('Начинаю создавать игру!');
-
-			try {
-				if (!this.isStarting) {
-					this.isStarting = true;
-					const id = await this.NetworkService.startPeer(true);
-					console.log(`Ваш id: ${id}`);
-					this.scene.start(STARTING_SCENE);
-				}
-			} catch (error) {
-				console.warn(error);
-				this._showErrorMessage();
-			}
+			if (this.isStarting) return;
+			this.isStarting = true;
+			console.warn('[NON-IMPLEMENTED]');
+			this._showErrorMessage();
 		});
 
 		// Кнопка создать локальную игру
@@ -57,11 +45,10 @@ export class TMainMenuScene extends NamedScene {
 			.setInteractive({ useHandCursor: true });
 
 		this.createGameLocal.on('pointerdown', () => {
-			if (!this.isStarting) {
-				this.isStarting = true;
-				console.log('Начинаю игру вне сети');
-				this.scene.start(STARTING_SCENE);
-			}
+			if (this.isStarting) return;
+			this.isStarting = true;
+			console.log('Начинаю игру вне сети');
+			this.scene.start(STARTING_SCENE);
 		});
 	}
 
@@ -84,8 +71,7 @@ export class TMainMenuScene extends NamedScene {
 
 		const errorText = document.createElement('p');
 		errorText.id = 'error-text';
-		errorText.innerHTML =
-			'Не удалось создать сетевую сессию, вы не в сети! Это сообщение пропадет через 5 секунд.';
+		errorText.innerHTML = 'Невозможно создать: [NON-IMPLEMENTED]';
 
 		this.add.dom(
 			this.cameras.main.centerX,

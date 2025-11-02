@@ -9,6 +9,7 @@
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
+		"forceConsistentCasingInFileNames": true,
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
@@ -19,6 +20,7 @@
 
 		/* Linting */
 		"strict": true,
+		"strictNullChecks": false,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": false,

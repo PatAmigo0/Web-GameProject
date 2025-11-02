@@ -4,7 +4,7 @@ import { NetworkService } from './services/NetworkService';
 import { EventService } from './services/EventService';
 import { EventTypes } from './config/events.config';
 import { STARTING_MENU } from './config/game.config';
-import type { INamedSceneManager } from './core/interfaces/phaser.interfaces';
+import type { INamedSceneManager } from './types/phaser.types';
 import { SceneKeys } from './types';
 import { BootScene } from './scenes/system/BootScene';
 
@@ -17,16 +17,27 @@ export class GameService extends Phaser.Game {
 	public NetworkService = new NetworkService();
 	public EventService = new EventService();
 
+	// CONTEXT
+	public online = false;
+	public id!: string;
+
 	constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
-		this.events.once(Phaser.Core.Events.READY, () => this.init());
+		this.events.once(Phaser.Core.Events.READY, () => this._init());
 		this.registry.set('NetworkService', this.NetworkService);
+	}
+
+	/* PUBLIC */
+
+	public setOnlineContext(id: string) {
+		this.online = true;
+		this.id = id;
 	}
 
 	/* PRIVATE */
 
 	// --- INITIALIZATION
-	public init(): void {
+	private _init(): void {
 		this._register_events();
 		this._boot_();
 	}
