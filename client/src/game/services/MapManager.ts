@@ -1,3 +1,4 @@
+//#region IMPORTS
 // импортируем константы для Tiled, чтоб не писать строки руками
 import {
 	DEPTH_PROPERTIE_NAME,
@@ -9,23 +10,26 @@ import {
 import { Map } from '../components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BooleanPropertie, Propertie } from '../types/layer.types';
-import type { NamedScene } from '../core/abstracts/NamedScene';
+import type { TypedScene } from '../core/abstracts/TypedScene';
 import type { BasicGameScene } from '../core/abstracts/BasicGameScene';
 import { TILE_SIZE } from '../config/game.config';
+//#endregion
 
 /**
  * Статический класс-менеджер для создания и настройки карт Tiled
  * Работает как набор утилит, не хранит состояниe
  * Типа "библиотека" функций чисто для карт
  */
+//#region CLASS DEFINITION
 export class MapManager {
+	//#region PUBLIC STATIC METHODS
 	/**
 	 * Основной метод, который создает карту и все ее компоненты
 	 * Вызываешь его, а он тебе возвращает готовый "пакет" со всем нужным
 	 * @param scene - Сцена, в которой создается карта
 	 * @returns Объект, содержащий созданную карту, слои для коллизий и точку спавна игрока
 	 */
-	public static createMap(scene: NamedScene): {
+	public static createMap(scene: TypedScene): {
 		map: Map; // сама карта
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[]; // слои, в которые можно врезаться
 		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null; // где появляется игрок
@@ -108,8 +112,10 @@ export class MapManager {
 			scene.physics.add.collider(player, layer); // вот эта строка и создает коллизию
 		});
 	}
+	//#endregion
 
-	/* * PRIVATE STATIC HELPERS
+	//#region PRIVATE STATIC HELPERS
+	/**
 	 * Это внутренние функции, которые помогают createMap,
 	 * снаружи они не нужны, поэтому приватные
 	 */
@@ -130,9 +136,9 @@ export class MapManager {
 		if (!tileset) {
 			// если фейл, пишем в консоль, что могло пойти не так
 			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
-			> Правильный ли ключ текстуры?
-			> Был ли он загружен?
-			> Совпадает ли имя в Tiled с именем файла?`);
+            > Правильный ли ключ текстуры?
+            > Был ли он загружен?
+            > Совпадает ли имя в Tiled с именем файла?`);
 		}
 		return tileset;
 	}
@@ -175,10 +181,12 @@ export class MapManager {
 			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES)
 				?.value === true
 		) {
+			// Устанавливаем коллизию для всех тайлов, кроме -1 (пустого)
 			layer.setCollisionByExclusion([-1]);
 			isCollidable = true;
 		}
 
+		// Устанавливаем глубину (Z-порядок) из Tiled
 		layer.setDepth(
 			properties.find((p) => p.name === DEPTH_PROPERTIE_NAME)?.value ||
 				layer.depth,
@@ -197,4 +205,6 @@ export class MapManager {
 			(obj) => obj.name === PLAYER_SPAWN, // 'PlayerSpawn'
 		);
 	}
+	//#endregion
 }
+//#endregion

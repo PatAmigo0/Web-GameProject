@@ -1,14 +1,22 @@
+//#region IMPORTS
 import { BasicUI } from '../../core/abstracts/ui/BasicUI';
+//#endregion
 
+//#region CLASS DEFINITION
 export class RoomIDDisplay extends BasicUI {
+	//#region CLASS ATTRIBUTES
 	private roomText!: Phaser.GameObjects.Text;
+	//#endregion
 
+	//#region CONSTRUCTOR
 	constructor(scene: Phaser.Scene, x: number, y: number) {
 		super(scene, x, y);
 		this.init();
 	}
+	//#endregion
 
-	init() {
+	//#region INITIALIZATION
+	public init() {
 		this.roomText = this.scene.add.text(0, 0, '', {
 			fontSize: '18px',
 			color: '#ffffff',
@@ -18,9 +26,15 @@ export class RoomIDDisplay extends BasicUI {
 
 		this.add(this.roomText);
 	}
+	//#endregion
 
+	//#region PUBLIC METHODS
 	public override show(id: string) {
 		this.roomText.setText(`ROOM ID: ${id}`);
 		this.setVisible(true);
 	}
+	//#endregion
+
+	// NOTE: Здесь можно добавить public hide()
 }
+//#endregion

@@ -1,18 +1,33 @@
-import { STARTING_SCENE } from '../../config/game.config';
-import { NamedScene } from '../../core/abstracts/NamedScene';
-import { Game } from '../../main';
-import type { NetworkService } from '../../services/NetworkService';
-import { SceneKeys } from '../../types';
-import { SceneKey } from '../../utils';
+import { STARTING_SCENE } from '../../../config/game.config';
+import { TypedScene } from '../../../core/abstracts/TypedScene';
+import { SceneKeys, SceneTypes } from '../../../types';
+import { SceneInfo } from '../../../utils/decorators/SceneInfo.decorator';
 
-@SceneKey(SceneKeys.TMainMenu)
-export class TMainMenuScene extends NamedScene {
-	// buttons
+@SceneInfo(SceneKeys.MainMenu, SceneTypes.UIScene)
+export class MainMenuScene extends TypedScene {
+	//#region CLASS ATTRIBUTES
 	private createGameHost!: Phaser.GameObjects.Text;
 	private createGameLocal!: Phaser.GameObjects.Text;
 	private isStarting = false;
+	//#endregion
 
+	//#region PHASER LIFECYCLE METHODS
 	async create(): Promise<void> {
+		this._build_bg();
+		this._build_face();
+		this._init_click_events();
+	}
+
+	public shutdown() {
+		this.createGameHost.destroy(true);
+		this.createGameLocal.destroy(true);
+	}
+	//#endregion
+
+	//#region BUILDERS
+	private _build_bg() {}
+
+	private _build_face() {
 		// Кнопка создать игру как хост
 		this.createGameHost = this.add
 			.text(
@@ -27,13 +42,6 @@ export class TMainMenuScene extends NamedScene {
 			.setOrigin(0.5)
 			.setInteractive({ useHandCursor: true });
 
-		this.createGameHost.on('pointerdown', async () => {
-			if (this.isStarting) return;
-			this.isStarting = true;
-			console.warn('[NON-IMPLEMENTED]');
-			this._showErrorMessage();
-		});
-
 		// Кнопка создать локальную игру
 		this.createGameLocal = this.add
 			.text(this.cameras.main.centerX, 400, 'Создать игру (локально)', {
@@ -43,6 +51,17 @@ export class TMainMenuScene extends NamedScene {
 			})
 			.setOrigin(0.5)
 			.setInteractive({ useHandCursor: true });
+	}
+	//#endregion
+
+	//#region INITIALIZERS
+	private _init_click_events() {
+		this.createGameHost.on('pointerdown', async () => {
+			if (this.isStarting) return;
+			this.isStarting = true;
+			console.warn('[NON-IMPLEMENTED]');
+			this._showErrorMessage();
+		});
 
 		this.createGameLocal.on('pointerdown', () => {
 			if (this.isStarting) return;
@@ -51,13 +70,9 @@ export class TMainMenuScene extends NamedScene {
 			this.scene.start(STARTING_SCENE);
 		});
 	}
+	//#endregion
 
-	shutdown() {
-		this.createGameHost.destroy(true);
-		this.createGameLocal.destroy(true);
-	}
-
-	/* CLASS OWN METHODS */
+	//#region HELPER METHODS
 	private _showErrorMessage() {
 		const background = document.createElement('div');
 		background.id = 'error-bg';
@@ -85,4 +100,5 @@ export class TMainMenuScene extends NamedScene {
 			this.isStarting = false;
 		}, 5000);
 	}
+	//#endregion
 }

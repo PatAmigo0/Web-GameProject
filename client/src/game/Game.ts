@@ -8,35 +8,40 @@ import type { INamedSceneManager } from './types/phaser.types';
 import { SceneKeys } from './types';
 import { BootScene } from './scenes/system/BootScene';
 
+//#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {
-	// REDECLARATION
+	//#region PHASER OVERRIDES
 	declare readonly scene: INamedSceneManager;
+	//#endregion
 
-	// BASIC INITIALIZATION
+	//#region CORE SERVICES
 	public Players = new Players();
 	public NetworkService = new NetworkService();
 	public EventService = new EventService();
+	//#endregion
 
-	// CONTEXT
+	//#region GAME CONTEXT
 	public online = false;
 	public id!: string;
+	//#endregion
 
+	//#region CONSTRUCTOR
 	constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
 		this.events.once(Phaser.Core.Events.READY, () => this._init());
+		// Регистрация ключевых сервисов в реестре Phaser для доступа из сцен
 		this.registry.set('NetworkService', this.NetworkService);
 	}
+	//#endregion
 
-	/* PUBLIC */
-
+	//#region PUBLIC METHODS
 	public setOnlineContext(id: string) {
 		this.online = true;
 		this.id = id;
 	}
+	//#endregion
 
-	/* PRIVATE */
-
-	// --- INITIALIZATION
+	//#region PRIVATE INITIALIZATION
 	private _init(): void {
 		this._register_events();
 		this._boot_();
@@ -48,8 +53,9 @@ export class GameService extends Phaser.Game {
 			this.scene.start(STARTING_MENU);
 		});
 	}
+	//#endregion
 
-	// --- SYS METHODS
+	//#region SYSTEM METHODS
 	private async _boot_() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
 		if (!BootScene) console.warn('Не удалось загрузить boot сцену...');
@@ -57,4 +63,6 @@ export class GameService extends Phaser.Game {
 			BootScene.loadAssets();
 		}
 	}
+	//#endregion
 }
+//#endregion

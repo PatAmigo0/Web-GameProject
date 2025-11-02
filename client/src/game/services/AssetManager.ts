@@ -1,6 +1,9 @@
+//#region IMPORTS
 // импортируем наш кастомный тип сцены, чтобы Phaser знал про sceneKey
-import type { NamedScene } from '../core/abstracts/NamedScene';
+import type { TypedScene } from '../core/abstracts/TypedScene';
+//#endregion
 
+//#region TYPE DEFINITIONS
 /**
  * Чучуть теории:
  * Манифест - 'инструкция по сборке'
@@ -22,13 +25,16 @@ interface MapAssetManifest {
 	mapJsonUrl: string; // путь к самому json
 	tilesetUrls: string[]; // массив путей ко всем картинкам тайлсетов
 }
+//#endregion
 
+//#region CLASS DEFINITION
 /**
  * Статический класс для управления ассетами
  * Отвечает за создание манифеста (списка всех ассетов) при запуске
  * и за загрузку нужных ассетов для каждой конкретной сцены
  */
 export class AssetManager {
+	//#region STATIC STATE
 	// Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
 	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
 	// P.S. readonly значит, что мы не можем заменить сам объект, но можем менять его содержимое
@@ -36,14 +42,16 @@ export class AssetManager {
 		{};
 	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
 	private static manifestBuilt = false;
+	//#endregion
 
+	//#region PUBLIC STATIC METHODS
 	/**
 	 * СИНХРОННО: Загружает ассеты для указанной сцены, используя запись
 	 * из предварительно созданного манифеста
 	 * Вызывайте этот метод из preload() вашей игровой сцены
 	 * @param scene Сцена, в которую нужно загрузить ассеты
 	 */
-	public static loadMapAssets(scene: NamedScene): void {
+	public static loadMapAssets(scene: TypedScene): void {
 		// проверочка, что buildManifest() уже отработал
 		if (!this.manifestBuilt) {
 			console.error(
@@ -173,4 +181,6 @@ export class AssetManager {
 			this.assetManifest, // выводим в консоль, что получилось, для дебага
 		);
 	}
+	//#endregion
 }
+//#endregion

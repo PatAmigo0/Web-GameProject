@@ -4,11 +4,11 @@ declare module 'phaser' {
 	namespace Scenes {
 		// --- ScenePlugin ---
 		interface ScenePlugin {
-			get<T extends import('../core/abstracts/NamedScene').NamedScene>(
+			get<T extends import('../core/abstracts/TypedScene').NamedScene>(
 				key: string,
 			): T;
 
-			run<T extends import('../core/abstracts/NamedScene').NamedScene>(
+			run<T extends import('../core/abstracts/TypedScene').NamedScene>(
 				key: string,
 				data?: object,
 			): T;
@@ -18,10 +18,10 @@ declare module 'phaser' {
 
 		// --- SceneManager ---
 		interface SceneManager {
-			scenes: import('../core/abstracts/NamedScene').NamedScene[];
+			scenes: import('../core/abstracts/TypedScene').NamedScene[];
 
 			getScene<
-				T extends import('../core/abstracts/NamedScene').NamedScene,
+				T extends import('../core/abstracts/TypedScene').NamedScene,
 			>(
 				key: string,
 			): T;

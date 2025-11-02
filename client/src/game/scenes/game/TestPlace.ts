@@ -1,14 +1,16 @@
+//#region FILE HEADER
 /**
  * ЭТОТ ФАЙЛ СЛУЖИТ ХАРД КОДОМ
  * ДЛЯ ФУНКЦИЙ, КОТОРЫЕ ПОСЛЕ БУДУТ ОПТИМИЗИРОВАНЫ
  * В ОТДЕЛЬНЫЕ МОДУЛИ В БУДУЩЕМ!
  */
+//#endregion
 
+//#region IMPORTS
 import type { GameData } from '../../types/game.types';
 import { NetworkedScene } from '../../core/abstracts/NetworkedScene';
 import obstacleImg from '../../../assets/images/typescript.svg';
-import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
-import { SceneKeys } from '../../types';
+import { SceneKeys, SceneTypes } from '../../types';
 import { CAMERA_ZOOM } from '../../config/game.config';
 import {
 	IDLE_ANIM_LOCK_DURATION,
@@ -20,9 +22,13 @@ import { ASSET_KEYS, ASSET_URLS } from '../../config/assets.config';
 import { RoomIDDisplay } from '../../components/ui/RoomIDDisplay';
 import { Game } from '../../main';
 import { CoordinatesConverter } from '../../utils/CoordinatesConverter';
+import { SceneInfo } from '../../utils/decorators/SceneInfo.decorator';
+//#endregion
 
-@SceneKey(SceneKeys.TestPlace)
+//#region SCENE DEFINITION
+@SceneInfo(SceneKeys.TestPlace, SceneTypes.GameScene)
 export class TestPlace extends NetworkedScene {
+	//#region SCENE ATTRIBUTES (State)
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key };
 	private obstaclesGroup!: Phaser.Physics.Arcade.StaticGroup;
 	private idText!: RoomIDDisplay;
@@ -32,7 +38,9 @@ export class TestPlace extends NetworkedScene {
 	private lastFlipX: boolean = false;
 	// Таймер "блокировки" диагональной анимации
 	private idleAnimLockTimer: number = 0;
+	//#endregion
 
+	//#region PHASER LIFECYCLE METHODS (Public)
 	//================================================================
 	// ПАБЛИК МЕТОДЫ PHASER (ЖИЗНЕННЫЙ ЦИКЛ)
 	//================================================================
@@ -75,7 +83,9 @@ export class TestPlace extends NetworkedScene {
 		);
 		this._handlePlayerMovement(delta);
 	}
+	//#endregion
 
+	//#region CORE LOGIC METHODS (Private)
 	//================================================================
 	// ПРИВАТНЫЕ МЕТОДЫ (ЛОГИКА СЦЕНЫ)
 	//================================================================
@@ -185,7 +195,9 @@ export class TestPlace extends NetworkedScene {
 			this.player.flipX = this.lastFlipX;
 		}
 	}
+	//#endregion
 
+	//#region INITIALIZATION METHODS (Private)
 	//================================================================
 	// ПРИВАТНЫЕ МЕТОДЫ ИНИЦИАЛИЗАЦИИ
 	//================================================================
@@ -209,7 +221,6 @@ export class TestPlace extends NetworkedScene {
 
 	/**
 	 * Создаем все анимации
-	 * Я сделал мелкую функцию-хелпер, чтоб не было копипасты
 	 */
 	private _initAnimations(): void {
 		// Хелпер для быстрой нарезки анимаций
@@ -272,8 +283,9 @@ export class TestPlace extends NetworkedScene {
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(CAMERA_ZOOM);
 	}
+	//#endregion
 
-	// ДРУГОЕ
+	//#region HELPER METHODS
 	private onResize(): void {
 		console.warn('RESIZING!');
 		const vector = CoordinatesConverter.convertXY(
@@ -283,7 +295,9 @@ export class TestPlace extends NetworkedScene {
 		);
 		this.idText.setPosition(vector.x, vector.y);
 	}
+	//#endregion
 
+	//#region NETWORK METHODS
 	//================================================================
 	// СЕТЕВЫЕ МЕТОДЫ (не используются)
 	//================================================================
@@ -291,4 +305,6 @@ export class TestPlace extends NetworkedScene {
 	onPlayerConnected(_peerId: string): void {}
 	onPlayerDisconnected(_peerId: string): void {}
 	handleNetworkData(_peerId: string, _data: GameData): void {}
+	//#endregion
 }
+//#endregion

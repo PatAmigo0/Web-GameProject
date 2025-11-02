@@ -1,14 +1,14 @@
 // src/utils/BootScene.ts
 
 import { AssetManager } from '../../services/AssetManager';
-import { NamedScene } from '../../core/abstracts/NamedScene';
-import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
-import { SceneKeys } from '../../types';
+import { TypedScene } from '../../core/abstracts/TypedScene';
+import { SceneKeys, SceneTypes } from '../../types';
 import { Game } from '../../main';
 import { EventTypes } from '../../config/events.config';
+import { SceneInfo } from '../../utils/decorators/SceneInfo.decorator';
 
-@SceneKey(SceneKeys.BootScene)
-export class BootScene extends NamedScene {
+@SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
+export class BootScene extends TypedScene {
 	private loadingText!: Phaser.GameObjects.Text;
 
 	preload() {

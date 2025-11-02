@@ -2,7 +2,6 @@
 
 import { TestPlace } from './game/TestPlace';
 import { BootScene } from './system/BootScene';
-import { MainMenuScene } from './ui/deprecated.Menu';
-import { TMainMenuScene } from './ui/MainMenu'; // Debug
+import { MainMenuScene } from './ui/menu/MainMenu'; // Debug
 
-export const scenes = [BootScene, MainMenuScene, TMainMenuScene, TestPlace];
+export const scenes = [BootScene, MainMenuScene, TestPlace];
