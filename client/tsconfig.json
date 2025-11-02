@@ -43,8 +43,7 @@
 			"@styles/*": ["styles/*"],
 
 			// single
-			"@main": ["main"],
-			"@game": ["Game"]
+			"@main": ["main"]
 		}
 	},
 

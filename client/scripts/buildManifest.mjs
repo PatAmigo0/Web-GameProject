@@ -4,6 +4,7 @@ import path from 'path';
 const CWD = process.cwd();
 const MAPS_DIR = path.join(CWD, 'public/assets/maps');
 const JSON_DIR = path.join(MAPS_DIR, 'json');
+const TILESET_DIR = path.join(MAPS_DIR, 'tilesets');
 const OUTPUT_DIR = path.join(CWD, 'public/assets/manifest.json');
 
 const assetManifest = {};
@@ -11,7 +12,15 @@ try {
 	const mapFiles = fs
 		.readdirSync(JSON_DIR)
 		.filter((filename) => filename.endsWith('json'));
-	console.log(mapFiles);
+
+	const mapTilesets = fs
+		.readdirSync(TILESET_DIR)
+		.filter((filename) => filename.endsWith('png'));
+
+	const avaliableTilesets = {};
+	mapTilesets.forEach(
+		(filename) => (avaliableTilesets[filename.replace('.png', '')] = true),
+	);
 
 	for (const mapFile of mapFiles) {
 		const sceneKey = mapFile.replace('.json', '');
@@ -23,16 +32,12 @@ try {
 		const requiredTilesets = [];
 		if (mapData.tilesets) {
 			for (const tileset of mapData.tilesets) {
-				const tilesetPath = path.join(
-					MAPS_DIR,
-					tileset.image.replace('../', ''),
-				);
-				if (fs.existsSync(tilesetPath)) {
+				if (avaliableTilesets[tileset.name]) {
 					const webpath = `/assets/maps/tilesets/${tileset.name}.png`;
 					requiredTilesets.push(webpath);
 				} else
 					console.warn(
-						`Tileset ${tilesetPath} не существует для ${sceneKey}`,
+						`Tileset ${tileset.name} не существует для ${sceneKey}`,
 					);
 			}
 			assetManifest[sceneKey] = {

@@ -1,4 +1,4 @@
-// src/game/types/game.types.ts
+// src/types/game.types.ts
 
 export type GameData =
 	| {

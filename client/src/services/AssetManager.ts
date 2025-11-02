@@ -1,13 +1,10 @@
 //#region IMPORTS
-// импортируем наш кастомный тип сцены, чтобы Phaser знал про sceneKey
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import type { TypedScene } from '@core/abstracts/TypedScene';
 import type { MapAssetManifest } from '@gametypes/phaser.types';
-
 //#endregion
 
 //#region CLASS DEFINITION
-
 /**
  * Статический класс для управления ассетами
  * Отвечает за создание манифеста (списка всех ассетов) при запуске

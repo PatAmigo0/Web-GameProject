@@ -16,7 +16,6 @@ export default defineConfig({
 
 			// single aliases
 			'@main': path.resolve(__dirname, './src/main.ts'),
-			'@game': path.resolve(__dirname, './src/Game.ts'),
 		},
 	},
 });

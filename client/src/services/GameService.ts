@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
-import { Players } from './services/PlayerService';
-import { NetworkService } from './services/NetworkService';
-import { EventService } from './services/EventService';
-import { EventTypes } from './config/events.config';
-import { STARTING_MENU } from './config/game.config';
+import { Players } from '@services/PlayerService';
+import { NetworkService } from '@services/NetworkService';
+import { EventService } from '@services/EventService';
+import { EventTypes } from '@config/events.config';
+import { STARTING_MENU } from '@config/game.config';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { BootScene } from '@scenes/system/BootScene';
@@ -56,11 +56,11 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region SYSTEM METHODS
-	private async _boot_() {
+	private _boot_() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
-		if (!BootScene) console.warn('Не удалось загрузить boot сцену...');
+		if (BootScene) BootScene.loadAssets();
 		else {
-			BootScene.loadAssets();
+			console.warn('Не удалось загрузить boot сцену...');
 		}
 	}
 	//#endregion

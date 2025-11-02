@@ -3,15 +3,15 @@
 import { AssetManager } from '@/services/AssetManager';
 import { TypedScene } from '@/core/abstracts/TypedScene';
 import { SceneKeys, SceneTypes } from '@/types/scene.types';
-import { Game } from '@main';
 import { EventTypes } from '@config/events.config';
 import { SceneInfo } from '@utils/decorators/SceneInfo.decorator';
+import { Game } from '@main';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
 export class BootScene extends TypedScene {
 	private loadingText!: Phaser.GameObjects.Text;
 
-	preload() {
+	public preload() {
 		this.loadingText = this.add
 			.text(
 				this.cameras.main.width / 2,
@@ -22,7 +22,7 @@ export class BootScene extends TypedScene {
 			.setOrigin(0.5);
 	}
 
-	shutdown() {
+	public shutdown() {
 		this.loadingText.destroy();
 	}
 

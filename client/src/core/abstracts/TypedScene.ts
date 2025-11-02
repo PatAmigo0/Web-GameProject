@@ -1,6 +1,6 @@
 // src/game/utils/ABC/TypedScene.ts
 
-import { SceneTypes } from '@/types/scene.types';
+import { SceneTypes } from '@gametypes/scene.types';
 
 export abstract class TypedScene extends Phaser.Scene {
 	public sceneKey!: string;
