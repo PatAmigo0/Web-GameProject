@@ -33,14 +33,16 @@ export class MainMenuScene extends TypedScene {
 	private _build_bg() {}
 
 	private _build_face() {
-		this.div = this.add.dom(500, 400).createFromCache('MainMenu');
+		this.div = this.add
+			.dom(this.cameras.main.centerX, this.cameras.main.centerY)
+			.createFromCache('MainMenu');
 	}
 	//#endregion
 
 	//#region INITIALIZERS
 	private _init_class_attributes() {
 		this.createGameLocal = this.div.node.querySelector(
-			'#play-button',
+			'.play-button',
 		) as HTMLButtonElement;
 	}
 

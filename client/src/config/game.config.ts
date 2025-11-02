@@ -63,5 +63,5 @@ export const IDLE_ANIM_LOCK_DURATION = 80;
  */
 export const PLAYER_DEPTH = 100;
 export const MAX_DEPTH = 999;
-export const CAMERA_ZOOM = 1;
+export const CAMERA_ZOOM = 4;
 //#endregion
