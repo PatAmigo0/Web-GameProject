@@ -1,6 +1,6 @@
 // src/game/core/handlers/SceneEventHandler.ts
 
-import { WorkingWithScene } from '../abstracts/WorkingWithScene';
+import { WorkingWithScene } from '../abstracts/scenes/WorkingWithScene';
 
 export class SceneEventHandler extends WorkingWithScene {
 	public setupCommonListeners(): void {

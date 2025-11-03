@@ -4,9 +4,9 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"predev": "node scripts/buildManifest.mjs",
+		"predev": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
 		"dev": "vite",
-		"prebuild": "node scripts/buildManifest.mjs",
+		"prebuild": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
 		"build": "tsc && vite build",
 		"preview": "vite preview"
 	},

@@ -8,7 +8,7 @@
 
 //#region IMPORTS
 import type { GameData } from '@gametypes/game.types';
-import { NetworkedScene } from '@core/abstracts/NetworkedScene';
+import { NetworkedScene } from '@/core/abstracts/scenes/NetworkedScene';
 import obstacleImg from '/assets/images/typescript.svg';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { CAMERA_ZOOM } from '@config/game.config';

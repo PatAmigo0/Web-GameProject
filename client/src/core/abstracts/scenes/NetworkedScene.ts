@@ -1,7 +1,7 @@
 // src/game/utils/ABC/NetworkedScene.ts
 
 import type { GameData } from '@gametypes/game.types.ts';
-import { BasicGameScene } from '@core/abstracts/BasicGameScene.ts';
+import { BasicGameScene } from '@/core/abstracts/scenes/BasicGameScene';
 
 /**
  * NetworkedScene - абстрактный класс.

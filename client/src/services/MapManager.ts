@@ -10,8 +10,8 @@ import {
 import { Map } from '@components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
-import type { TypedScene } from '@core/abstracts/TypedScene';
-import type { BasicGameScene } from '@core/abstracts/BasicGameScene';
+import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
+import type { BasicGameScene } from '@/core/abstracts/scenes/BasicGameScene';
 import { TILE_SIZE } from '@config/game.config';
 //#endregion
 

@@ -1,7 +1,7 @@
 // src/utils/BootScene.ts
 
 import { AssetManager } from '@/services/AssetManager';
-import { TypedScene } from '@/core/abstracts/TypedScene';
+import { TypedScene } from '@/core/abstracts/scenes/TypedScene';
 import { SceneKeys, SceneTypes } from '@/types/scene.types';
 import { EventTypes } from '@config/events.config';
 import { SceneInfo } from '@utils/decorators/SceneInfo.decorator';

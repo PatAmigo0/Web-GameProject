@@ -1,6 +1,6 @@
 //#region IMPORTS
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
-import type { TypedScene } from '@core/abstracts/TypedScene';
+import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
 import type { MapAssetManifest } from '@gametypes/phaser.types';
 //#endregion
 
@@ -15,6 +15,9 @@ export class AssetManager {
 	// Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
 	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
 	private static readonly assetManifest: Record<string, MapAssetManifest> =
+		{};
+
+	private static readonly stylesManifest: Record<string, MapAssetManifest> =
 		{};
 
 	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
@@ -72,7 +75,7 @@ export class AssetManager {
 	public static async buildManifest(): Promise<void> {
 		if (this.manifestBuilt) return;
 
-		const response = await fetch(ASSET_URLS[ASSET_KEYS.MAPS_MANIFEST]);
+		const response = await fetch(ASSET_URLS[ASSET_KEYS.MAP_MANIFEST]);
 		const manifestData = (await response.json()) as Record<
 			string,
 			MapAssetManifest

@@ -1,5 +1,5 @@
 import { STARTING_SCENE } from '@config/game.config';
-import { TypedScene } from '@core/abstracts/TypedScene';
+import { TypedScene } from '@/core/abstracts/scenes/TypedScene';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { SceneInfo } from '@utils/decorators/SceneInfo.decorator';
 import '@styles/mainMenu.css';
@@ -17,7 +17,7 @@ export class MainMenuScene extends TypedScene {
 		this.load.html('MainMenu', '/html/mainMenu.html');
 	}
 
-	async create(): Promise<void> {
+	public async create(): Promise<void> {
 		this._build_bg();
 		this._build_face();
 		this._init_class_attributes();

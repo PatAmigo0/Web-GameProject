@@ -5,7 +5,7 @@ const CWD = process.cwd();
 const MAPS_DIR = path.join(CWD, 'public/assets/maps');
 const JSON_DIR = path.join(MAPS_DIR, 'json');
 const TILESET_DIR = path.join(MAPS_DIR, 'tilesets');
-const OUTPUT_DIR = path.join(CWD, 'public/assets/manifest.json');
+const OUTPUT_DIR = path.join(CWD, 'public/assets/manifests/map-manifest.json');
 
 const assetManifest = {};
 try {
@@ -51,10 +51,10 @@ try {
 	}
 
 	fs.writeFileSync(OUTPUT_DIR, JSON.stringify(assetManifest, null, 2));
-	console.log('[ Manifest ] был успешно создан!');
+	console.log('[ Map manifest ] был успешно создан!');
 } catch (e) {
-	console.error(
-		`[ Manifest ] Произошла ошибка во время создание манифеста: ${e}`,
+	console.log(
+		`[ Map manifest ] во время создания манифеста произошла ошибка: ${e}`,
 	);
 	process.exit(1);
 }
