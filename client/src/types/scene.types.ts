@@ -24,3 +24,7 @@ export const enum SceneTypes {
 	Undefined = 'UNDEFINED', // Тип по умолчанию / Неопределенная сцена
 }
 //#endregion
+
+export type ISceneHandlers = {
+	[key in SceneTypes]?: Function;
+};

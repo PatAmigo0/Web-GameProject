@@ -41,6 +41,8 @@
 			"@gametypes/*": ["types/*"],
 			"@core/*": ["core/*"],
 			"@styles/*": ["styles/*"],
+			"@decorators/*": ["utils/decorators/*"],
+			"@abstracts/*": ["core/abstracts/*"],
 
 			// single
 			"@main": ["main"]

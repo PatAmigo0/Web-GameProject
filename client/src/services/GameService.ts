@@ -7,6 +7,7 @@ import { STARTING_MENU } from '@config/game.config';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { BootScene } from '@scenes/system/BootScene';
+import type { WithPhaserLifecycle } from '@/core/abstracts/scenes/WithPhaserLifecycle';
 
 //#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {
@@ -23,6 +24,8 @@ export class GameService extends Phaser.Game {
 	//#region GAME CONTEXT
 	public online = false;
 	public id!: string;
+
+	public currentMainScene: WithPhaserLifecycle = null;
 	//#endregion
 
 	//#region CONSTRUCTOR
@@ -41,6 +44,22 @@ export class GameService extends Phaser.Game {
 	}
 	//#endregion
 
+	//#region PRIVATE MAIN METHODS
+	private _changeMainScene(sceneKey: string) {
+		console.debug(
+			`[ Game ] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
+		);
+		if (this.currentMainScene != null) {
+			this.scene.stop(this.currentMainScene.sceneKey);
+			this.currentMainScene.shutdown();
+		}
+
+		const newScene = this.scene.getScene<WithPhaserLifecycle>(sceneKey);
+		this.scene.start(sceneKey);
+		this.currentMainScene = newScene;
+	}
+	//#endregion
+
 	//#region PRIVATE INITIALIZATION
 	private _init(): void {
 		this._register_events();
@@ -49,17 +68,25 @@ export class GameService extends Phaser.Game {
 
 	private _register_events() {
 		this.EventService.addListener(EventTypes.BOOT, () => {
-			this.scene.stop(SceneKeys.BootScene);
-			this.scene.start(STARTING_MENU);
+			this.EventService.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_MENU);
 		});
+
+		this.EventService.addListener(
+			EventTypes.MAIN_SCENE_CHANGE,
+			(sceneKey: string) => {
+				this._changeMainScene(sceneKey);
+			},
+		);
 	}
 	//#endregion
 
 	//#region SYSTEM METHODS
 	private _boot_() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
-		if (BootScene) BootScene.loadAssets();
-		else {
+		if (BootScene) {
+			this.currentMainScene = BootScene;
+			BootScene.loadAssets();
+		} else {
 			console.warn('Не удалось загрузить boot сцену...');
 		}
 	}

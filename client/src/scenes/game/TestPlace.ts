@@ -22,7 +22,7 @@ import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { RoomIDDisplay } from '@components/ui/RoomIDDisplay';
 import { Game } from '@main';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
-import { SceneInfo } from '@utils/decorators/SceneInfo.decorator';
+import { SceneInfo } from '@/utils/decorators/scene/SceneInfo.decorator';
 //#endregion
 
 //#region SCENE DEFINITION
@@ -45,7 +45,7 @@ export class TestPlace extends NetworkedScene {
 	// ПАБЛИК МЕТОДЫ PHASER (ЖИЗНЕННЫЙ ЦИКЛ)
 	//================================================================
 
-	onPreload() {
+	public onPreload() {
 		this.load.image('obstacle', obstacleImg);
 		// Грузим спрайтшиты
 		this.load.spritesheet(
@@ -63,7 +63,7 @@ export class TestPlace extends NetworkedScene {
 		);
 	}
 
-	onCreate() {
+	public onCreate() {
 		this._initUI();
 		this.scale.on('resize', this.onResize, this);
 		this._initPlayer();
@@ -77,12 +77,14 @@ export class TestPlace extends NetworkedScene {
 	 * heartbeat (update)
 	 * Он просто вызывает один метод, отвечающий за всю логику кадра
 	 */
-	heartbeat(_: number, delta: number): void {
+	public heartbeat(_: number, delta: number): void {
 		this.player.setDepth(
 			(this.player.y > 0 && this.player.y) || PLAYER_DEPTH,
 		);
 		this._handlePlayerMovement(delta);
 	}
+
+	public onShutdown(): void {}
 	//#endregion
 
 	//#region CORE LOGIC METHODS (Private)

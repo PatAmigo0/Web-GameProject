@@ -3,10 +3,10 @@ import type { Map } from '@components/entities/GameMap';
 import { AssetManager } from '@services/AssetManager';
 import { MapManager } from '@services/MapManager';
 import { SceneEventHandler } from '@core/handlers/SceneEventHandler';
-import { TypedScene } from '@/core/abstracts/scenes/TypedScene';
 import { TiledConverter } from '@utils/TiledConverter';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
+import { AbstractBaseScene } from './AbstractBaseScene';
 //#endregion
 
 //#region ABSTRACT SCENE DEFINITION
@@ -14,25 +14,17 @@ import { PLAYER_DEPTH } from '@config/game.config';
  * Базовый класс для всех игровых сцен
  * Определяет общую структуру жизненного цикла (preload/create/update) и инициализацию карты/игрока
  */
-export abstract class BasicGameScene extends TypedScene {
+export abstract class BaseGameScene extends AbstractBaseScene {
 	//#region SCENE ATTRIBUTES
 	protected eventHandler!: SceneEventHandler;
 	protected map!: Map;
 	protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 	//#endregion
 
-	//#region ABSTRACT LIFECYCLE HOOKS
-	// Абстрактные методы, которые должны быть реализованы в дочерних сценах
-	abstract onPreload(): void;
-	abstract onCreate(): void;
-	abstract heartbeat(time: number, delta: number): void;
-	//#endregion
-
 	//#region PHASER LIFECYCLE METHODS
-
-	preload(): void {
+	public preload(): void {
 		// 1. Загрузка ассетов карты (Tiled JSON и тайлсеты)
-		AssetManager.loadMapAssets(this);
+		AssetManager.loadAssets(this);
 		// 2. Загрузка основного спрайта игрока (или других общих ассетов)
 		this.load.image(
 			ASSET_KEYS.PLAYER_SPRITE,
@@ -42,7 +34,7 @@ export abstract class BasicGameScene extends TypedScene {
 		this.onPreload();
 	}
 
-	create(): void {
+	public create(): void {
 		// 1. Инициализация обработчика событий
 		this.eventHandler = new SceneEventHandler(this);
 		this.eventHandler.setupCommonListeners();
@@ -78,10 +70,12 @@ export abstract class BasicGameScene extends TypedScene {
 		MapManager.initMapPhysics(this, this.map, mapData.collidableLayers);
 	}
 
-	update(time: number, delta: number): void {
+	public update(time: number, delta: number): void {
 		// Делегируем логику кадра абстрактному методу
 		this.heartbeat(time, delta);
 	}
+
+	public shutdown(): void {}
 	//#endregion
 
 	//#region ACCESSORS

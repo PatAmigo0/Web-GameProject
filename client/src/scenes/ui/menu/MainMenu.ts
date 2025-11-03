@@ -1,45 +1,35 @@
 import { STARTING_SCENE } from '@config/game.config';
-import { TypedScene } from '@/core/abstracts/scenes/TypedScene';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { SceneInfo } from '@utils/decorators/SceneInfo.decorator';
-import '@styles/mainMenu.css';
+import { SceneInfo } from '@/utils/decorators/scene/SceneInfo.decorator';
+import { BaseUIScene } from '@/core/abstracts/scenes/BaseUIScene';
+import { Game } from '@/main';
+import { EventTypes } from '@/config/events.config';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.UIScene)
-export class MainMenuScene extends TypedScene {
+export class MainMenuScene extends BaseUIScene {
 	//#region CLASS ATTRIBUTES
 	private createGameLocal!: HTMLButtonElement;
 	private isStarting = false;
-	private div!: Phaser.GameObjects.DOMElement;
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
-	async preload(): Promise<void> {
-		this.load.html('MainMenu', '/html/mainMenu.html');
-	}
+	public async onPreload(): Promise<void> {}
 
-	public async create(): Promise<void> {
+	public async onCreate(): Promise<void> {
 		this._build_bg();
 		this._build_face();
 		this._init_class_attributes();
 		this._init_click_events();
 	}
 
-	public shutdown() {
-		this.div.destroy();
-	}
+	public onShutdown() {}
+
+	public heartbeat(): void {}
 	//#endregion
 
 	//#region BUILDERS
 	private _build_bg() {}
-
-	private _build_face() {
-		this.div = this.add
-			.dom(this.cameras.main.centerX, this.cameras.main.centerY)
-			.createFromCache('MainMenu');
-		this.div
-			.setPosition(this.cameras.main.centerX, this.cameras.main.centerY)
-			.setOrigin(0.5, 0.5);
-	}
+	private _build_face() {}
 	//#endregion
 
 	//#region INITIALIZERS
@@ -53,7 +43,11 @@ export class MainMenuScene extends TypedScene {
 		this.createGameLocal.addEventListener('click', () => {
 			if (this.isStarting) this._showErrorMessage();
 			this.isStarting = true;
-			this.scene.start(STARTING_SCENE);
+			console.log(this.game);
+			Game.EventService.emit(
+				EventTypes.MAIN_SCENE_CHANGE,
+				STARTING_SCENE,
+			);
 		});
 	}
 	//#endregion

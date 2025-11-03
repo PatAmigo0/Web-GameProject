@@ -11,7 +11,7 @@ import { Map } from '@components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
 import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
-import type { BasicGameScene } from '@/core/abstracts/scenes/BasicGameScene';
+import type { BasicGameScene } from '@/core/abstracts/scenes/BaseGameScene';
 import { TILE_SIZE } from '@config/game.config';
 //#endregion
 

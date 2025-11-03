@@ -13,6 +13,7 @@ export const ASSET_KEYS = {
 	NEW_PLAYER_SPRITE: 'nplayer',
 	PLAYER_IDLE: 'player-idle',
 	MAP_MANIFEST: 'map-manifest',
+	HTML_MANIFEST: 'html-manifest',
 };
 //#endregion
 
@@ -25,5 +26,6 @@ export const ASSET_URLS = {
 	[ASSET_KEYS.NEW_PLAYER_SPRITE]: newPlayerSpriteUrl,
 	[ASSET_KEYS.PLAYER_IDLE]: idlePlayerSpriteUrl,
 	[ASSET_KEYS.MAP_MANIFEST]: '/assets/manifests/map-manifest.json',
+	[ASSET_KEYS.HTML_MANIFEST]: '/assets/manifests/html-manifest.json',
 };
 //#endregion

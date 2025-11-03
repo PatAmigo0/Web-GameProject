@@ -1,14 +1,14 @@
 // src/game/utils/ABC/NetworkedScene.ts
 
 import type { GameData } from '@gametypes/game.types.ts';
-import { BasicGameScene } from '@/core/abstracts/scenes/BasicGameScene';
+import { BaseGameScene } from '@/core/abstracts/scenes/BaseGameScene';
 
 /**
  * NetworkedScene - абстрактный класс.
  * Его главная задача - служить шаблонов для всех сцен,
  * которые могут взаимодейстовать с игроками (т.е игровые сцены)
  */
-export abstract class NetworkedScene extends BasicGameScene {
+export abstract class NetworkedScene extends BaseGameScene {
 	protected connectedPlayers: Set<string> = new Set();
 
 	abstract onPlayerConnected(peerId: string): void;

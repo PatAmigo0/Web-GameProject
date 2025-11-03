@@ -11,3 +11,8 @@ export interface MapAssetManifest {
 	mapJsonUrl: string;
 	tilesetUrls: string[];
 }
+
+export interface UIStylesManifest {
+	CSS: string;
+	HTML: string;
+}

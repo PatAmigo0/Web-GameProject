@@ -13,6 +13,8 @@ export default defineConfig({
 			'@gametypes': path.resolve(__dirname, './src/types'),
 			'@core': path.resolve(__dirname, './src/core'),
 			'@styles': path.resolve(__dirname, './src/styles'),
+			'@decorators': path.resolve(__dirname, './src/utils/decorators'),
+			'@abstracts': path.resolve(__dirname, './src/core/abstracts'),
 
 			// single aliases
 			'@main': path.resolve(__dirname, './src/main.ts'),
