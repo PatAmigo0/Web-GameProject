@@ -1,12 +1,12 @@
-// src/game/utils/ABC/WorkingWithScene.ts
+// src/utils/ABC/WorkingWithScene.ts
 
-import type { BasicGameScene } from '@/core/abstracts/scenes/BaseGameScene';
+import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
 
 export abstract class WorkingWithScene {
-	protected scene!: BasicGameScene;
+	protected scene!: BaseGameScene;
 	protected sceneKey!: string;
 
-	constructor(scene: BasicGameScene) {
+	constructor(scene: BaseGameScene) {
 		this.scene = scene;
 		this.sceneKey = scene.sceneKey; // alias для scene.sceneKey
 	}

@@ -7,7 +7,7 @@ import { STARTING_MENU } from '@config/game.config';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { BootScene } from '@scenes/system/BootScene';
-import type { WithPhaserLifecycle } from '@/core/abstracts/scenes/WithPhaserLifecycle';
+import type { WithPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
 
 //#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {

@@ -8,7 +8,7 @@
 
 //#region IMPORTS
 import type { GameData } from '@gametypes/game.types';
-import { NetworkedScene } from '@/core/abstracts/scenes/NetworkedScene';
+import { NetworkedScene } from '@abstracts/scenes/NetworkedScene';
 import obstacleImg from '/assets/images/typescript.svg';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { CAMERA_ZOOM } from '@config/game.config';
@@ -22,7 +22,7 @@ import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { RoomIDDisplay } from '@components/ui/RoomIDDisplay';
 import { Game } from '@main';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
-import { SceneInfo } from '@/utils/decorators/scene/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
 //#endregion
 
 //#region SCENE DEFINITION

@@ -1,4 +1,4 @@
-// src/game/types/scene.types.ts
+// src/types/scene.types.ts
 
 //#region SCENE KEYS
 /**

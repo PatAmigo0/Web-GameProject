@@ -1,5 +1,5 @@
 import { AssetManager } from '@services/AssetManager';
-import { AbstractBaseScene } from './AbstractBaseScene';
+import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
 
 export abstract class BaseUIScene extends AbstractBaseScene {
 	public div!: Phaser.GameObjects.DOMElement;

@@ -10,8 +10,8 @@ import {
 import { Map } from '@components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
-import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
-import type { BasicGameScene } from '@/core/abstracts/scenes/BaseGameScene';
+import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
 import { TILE_SIZE } from '@config/game.config';
 //#endregion
 
@@ -80,7 +80,7 @@ export class MapManager {
 	 * @param collidableLayers - Массив слоев, с которыми должен сталкиваться игрок
 	 */
 	public static initMapPhysics(
-		scene: BasicGameScene, // тут нужен BasicGameScene, тк в нем есть getPlayer()
+		scene: BaseGameScene, // тут нужен BasicGameScene, тк в нем есть getPlayer()
 		map: Map,
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[],
 	): void {

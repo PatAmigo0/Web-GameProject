@@ -1,4 +1,4 @@
-import { TypedScene } from './TypedScene';
+import { TypedScene } from '@abstracts/scenes/TypedScene';
 
 export function withPhaserLifecycle<
 	T extends abstract new (...args: any[]) => {},

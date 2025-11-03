@@ -6,7 +6,7 @@ import { SceneEventHandler } from '@core/handlers/SceneEventHandler';
 import { TiledConverter } from '@utils/TiledConverter';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
-import { AbstractBaseScene } from './AbstractBaseScene';
+import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
 //#endregion
 
 //#region ABSTRACT SCENE DEFINITION

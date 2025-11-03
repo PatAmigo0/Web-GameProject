@@ -1,5 +1,5 @@
 //#region IMPORTS
-import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
+import type { TypedScene } from '@abstracts/scenes/TypedScene';
 import Phaser from 'phaser';
 //#endregion
 
