@@ -1,13 +1,15 @@
 // src/game/utils/ABC/TypedScene.ts
 import Phaser from 'phaser';
-import { SceneTypes } from '@gametypes/scene.types';
+import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
+import type { GameService } from '@services/GameService';
 
 export abstract class TypedScene extends Phaser.Scene {
-	public sceneKey!: string;
+	public sceneKey!: SceneKeys;
 	public sceneType!: SceneTypes;
+	declare game: GameService;
 
 	constructor(
-		sceneKey: string,
+		sceneKey: SceneKeys,
 		sceneType: SceneTypes = SceneTypes.Undefined,
 	) {
 		super(sceneKey);

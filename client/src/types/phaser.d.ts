@@ -1,34 +1,28 @@
+// src/types/phaser.d.ts
+
 import 'phaser';
 
-declare module 'phaser' {
-	namespace Scenes {
-		// --- ScenePlugin ---
-		interface ScenePlugin {
-			get<
-				T extends import('../core/abstracts/scenes/TypedScene').NamedScene,
-			>(
-				key: string,
-			): T;
+import { GameService } from '@services/GameService';
+import { TypedScene } from '@core/abstracts/scenes/TypedScene';
 
-			run<
-				T extends import('../core/abstracts/scenes/TypedScene').NamedScene,
-			>(
-				key: string,
-				data?: object,
-			): T;
-
-			start(key: string, data?: object): void;
+declare global {
+	namespace Phaser {
+		interface Scene {
+			readonly game: GameService;
 		}
 
-		// --- SceneManager ---
-		interface SceneManager {
-			scenes: import('../core/abstracts/scenes/TypedScene').NamedScene[];
+		namespace Scenes {
+			interface SceneManager {
+				scenes: TypedScene[];
+				getScene<T extends TypedScene>(key: string): T;
+			}
 
-			getScene<
-				T extends import('../core/abstracts/scenes/TypedScene').NamedScene,
-			>(
-				key: string,
-			): T;
+			interface ScenePlugin {
+				get<T extends TypedScene>(key: string): T;
+				run<T extends TypedScene>(key: string, data?: object): T;
+			}
 		}
 	}
 }
+
+export {};

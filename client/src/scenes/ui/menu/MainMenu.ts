@@ -1,12 +1,11 @@
 import { STARTING_SCENE } from '@config/game.config';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
-import { BaseUIScene } from '@abstracts/scenes/BaseUIScene';
-import { Game } from '@main';
+import { BaseHtmlScene } from '@/core/abstracts/scenes/BaseHtmlScene';
 import { EventTypes } from '@config/events.config';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.UIScene)
-export class MainMenuScene extends BaseUIScene {
+export class MainMenuScene extends BaseHtmlScene {
 	//#region CLASS ATTRIBUTES
 	private createGameLocal!: HTMLButtonElement;
 	private isStarting = false;
@@ -43,11 +42,7 @@ export class MainMenuScene extends BaseUIScene {
 		this.createGameLocal.addEventListener('click', () => {
 			if (this.isStarting) this._showErrorMessage();
 			this.isStarting = true;
-			console.log(this.game);
-			Game.EventService.emit(
-				EventTypes.MAIN_SCENE_CHANGE,
-				STARTING_SCENE,
-			);
+			this.game.events.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_SCENE);
 		});
 	}
 	//#endregion

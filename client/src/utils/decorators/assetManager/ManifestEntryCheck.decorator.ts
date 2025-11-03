@@ -1,6 +1,9 @@
-import type { TypedScene } from '@/core/abstracts/scenes/TypedScene';
-import type { AssetManager } from '@/services/AssetManager';
-import type { MapAssetManifest, UIStylesManifest } from '@/types/phaser.types';
+import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { AssetManager } from '@services/AssetManager';
+import type {
+	MapAssetManifest,
+	UIStylesManifest,
+} from '@gametypes/phaser.types';
 
 export function ManifestEntryCheck<T extends AssetManager>(
 	_: T,

@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { Players } from '@services/PlayerService';
 import { NetworkService } from '@services/NetworkService';
-import { EventService } from '@services/EventService';
 import { EventTypes } from '@config/events.config';
 import { STARTING_MENU } from '@config/game.config';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
@@ -18,7 +17,7 @@ export class GameService extends Phaser.Game {
 	//#region CORE SERVICES
 	public Players = new Players();
 	public NetworkService = new NetworkService();
-	public EventService = new EventService();
+
 	//#endregion
 
 	//#region GAME CONTEXT
@@ -47,7 +46,7 @@ export class GameService extends Phaser.Game {
 	//#region PRIVATE MAIN METHODS
 	private _changeMainScene(sceneKey: string) {
 		console.debug(
-			`[ Game ] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
+			`[game] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
 		);
 		if (this.currentMainScene != null) {
 			this.scene.stop(this.currentMainScene.sceneKey);
@@ -63,15 +62,15 @@ export class GameService extends Phaser.Game {
 	//#region PRIVATE INITIALIZATION
 	private _init(): void {
 		this._register_events();
-		this._boot_();
+		this.__boot__();
 	}
 
 	private _register_events() {
-		this.EventService.addListener(EventTypes.BOOT, () => {
-			this.EventService.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_MENU);
+		this.events.addListener(EventTypes.BOOT, () => {
+			this.events.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_MENU);
 		});
 
-		this.EventService.addListener(
+		this.events.addListener(
 			EventTypes.MAIN_SCENE_CHANGE,
 			(sceneKey: string) => {
 				this._changeMainScene(sceneKey);
@@ -81,14 +80,15 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region SYSTEM METHODS
-	private _boot_() {
+	/**
+	 * Отправная точка всей игры
+	 */
+	private __boot__() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
 		if (BootScene) {
 			this.currentMainScene = BootScene;
 			BootScene.loadAssets();
-		} else {
-			console.warn('Не удалось загрузить boot сцену...');
-		}
+		} else console.error('[game] не удалось загрузить boot сцену');
 	}
 	//#endregion
 }

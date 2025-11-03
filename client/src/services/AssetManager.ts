@@ -5,7 +5,7 @@ import type {
 	MapAssetManifest,
 	UIStylesManifest,
 } from '@gametypes/phaser.types';
-import { BaseUIScene } from '@abstracts/scenes/BaseUIScene';
+import { BaseHtmlScene } from '@/core/abstracts/scenes/BaseHtmlScene';
 import { ManifestExistsCheck } from '@decorators/assetManager/ManifestExistsCheck.decorator';
 import { ManifestEntryCheck } from '@decorators/assetManager/ManifestEntryCheck.decorator';
 import { SceneTypes } from '@gametypes/scene.types';
@@ -38,17 +38,17 @@ export class AssetManager {
 	 * Метод AssetManager, который сам выбирает как ему загружать сценц
 	 * @param scene поддерживаемый тип сцены
 	 */
-	public static loadAssets(scene: TypedScene | BaseUIScene): void {
+	public static loadAssets(scene: TypedScene | BaseHtmlScene): void {
 		switch (scene.sceneType) {
 			case SceneTypes.GameScene:
 				this.loadMapAssets(scene);
 				break;
 			case SceneTypes.UIScene:
-				if (!(scene instanceof BaseUIScene)) {
+				if (!(scene instanceof BaseHtmlScene)) {
 					console.error('Не UI сцена имеет тип UI, ошибка');
 					break;
 				}
-				this.loadUIAssets(scene);
+				this.loadHtmlAssets(scene);
 				break;
 			default:
 				console.warn(
@@ -87,8 +87,8 @@ export class AssetManager {
 	 */
 	@ManifestEntryCheck // 2
 	@ManifestExistsCheck // 1
-	public static loadUIAssets(
-		scene: BaseUIScene,
+	public static loadHtmlAssets(
+		scene: BaseHtmlScene,
 		manifestEntry?: UIStylesManifest,
 	): void {
 		scene.load.html(scene.sceneKey, manifestEntry.HTML);

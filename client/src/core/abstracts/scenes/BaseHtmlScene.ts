@@ -1,7 +1,7 @@
 import { AssetManager } from '@services/AssetManager';
 import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
 
-export abstract class BaseUIScene extends AbstractBaseScene {
+export abstract class BaseHtmlScene extends AbstractBaseScene {
 	public div!: Phaser.GameObjects.DOMElement;
 	private link!: HTMLLinkElement;
 
@@ -25,7 +25,8 @@ export abstract class BaseUIScene extends AbstractBaseScene {
 	public shutdown(): void {
 		this.onShutdown();
 		this.div.destroy();
-		document.head.removeChild(this.link);
+		if (this.link) document.head.removeChild(this.link);
+		else console.warn(`[BaseHtmlScene] link не существует`);
 	}
 	//#endregion
 

@@ -18,8 +18,9 @@ export const enum SceneKeys {
  * Используются для внутренней архитектуры и управления сценами
  */
 export const enum SceneTypes {
-	GameScene = 'MAIN', // Основные игровые сцены (уровни, миры)
+	GameScene = 'GAME', // Основные игровые сцены (уровни, миры)
 	UIScene = 'UI', // Сцены пользовательского интерфейса (инвентарь, HUD)
+	HTMLScene = 'HTML',
 	SystemScene = 'SYS', // Системные сцены (загрузка ассетов, переходы)
 	Undefined = 'UNDEFINED', // Тип по умолчанию / Неопределенная сцена
 }
