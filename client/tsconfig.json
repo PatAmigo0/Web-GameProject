@@ -36,7 +36,8 @@
 		/* Path aliases */
 		"baseUrl": "./src",
 		"paths": {
-			"@/*": ["*"],
+			"@decorators/*": ["utils/decorators/*"],
+			"@abstracts/*": ["core/abstracts/*"],
 			"@components/*": ["components/*"],
 			"@scenes/*": ["scenes/*"],
 			"@services/*": ["services/*"],
@@ -45,11 +46,9 @@
 			"@gametypes/*": ["types/*"],
 			"@core/*": ["core/*"],
 			"@styles/*": ["styles/*"],
-			"@decorators/*": ["utils/decorators/*"],
-			"@abstracts/*": ["core/abstracts/*"],
+			"@main": ["main"],
 
-			// single
-			"@main": ["main"]
+			"@/*": ["*"]
 		}
 	},
 

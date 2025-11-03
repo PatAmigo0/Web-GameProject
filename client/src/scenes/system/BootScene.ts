@@ -1,11 +1,11 @@
 // src/utils/BootScene.ts
 
-import { AssetManager } from '@/services/AssetManager';
-import { SceneKeys, SceneTypes } from '@/types/scene.types';
+import { TypedScene } from '@abstracts/scenes/TypedScene';
+import { withPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
 import { EventTypes } from '@config/events.config';
-import { SceneInfo } from '@/utils/decorators/scene/SceneInfo.decorator';
-import { withPhaserLifecycle } from '@/core/abstracts/scenes/WithPhaserLifecycle';
-import { TypedScene } from '@/core/abstracts/scenes/TypedScene';
+import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
+import { AssetManager } from '@services/AssetManager';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
 export class BootScene extends withPhaserLifecycle(TypedScene) {
@@ -23,7 +23,7 @@ export class BootScene extends withPhaserLifecycle(TypedScene) {
 	}
 
 	public create() {}
-	public heartbeat(): void {}
+	public heartbeat() {}
 
 	public shutdown() {
 		this.loadingText.destroy();

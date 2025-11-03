@@ -4,9 +4,9 @@
 /**
  * Ключи для объектных слоев, используемых для поиска конкретных групп объектов
  */
-export const enum ObjectLayerKeys {
-	Spawn = 'spawn', // Слой, содержащий точки спавна
-}
+export const ObjectLayerKeys = {
+	Spawn: 'spawn', // Слой, содержащий точки спавна
+} as const;
 //#endregion
 
 //#region TILE & LAYER PROPERTIES INTERFACES

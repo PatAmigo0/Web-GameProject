@@ -1,6 +1,6 @@
 //#region IMPORTS
-import { scenes } from '@scenes/index';
 import { SceneKeys } from '@gametypes/scene.types';
+import { scenes } from '@scenes/index';
 //#endregion
 
 //#region CORE GAME CONFIGURATION
@@ -35,7 +35,7 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 	dom: {
 		createContainer: true,
 	},
-};
+} as const;
 //#endregion
 
 //#region SCENE FLOW CONFIGURATION

@@ -5,7 +5,7 @@ import type {
 	MapAssetManifest,
 	UIStylesManifest,
 } from '@gametypes/phaser.types';
-import { BaseHtmlScene } from '@/core/abstracts/scenes/BaseHtmlScene';
+import { BaseHtmlScene } from '@abstracts/scenes/BaseHtmlScene';
 import { ManifestExistsCheck } from '@decorators/assetManager/ManifestExistsCheck.decorator';
 import { ManifestEntryCheck } from '@decorators/assetManager/ManifestEntryCheck.decorator';
 import { SceneTypes } from '@gametypes/scene.types';

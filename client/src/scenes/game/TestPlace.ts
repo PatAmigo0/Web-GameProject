@@ -7,27 +7,26 @@
 //#endregion
 
 //#region IMPORTS
-import type { GameData } from '@gametypes/game.types';
-import { NetworkedScene } from '@abstracts/scenes/NetworkedScene';
-import obstacleImg from '/assets/images/typescript.svg';
-import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { CAMERA_ZOOM } from '@config/game.config';
+import { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
+import { RoomIDDisplay } from '@components/ui/RoomIDDisplay';
+import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import {
+	CAMERA_ZOOM,
 	IDLE_ANIM_LOCK_DURATION,
 	MOVE_SPEED,
 	PLAYER_CONFIG,
 	PLAYER_DEPTH,
 } from '@config/game.config';
-import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
-import { RoomIDDisplay } from '@components/ui/RoomIDDisplay';
+import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { Game } from '@main';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
-import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import obstacleImg from '/assets/images/typescript.svg';
 //#endregion
 
 //#region SCENE DEFINITION
 @SceneInfo(SceneKeys.TestPlace, SceneTypes.GameScene)
-export class TestPlace extends NetworkedScene {
+export class TestPlace extends BaseGameScene {
 	//#region SCENE ATTRIBUTES (State)
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key };
 	private obstaclesGroup!: Phaser.Physics.Arcade.StaticGroup;
@@ -297,16 +296,6 @@ export class TestPlace extends NetworkedScene {
 		);
 		this.idText.setPosition(vector.x, vector.y);
 	}
-	//#endregion
-
-	//#region NETWORK METHODS
-	//================================================================
-	// СЕТЕВЫЕ МЕТОДЫ (не используются)
-	//================================================================
-
-	onPlayerConnected(_peerId: string): void {}
-	onPlayerDisconnected(_peerId: string): void {}
-	handleNetworkData(_peerId: string, _data: GameData): void {}
 	//#endregion
 }
 //#endregion

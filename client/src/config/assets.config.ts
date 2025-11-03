@@ -1,7 +1,7 @@
 //#region IMPORTS
 import playerSpriteUrl from '/assets/images/hero.png';
-import newPlayerSpriteUrl from '/assets/images/Walk.png';
 import idlePlayerSpriteUrl from '/assets/images/Stand.png';
+import newPlayerSpriteUrl from '/assets/images/Walk.png';
 //#endregion
 
 //#region ASSET KEYS
@@ -14,7 +14,7 @@ export const ASSET_KEYS = {
 	PLAYER_IDLE: 'player-idle',
 	MAP_MANIFEST: 'map-manifest',
 	HTML_MANIFEST: 'html-manifest',
-};
+} as const;
 //#endregion
 
 //#region ASSET URLS
@@ -27,5 +27,5 @@ export const ASSET_URLS = {
 	[ASSET_KEYS.PLAYER_IDLE]: idlePlayerSpriteUrl,
 	[ASSET_KEYS.MAP_MANIFEST]: '/assets/manifests/map-manifest.json',
 	[ASSET_KEYS.HTML_MANIFEST]: '/assets/manifests/html-manifest.json',
-};
+} as const;
 //#endregion

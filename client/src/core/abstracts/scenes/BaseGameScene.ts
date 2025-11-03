@@ -1,12 +1,12 @@
 //#region IMPORTS
+import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
 import type { Map } from '@components/entities/GameMap';
-import { AssetManager } from '@services/AssetManager';
-import { MapManager } from '@services/MapManager';
-import { SceneEventHandler } from '@core/handlers/SceneEventHandler';
-import { TiledConverter } from '@utils/TiledConverter';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
-import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
+import { SceneEventHandler } from '@core/handlers/SceneEventHandler';
+import { AssetManager } from '@services/AssetManager';
+import { MapManager } from '@services/MapManager';
+import { TiledConverter } from '@utils/TiledConverter';
 //#endregion
 
 //#region ABSTRACT SCENE DEFINITION

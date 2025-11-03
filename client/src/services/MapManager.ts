@@ -9,10 +9,10 @@ import {
 // импортируем наш кастомный класс Map
 import { Map } from '@components/entities/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
-import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
 import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
+import type { TypedScene } from '@abstracts/scenes/TypedScene';
 import { TILE_SIZE } from '@config/game.config';
+import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
 //#endregion
 
 /**

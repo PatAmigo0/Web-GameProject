@@ -1,8 +1,8 @@
-import { STARTING_SCENE } from '@config/game.config';
-import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
-import { BaseHtmlScene } from '@/core/abstracts/scenes/BaseHtmlScene';
+import { BaseHtmlScene } from '@abstracts/scenes/BaseHtmlScene';
 import { EventTypes } from '@config/events.config';
+import { STARTING_SCENE } from '@config/game.config';
+import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.UIScene)
 export class MainMenuScene extends BaseHtmlScene {

@@ -1,4 +1,4 @@
-// src/network/NetworkService.ts
+// src/services/NetworkService.ts
 
 import Phaser from 'phaser';
 

@@ -1,12 +1,12 @@
-import Phaser from 'phaser';
-import { Players } from '@services/PlayerService';
-import { NetworkService } from '@services/NetworkService';
+import type { WithPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
 import { EventTypes } from '@config/events.config';
 import { STARTING_MENU } from '@config/game.config';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { BootScene } from '@scenes/system/BootScene';
-import type { WithPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
+import { NetworkService } from '@services/NetworkService';
+import { Players } from '@services/PlayerService';
+import Phaser from 'phaser';
 
 //#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {
@@ -15,8 +15,8 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region CORE SERVICES
-	public Players = new Players();
-	public NetworkService = new NetworkService();
+	public players = new Players();
+	public networkService = new NetworkService();
 
 	//#endregion
 
@@ -31,8 +31,6 @@ export class GameService extends Phaser.Game {
 	constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
 		this.events.once(Phaser.Core.Events.READY, () => this._init());
-		// Регистрация ключевых сервисов в реестре Phaser для доступа из сцен
-		this.registry.set('NetworkService', this.NetworkService);
 	}
 	//#endregion
 
