@@ -1,11 +1,10 @@
 //#region IMPORTS
+import { AssetManager } from '@/managers/AssetManager';
+import { MapManager } from '@/managers/MapManager';
 import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
-import type { Map } from '@components/entities/GameMap';
+import type { Map } from '@components/entities/PhaserComponents/GameMap';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
-import { SceneEventHandler } from '@core/handlers/SceneEventHandler';
-import { AssetManager } from '@services/AssetManager';
-import { MapManager } from '@services/MapManager';
 import { TiledConverter } from '@utils/TiledConverter';
 //#endregion
 
@@ -16,30 +15,21 @@ import { TiledConverter } from '@utils/TiledConverter';
  */
 export abstract class BaseGameScene extends AbstractBaseScene {
 	//#region SCENE ATTRIBUTES
-	protected eventHandler!: SceneEventHandler;
 	protected map!: Map;
 	protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
 	public preload(): void {
-		// 1. Загрузка ассетов карты (Tiled JSON и тайлсеты)
 		AssetManager.loadAssets(this);
-		// 2. Загрузка основного спрайта игрока (или других общих ассетов)
 		this.load.image(
 			ASSET_KEYS.PLAYER_SPRITE,
 			ASSET_URLS[ASSET_KEYS.PLAYER_SPRITE],
 		);
-		// 3. Вызов хука для специфической загрузки дочерней сцены
 		this.onPreload();
 	}
 
 	public create(): void {
-		// 1. Инициализация обработчика событий
-		this.eventHandler = new SceneEventHandler(this);
-		this.eventHandler.setupCommonListeners();
-
-		// 2. Создание карты
 		const mapData = MapManager.createMap(this);
 		this.map = mapData.map;
 

@@ -2,11 +2,16 @@
 
 import 'phaser';
 
+import { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { SceneManager } from '@managers/SceneManager';
 import { GameService } from '@services/GameService';
-import { TypedScene } from '@core/abstracts/scenes/TypedScene';
 
 declare global {
 	namespace Phaser {
+		interface Game {
+			readonly scene: SceneManager;
+		}
+
 		interface Scene {
 			readonly game: GameService;
 		}

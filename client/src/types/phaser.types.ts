@@ -7,12 +7,12 @@ export interface ITypedSceneManager extends Phaser.Scenes.SceneManager {
 	start(key: string, data?: object): this;
 }
 
-export interface MapAssetManifest {
+export interface IMapAssetManifest {
 	mapJsonUrl: string;
 	tilesetUrls: string[];
 }
 
-export interface UIStylesManifest {
+export interface IHtmlAssetManifest {
 	CSS: string;
 	HTML: string;
 }

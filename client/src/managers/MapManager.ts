@@ -7,12 +7,12 @@ import {
 	PLAYER_SPAWN,
 } from '@config/tiled.config';
 // импортируем наш кастомный класс Map
-import { Map } from '@components/entities/GameMap';
+import { Map } from '@components/entities/PhaserComponents/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
 import type { TypedScene } from '@abstracts/scenes/TypedScene';
 import { TILE_SIZE } from '@config/game.config';
-import type { BooleanPropertie, Propertie } from '@gametypes/layer.types';
+import type { IBooleanPropertie, IPropertie } from '@gametypes/layer.types';
 //#endregion
 
 /**
@@ -25,12 +25,12 @@ export class MapManager {
 	//#region PUBLIC STATIC METHODS
 	/**
 	 * Основной метод, который создает карту и все ее компоненты
-	 * Вызываешь его, а он тебе возвращает готовый "пакет" со всем нужным
+	 * он возвращает готовый "пакет" со всем нужным
 	 * @param scene - Сцена, в которой создается карта
 	 * @returns Объект, содержащий созданную карту, слои для коллизий и точку спавна игрока
 	 */
 	public static createMap(scene: TypedScene): {
-		map: Map; // сама карта
+		map: Map;
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[]; // слои, в которые можно врезаться
 		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null; // где появляется игрок
 	} {
@@ -116,7 +116,7 @@ export class MapManager {
 		tilesetName: string, // 'grass', 'water' и тд
 	): Phaser.Tilemaps.Tileset | null {
 		// Предполагаем, что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
-		// типа, картинка 'grass.png' в Tiled называется 'grass', и в Phaser мы ее загрузили как 'grass'
+		// напр. картинка 'grass.png' в Tiled называется 'grass', и в Phaser мы ее загрузили как 'grass'
 		const tileset = map.addTilesetImage(
 			tilesetName,
 			tilesetName,
@@ -149,7 +149,7 @@ export class MapManager {
 		// по дефолту слой не коллайдится
 		let isCollidable = false;
 		// берем кастомные проперти слоя из Tiled
-		const properties = layerData.properties as BooleanPropertie[];
+		const properties = layerData.properties as IBooleanPropertie[];
 
 		// ищем проперти 'collides' и проверяем, что оно 'true'
 		if (Array.isArray(properties)) {
@@ -164,7 +164,7 @@ export class MapManager {
 
 	private static _initLayer(
 		layer: Phaser.Tilemaps.TilemapLayer,
-		properties: Propertie[],
+		properties: IPropertie[],
 	): { isCollidable: boolean } {
 		let isCollidable = false;
 		if (
@@ -181,8 +181,6 @@ export class MapManager {
 			properties.find((p) => p.name === DEPTH_PROPERTIE_NAME)?.value ||
 				layer.depth,
 		);
-
-		console.debug(`${layer.name} depth: ${layer.depth}`);
 
 		return { isCollidable };
 	}

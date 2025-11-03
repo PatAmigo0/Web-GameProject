@@ -1,9 +1,7 @@
-import type { WithPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
-import { EventTypes } from '@config/events.config';
-import { STARTING_MENU } from '@config/game.config';
-import type { ITypedSceneManager } from '@gametypes/phaser.types';
 import { SceneKeys } from '@gametypes/scene.types';
+import { SceneManager } from '@managers/SceneManager';
 import { BootScene } from '@scenes/system/BootScene';
+import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
 import { Players } from '@services/PlayerService';
 import Phaser from 'phaser';
@@ -11,26 +9,24 @@ import Phaser from 'phaser';
 //#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {
 	//#region PHASER OVERRIDES
-	declare readonly scene: ITypedSceneManager;
+	declare readonly scene: SceneManager;
 	//#endregion
 
 	//#region CORE SERVICES
 	public players = new Players();
 	public networkService = new NetworkService();
-
+	private eventService = new EventService(this);
 	//#endregion
 
 	//#region GAME CONTEXT
 	public online = false;
 	public id!: string;
-
-	public currentMainScene: WithPhaserLifecycle = null;
 	//#endregion
 
 	//#region CONSTRUCTOR
 	constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
-		this.events.once(Phaser.Core.Events.READY, () => this._init());
+		this.events.once(Phaser.Core.Events.READY, () => this.init());
 	}
 	//#endregion
 
@@ -42,38 +38,23 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region PRIVATE MAIN METHODS
-	private _changeMainScene(sceneKey: string) {
-		console.debug(
-			`[game] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
-		);
-		if (this.currentMainScene != null) {
-			this.scene.stop(this.currentMainScene.sceneKey);
-			this.currentMainScene.shutdown();
-		}
-
-		const newScene = this.scene.getScene<WithPhaserLifecycle>(sceneKey);
-		this.scene.start(sceneKey);
-		this.currentMainScene = newScene;
-	}
 	//#endregion
 
 	//#region PRIVATE INITIALIZATION
-	private _init(): void {
-		this._register_events();
+	private init(): void {
+		this.initAttributes();
+		this.eventService.init();
 		this.__boot__();
 	}
 
-	private _register_events() {
-		this.events.addListener(EventTypes.BOOT, () => {
-			this.events.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_MENU);
-		});
-
-		this.events.addListener(
-			EventTypes.MAIN_SCENE_CHANGE,
-			(sceneKey: string) => {
-				this._changeMainScene(sceneKey);
-			},
-		);
+	private initAttributes() {
+		// обновляю this.scene чтобы он поддерживал новый функционал из SceneManager (кастомный)
+		(
+			Object.setPrototypeOf(
+				this.scene,
+				SceneManager.prototype,
+			) as SceneManager
+		).init();
 	}
 	//#endregion
 
@@ -84,7 +65,7 @@ export class GameService extends Phaser.Game {
 	private __boot__() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
 		if (BootScene) {
-			this.currentMainScene = BootScene;
+			this.scene.currentMainScene = BootScene;
 			BootScene.loadAssets();
 		} else console.error('[game] не удалось загрузить boot сцену');
 	}

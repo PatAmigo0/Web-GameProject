@@ -1,11 +1,11 @@
 // src/utils/BootScene.ts
 
+import { AssetManager } from '@/managers/AssetManager';
 import { TypedScene } from '@abstracts/scenes/TypedScene';
 import { withPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
 import { EventTypes } from '@config/events.config';
 import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { AssetManager } from '@services/AssetManager';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
 export class BootScene extends withPhaserLifecycle(TypedScene) {

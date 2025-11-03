@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import path from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	resolve: {
@@ -15,6 +15,7 @@ export default defineConfig({
 			'@styles': path.resolve(__dirname, './src/styles'),
 			'@decorators': path.resolve(__dirname, './src/utils/decorators'),
 			'@abstracts': path.resolve(__dirname, './src/core/abstracts'),
+			'@managers': path.resolve(__dirname, './src/managers'),
 
 			// single aliases
 			'@main': path.resolve(__dirname, './src/main.ts'),

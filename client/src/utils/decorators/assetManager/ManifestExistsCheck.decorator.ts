@@ -1,4 +1,4 @@
-import type { AssetManager } from '@services/AssetManager';
+import type { AssetManager } from '@/managers/AssetManager';
 
 export function ManifestExistsCheck<T extends AssetManager>(
 	_: T,

@@ -40,6 +40,7 @@
 			"@abstracts/*": ["core/abstracts/*"],
 			"@components/*": ["components/*"],
 			"@scenes/*": ["scenes/*"],
+			"@managers/*": ["managers/*"],
 			"@services/*": ["services/*"],
 			"@config/*": ["config/*"],
 			"@utils/*": ["utils/*"],

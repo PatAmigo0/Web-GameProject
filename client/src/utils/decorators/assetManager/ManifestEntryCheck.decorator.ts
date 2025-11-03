@@ -1,5 +1,5 @@
+import type { AssetManager } from '@/managers/AssetManager';
 import type { TypedScene } from '@abstracts/scenes/TypedScene';
-import type { AssetManager } from '@services/AssetManager';
 import type {
 	MapAssetManifest,
 	UIStylesManifest,

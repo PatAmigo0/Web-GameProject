@@ -13,7 +13,7 @@ export const ObjectLayerKeys = {
 /**
  * Базовый интерфейс для свойства Tiled (кастомное свойство)
  */
-export interface Propertie {
+export interface IPropertie {
 	name: string; // Имя свойства, например 'collides' или 'depth'
 	type: string; // Тип данных свойства, например 'boolean', 'int', 'string'
 	value: any; // Фактическое значение
@@ -23,7 +23,7 @@ export interface Propertie {
  * Интерфейс для свойства Tiled, значение которого гарантированно является boolean
  * Расширяет Propertie, переопределяя тип valueы
  */
-export interface BooleanPropertie extends Omit<Propertie, 'value'> {
+export interface IBooleanPropertie extends Omit<IPropertie, 'value'> {
 	value: boolean;
 }
 //#endregion

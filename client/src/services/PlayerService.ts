@@ -1,5 +1,5 @@
 //#region IMPORTS
-import { Player } from '@components/entities/Player';
+import { Player } from '@components/entities/PlayerComponents/Player';
 //#endregion
 
 //#region CLASS DEFINITION

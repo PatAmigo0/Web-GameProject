@@ -404,10 +404,29 @@
          "imagewidth":368,
          "margin":0,
          "name":"tileset_other",
+         "properties":[
+                {
+                 "name":"test",
+                 "type":"bool",
+                 "value":true
+                }],
          "spacing":0,
          "tilecount":736,
          "tileheight":16,
          "tilewidth":16
+        }, 
+        {
+         "columns":52,
+         "firstgid":3004,
+         "image":"..\/tilesets\/tileset_cave_test.png",
+         "imageheight":740,
+         "imagewidth":940,
+         "margin":0,
+         "name":"tileset_cave_test",
+         "spacing":0,
+         "tilecount":2132,
+         "tileheight":18,
+         "tilewidth":18
         }],
  "tilewidth":16,
  "type":"map",
