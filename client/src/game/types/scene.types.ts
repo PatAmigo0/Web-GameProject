@@ -5,4 +5,7 @@ export const enum SceneKeys {
 	MainMenu = 'MainMenu',
 	TestPlace = 'TestPlace',
 	Level1 = 'Level1',
+
+	// DEBUG
+	TMainMenu = 'TMainMenu',
 }

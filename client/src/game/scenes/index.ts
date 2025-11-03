@@ -1,9 +1,8 @@
-// src/utils/index.ts
+// src/game/types/index.ts
 
-import test_scene2 from './game/TestPlace';
+import { TestPlace } from './game/TestPlace';
 import { BootScene } from './system/BootScene';
-import { MainMenuScene } from './ui/MainMenu';
-import { TMainMenuScene } from './ui/MainMenu2';
+import { MainMenuScene } from './ui/deprecated.Menu';
+import { TMainMenuScene } from './ui/MainMenu'; // Debug
 
-export const scenes = [BootScene, MainMenuScene, test_scene2];
-export const BootSceneKey = BootScene.sceneKey;
+export const scenes = [BootScene, MainMenuScene, TMainMenuScene, TestPlace];

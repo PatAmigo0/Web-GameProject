@@ -1,4 +1,4 @@
-// src/scene/SceneEventHandler.ts
+// src/game/core/handlers/SceneEventHandler.ts
 
 import { WorkingWithScene } from '../abstracts/WorkingWithScene';
 

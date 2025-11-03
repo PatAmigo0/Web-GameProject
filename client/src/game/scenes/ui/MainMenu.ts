@@ -1,92 +1,102 @@
-// scene/MainMenuScene.ts
-
-import { NetworkService } from '../../services/NetworkService';
+import { STARTING_SCENE } from '../../config/game.config';
 import { NamedScene } from '../../core/abstracts/NamedScene';
-import { SceneKey } from '../../utils/decorators/SceneKey.decorator';
+import type { NetworkService } from '../../services/NetworkService';
 import { SceneKeys } from '../../types';
-// import { StaticSceneKey } from '../../utils/decorators/StaticSceneKey.decorator';
+import { SceneKey } from '../../utils';
 
-@SceneKey(SceneKeys.MainMenu)
-export class MainMenuScene extends NamedScene {
+@SceneKey(SceneKeys.TMainMenu)
+export class TMainMenuScene extends NamedScene {
 	private NetworkService!: NetworkService;
-	private myIdText!: Phaser.GameObjects.Text;
-	private hostIdInput!: HTMLInputElement;
 
-	create() {
-		// Получаем наш NetworkService, который был создан в BootScene
+	// buttons
+	private createGameHost!: Phaser.GameObjects.Text;
+	private createGameLocal!: Phaser.GameObjects.Text;
+	private isStarting = false;
+
+	async create(): Promise<void> {
 		this.NetworkService = this.registry.get('NetworkService');
 
-		// 1. Кнопка "Создать игру" (Хост)
-		const createGameBtn = this.add
+		// Кнопка создать игру как хост
+		this.createGameHost = this.add
 			.text(
 				this.cameras.main.centerX,
 				200,
 				'Создать игру (быть хостом)',
 				{
-					fontSize: '24px',
-					backgroundColor: '#007bff',
-					padding: { x: 10, y: 5 },
+					fontSize: '28px',
+					backgroundColor: 'orange',
 				},
 			)
 			.setOrigin(0.5)
 			.setInteractive({ useHandCursor: true });
 
-		this.createJoinUI();
+		this.createGameHost.on('pointerdown', async () => {
+			console.log('Начинаю создавать игру!');
 
-		this.myIdText = this.add
-			.text(this.cameras.main.centerX, 500, 'Подключение к сети...', {
-				fontSize: '18px',
-			})
-			.setOrigin(0.5);
-
-		// --- Настраиваем логику кнопок ---
-
-		// Логика для Хоста
-		createGameBtn.on('pointerdown', async () => {
-			console.log('Начинаю игру как хост...');
-			const myId = await this.NetworkService.startPeer(true);
-
-			this.myIdText.setText(
-				`Игра создана! Ваш ID: ${myId}\n(Сообщите его друзьям)`,
-			);
-
-			this.scene.start(SceneKeys.TestPlace);
+			try {
+				if (!this.isStarting) {
+					this.isStarting = true;
+					const id = await this.NetworkService.startPeer(true);
+					console.log(`Ваш id: ${id}`);
+					this.scene.start(STARTING_SCENE);
+				}
+			} catch (error) {
+				console.warn(error);
+				this._showErrorMessage();
+			}
 		});
 
-		document
-			.getElementById('join-game-btn')
-			?.addEventListener('click', async () => {
-				const hostId = this.hostIdInput.value;
-				if (!hostId) {
-					alert('Пожалуйста, введите ID хоста');
-					return;
-				}
+		// Кнопка создать локальную игру
+		this.createGameLocal = this.add
+			.text(this.cameras.main.centerX, 400, 'Создать игру (локально)', {
+				fontSize: '28px',
+				padding: { x: 10, y: 5 },
+				backgroundColor: 'blue',
+			})
+			.setOrigin(0.5)
+			.setInteractive({ useHandCursor: true });
 
-				console.log(`Присоединяюсь к хосту ${hostId}...`);
-				await this.NetworkService.startPeer(false, hostId);
-
-				this.scene.start(SceneKeys.TestPlace);
-			});
+		this.createGameLocal.on('pointerdown', () => {
+			if (!this.isStarting) {
+				this.isStarting = true;
+				console.log('Начинаю игру вне сети');
+				this.scene.start(STARTING_SCENE);
+			}
+		});
 	}
 
-	// Вспомогательный метод для создания HTML элементов
-	private createJoinUI(): void {
-		// Создаем HTML Input элемент с помощью Phaser DOMElement
-		this.hostIdInput = document.createElement('input');
-		this.hostIdInput.type = 'text';
-		this.hostIdInput.placeholder = 'Введите ID хоста';
-		this.add.dom(this.cameras.main.centerX, 300, this.hostIdInput);
-
-		// Создаем HTML кнопку
-		const joinButton = document.createElement('button');
-		joinButton.id = 'join-game-btn';
-		joinButton.innerText = 'Присоединиться к игре';
-		this.add.dom(this.cameras.main.centerX, 350, joinButton);
-	}
-
-	// Не забываем удалить HTML элементы при выходе со сцены
 	shutdown() {
-		this.hostIdInput?.remove();
-		document.getElementById('join-game-btn')?.remove();
+		this.createGameHost.destroy(true);
+		this.createGameLocal.destroy(true);
+	}
+
+	/* CLASS OWN METHODS */
+	private _showErrorMessage() {
+		const background = document.createElement('div');
+		background.id = 'error-bg';
+		background.innerHTML = '';
+
+		this.add.dom(
+			this.cameras.main.centerX,
+			this.cameras.main.centerY,
+			background,
+		);
+
+		const errorText = document.createElement('p');
+		errorText.id = 'error-text';
+		errorText.innerHTML =
+			'Не удалось создать сетевую сессию, вы не в сети! Это сообщение пропадет через 5 секунд.';
+
+		this.add.dom(
+			this.cameras.main.centerX,
+			this.cameras.main.centerY,
+			errorText,
+		);
+
+		setTimeout(() => {
+			errorText.remove();
+			background.remove();
+			this.isStarting = false;
+		}, 5000);
 	}
 }
