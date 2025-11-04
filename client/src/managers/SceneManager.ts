@@ -8,7 +8,7 @@ export class SceneManager
 	implements ITypedSceneManager, IInitializiable
 {
 	declare scenes: TypedScene[];
-	private _currentMainScene!: WithPhaserLifecycle;
+	private _currentMainScene: WithPhaserLifecycle | undefined;
 
 	public init() {
 		this.currentMainScene = null;
@@ -18,23 +18,21 @@ export class SceneManager
 		console.debug(
 			`[SceneManager] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
 		);
-		if (this.currentMainScene != null) {
+		if (this._currentMainScene != null) {
 			this.stop(this.currentMainScene.sceneKey);
-			this.currentMainScene.shutdown();
+			this._currentMainScene.shutdown();
 		}
 
 		const newScene = this.getScene<WithPhaserLifecycle>(sceneKey);
 		this.start(sceneKey);
-		this.currentMainScene = newScene;
+		this._currentMainScene = newScene;
 	}
 
 	//#region SETTERS
 	set currentMainScene(scene: WithPhaserLifecycle) {
-		if (this._currentMainScene == null) this._currentMainScene = scene;
+		if (!this._currentMainScene) this._currentMainScene = scene;
 		else
-			console.error(
-				'Нельзя изменять currentMainScene без вызова события, если он не равен null',
-			);
+			throw 'Нельзя изменять currentMainScene без вызова события, если он не равен null';
 	}
 
 	//#endregion

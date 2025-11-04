@@ -46,8 +46,7 @@ export class AssetManager {
 				break;
 			case SceneTypes.UIScene:
 				if (!(scene instanceof BaseHtmlScene)) {
-					console.error('Не UI сцена имеет тип UI, ошибка');
-					break;
+					throw 'Не UI сцена имеет тип UI, ошибка';
 				}
 				this.loadHtmlAssets(scene);
 				break;

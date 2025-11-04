@@ -63,7 +63,7 @@ export class GameService extends Phaser.Game {
 		if (BootScene) {
 			this.scene.currentMainScene = BootScene;
 			BootScene.loadAssets();
-		} else console.error('[game] не удалось загрузить boot сцену');
+		} else throw 'Ошибка [game]: Не удалось загрузить boot сцену';
 	}
 	//#endregion
 }

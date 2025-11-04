@@ -9,10 +9,7 @@ export function ManifestExistsCheck<T extends AssetManager>(
 	descriptor.value = function (this: T, ...args: any[]) {
 		if (!this.manifestBuilt) {
 			if (!this.manifestBuilt) {
-				console.error(
-					'Ошибка [AssetManager]: Манифест ассетов еще не был создан. Вызовите AssetManager.buildManifest() в загрузочной сцене',
-				);
-				return;
+				throw 'Ошибка [AssetManager]: Манифест ассетов еще не был создан. Вызовите AssetManager.buildManifest() в загрузочной сцене';
 			}
 		}
 		return originalMethod.apply(this, args);

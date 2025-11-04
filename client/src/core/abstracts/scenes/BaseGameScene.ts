@@ -1,10 +1,10 @@
 //#region IMPORTS
-import { AssetManager } from '@/managers/AssetManager';
-import { MapManager } from '@/managers/MapManager';
 import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
 import type { Map } from '@components/phaser/GameMap';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
+import { AssetManager } from '@managers/AssetManager';
+import { MapManager } from '@managers/MapManager';
 import { TiledConverter } from '@utils/TiledConverter';
 //#endregion
 
@@ -16,7 +16,7 @@ import { TiledConverter } from '@utils/TiledConverter';
 export abstract class BaseGameScene extends AbstractBaseScene {
 	//#region SCENE ATTRIBUTES
 	protected map!: Map;
-	protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+	protected player!: Phaser.Physics.Arcade.Sprite;
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
@@ -36,8 +36,7 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		// 3. Обработка спавна игрока
 		const spawnPoint = mapData.playerSpawn;
 		if (!spawnPoint) {
-			console.error('Кто-то забыл добавить спавн на карту -_-');
-			return;
+			throw 'Кто-то забыл добавить спавн на карту -_-';
 		}
 
 		// 4. Позиционирование и создание игрока
@@ -72,7 +71,7 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 	/**
 	 * Предоставляет доступ к объекту игрока для других компонентов (например, MapManager)
 	 */
-	public getPlayer(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | null {
+	public getPlayer(): Phaser.Physics.Arcade.Sprite | null {
 		return this.player || null;
 	}
 	//#endregion
