@@ -1,5 +1,5 @@
 import { BaseHtmlScene } from '@abstracts/scenes/BaseHtmlScene';
-import { EventTypes } from '@config/events.config';
+import { GameEventTypes } from '@config/events.config';
 import { STARTING_SCENE } from '@config/game.config';
 import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
@@ -42,7 +42,10 @@ export class MainMenuScene extends BaseHtmlScene {
 		this.createGameLocal.addEventListener('click', () => {
 			if (this.isStarting) this._showErrorMessage();
 			this.isStarting = true;
-			this.game.events.emit(EventTypes.MAIN_SCENE_CHANGE, STARTING_SCENE);
+			this.game.events.emit(
+				GameEventTypes.MAIN_SCENE_CHANGE,
+				STARTING_SCENE,
+			);
 		});
 	}
 	//#endregion

@@ -2,7 +2,7 @@
 import { AssetManager } from '@/managers/AssetManager';
 import { MapManager } from '@/managers/MapManager';
 import { AbstractBaseScene } from '@abstracts/scenes/AbstractBaseScene';
-import type { Map } from '@components/entities/PhaserComponents/GameMap';
+import type { Map } from '@components/phaser/GameMap';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { PLAYER_DEPTH } from '@config/game.config';
 import { TiledConverter } from '@utils/TiledConverter';

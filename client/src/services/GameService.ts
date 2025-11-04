@@ -3,7 +3,7 @@ import { SceneManager } from '@managers/SceneManager';
 import { BootScene } from '@scenes/system/BootScene';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
-import { Players } from '@services/PlayerService';
+import { PlayerService } from '@services/PlayerService';
 import Phaser from 'phaser';
 
 //#region GAME CLASS DEFINITION
@@ -13,14 +13,12 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region CORE SERVICES
-	public players = new Players();
-	public networkService = new NetworkService();
+	public playerService = new PlayerService(this);
+	private networkService = new NetworkService();
 	private eventService = new EventService(this);
 	//#endregion
 
 	//#region GAME CONTEXT
-	public online = false;
-	public id!: string;
 	//#endregion
 
 	//#region CONSTRUCTOR
@@ -31,10 +29,7 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region PUBLIC METHODS
-	public setOnlineContext(id: string) {
-		this.online = true;
-		this.id = id;
-	}
+
 	//#endregion
 
 	//#region PRIVATE MAIN METHODS
@@ -42,6 +37,7 @@ export class GameService extends Phaser.Game {
 
 	//#region PRIVATE INITIALIZATION
 	private init(): void {
+		this.networkService; // D
 		this.initAttributes();
 		this.eventService.init();
 		this.__boot__();

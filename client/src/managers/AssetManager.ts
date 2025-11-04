@@ -7,7 +7,7 @@ import { ManifestExistsCheck } from '@decorators/assetManager/ManifestExistsChec
 import type {
 	IHtmlAssetManifest,
 	IMapAssetManifest,
-} from '@gametypes/phaser.types';
+} from '@gametypes/interface.types';
 import { SceneTypes } from '@gametypes/scene.types';
 //#endregion
 

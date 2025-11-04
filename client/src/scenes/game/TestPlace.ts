@@ -8,7 +8,7 @@
 
 //#region IMPORTS
 import { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
-import { RoomIDDisplay } from '@components/ui/RoomIDDisplay';
+import { RoomIDDisplay } from '@components/phaser/ui/RoomIDDisplay';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import {
 	CAMERA_ZOOM,
@@ -19,7 +19,6 @@ import {
 } from '@config/game.config';
 import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { Game } from '@main';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
 import obstacleImg from '/assets/images/typescript.svg';
 //#endregion
@@ -118,7 +117,7 @@ export class TestPlace extends BaseGameScene {
 		}
 
 		// если диагонально то уменьшаем скорость
-		// 0.7 - магическое число которое я подобрал случайно с первого раза лол
+		// 0.73 - магическое число которое я подобрал случайно с первого раза лол
 		const isDiagonal = velocityX !== 0 && velocityY !== 0;
 		if (isDiagonal) {
 			velocityX *= 0.73;
@@ -205,10 +204,6 @@ export class TestPlace extends BaseGameScene {
 
 	private _initUI(): void {
 		this.idText = new RoomIDDisplay(this, 15, 15);
-		if (Game.online) {
-			console.log('Работаю в режиме онлайн!');
-			this.idText.show(Game.id);
-		}
 	}
 
 	private _initPlayer(): void {

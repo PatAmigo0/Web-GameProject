@@ -7,7 +7,7 @@ import {
 	PLAYER_SPAWN,
 } from '@config/tiled.config';
 // импортируем наш кастомный класс Map
-import { Map } from '@components/entities/PhaserComponents/GameMap';
+import { Map } from '@components/phaser/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
 import type { TypedScene } from '@abstracts/scenes/TypedScene';

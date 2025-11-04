@@ -3,7 +3,7 @@
 import { AssetManager } from '@/managers/AssetManager';
 import { TypedScene } from '@abstracts/scenes/TypedScene';
 import { withPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
-import { EventTypes } from '@config/events.config';
+import { GameEventTypes } from '@config/events.config';
 import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
@@ -31,6 +31,6 @@ export class BootScene extends withPhaserLifecycle(TypedScene) {
 
 	public async loadAssets() {
 		await AssetManager.buildManifest();
-		this.game.events.emit(EventTypes.BOOT);
+		this.game.events.emit(GameEventTypes.BOOT);
 	}
 }
