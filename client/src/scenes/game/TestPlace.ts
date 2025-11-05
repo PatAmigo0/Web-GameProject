@@ -7,7 +7,7 @@
 //#endregion
 
 //#region IMPORTS
-import { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
+import { BaseGameScene } from '@abstracts/scene/BaseGameScene';
 import { RoomIDDisplay } from '@components/phaser/ui/RoomIDDisplay';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import {
@@ -17,7 +17,7 @@ import {
 	PLAYER_CONFIG,
 	PLAYER_DEPTH,
 } from '@config/game.config';
-import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
 import obstacleImg from '/assets/images/typescript.svg';

@@ -1,17 +1,17 @@
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { TypedScene } from '@abstracts/scene/TypedScene';
 import type {
 	IHtmlAssetManifest,
 	IMapAssetManifest,
 } from '@gametypes/interface.types';
 import type { AssetManager } from '@managers/AssetManager';
 
-export function ManifestEntryCheck<T extends AssetManager>(
-	_: T,
+export function ManifestEntryCheck(
+	_: typeof AssetManager,
 	__: string,
 	descriptor: PropertyDescriptor,
-) {
+): PropertyDescriptor {
 	const originalMethod = descriptor.value;
-	descriptor.value = function (this: T, ...args: any[]) {
+	descriptor.value = function (this: typeof AssetManager, ...args: any[]) {
 		const scene = args[0] as TypedScene;
 		const manifestEntry:
 			| IMapAssetManifest

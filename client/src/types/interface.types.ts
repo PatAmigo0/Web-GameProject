@@ -1,5 +1,6 @@
 import type { AnimatorComponent } from '@components/entities/playerComponents/AnimatorComponent';
 import type { InputComponent } from '@components/entities/playerComponents/InputComponent';
+import type { GameService } from '@services/GameService';
 
 export interface IMapAssetManifest {
 	mapJsonUrl: string;
@@ -12,7 +13,7 @@ export interface IHtmlAssetManifest {
 }
 
 export interface IInitializiable {
-	init: Function;
+	init: () => void;
 }
 
 export interface IInputable {
@@ -21,4 +22,8 @@ export interface IInputable {
 
 export interface IAnimatable {
 	animator: AnimatorComponent;
+}
+
+export interface IGameContextAware {
+	game: GameService;
 }

@@ -1,4 +1,4 @@
-import { TypedScene } from '@abstracts/scenes/TypedScene';
+import { TypedScene } from '@abstracts/scene/TypedScene';
 
 export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
 	Base: T,

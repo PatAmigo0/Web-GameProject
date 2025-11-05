@@ -1,27 +1,17 @@
 //#region IMPORTS
+import { BaseService } from '@abstracts/service/BaseService';
 import { Player } from '@components/entities/Player';
 import type { IInitializiable } from '@gametypes/interface.types';
 import { PlayerManager } from '@managers/PlayerManager';
-import type { GameService } from './GameService';
 //#endregion
 
 //#region CLASS DEFINITION
-export class PlayerService
-	extends Phaser.Events.EventEmitter
-	implements IInitializiable
-{
+export class PlayerService extends BaseService implements IInitializiable {
 	//#region CLASS ATTRIBUTES
-	private game!: GameService;
 	private players = new Map<string, Player>();
 	private localPlayer!: Player; // локальный игрок, т.е игрок браузера
 	private playerManager!: PlayerManager;
 	//#endregion
-
-	constructor(game: GameService) {
-		super();
-		this.game = game;
-		this.init();
-	}
 
 	//#region
 	public init() {

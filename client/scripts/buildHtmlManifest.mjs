@@ -36,7 +36,8 @@ try {
 
 	const htmlManifest = {};
 	for (const fileName in avaliableHtml) {
-		const fileNameUpperCase = fileName[0].toUpperCase() + fileName.slice(1); // Имя сцены в src без .ts расширения
+		const fileNameUpperCase =
+			fileName.charAt(0).toUpperCase() + fileName.slice(1); // Имя сцены в src без .ts расширения
 		htmlManifest[fileNameUpperCase] = {
 			CSS: `/styles/${fileName}.css`,
 			HTML: `/html/${fileName}.html`,

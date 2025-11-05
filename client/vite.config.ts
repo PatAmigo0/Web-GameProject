@@ -4,7 +4,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	resolve: {
 		alias: {
-			'@': path.resolve(__dirname, './src'),
+			'@main': path.resolve(__dirname, './src/main.ts'),
+			'@decorators': path.resolve(__dirname, './src/utils/decorators'),
+			'@abstracts': path.resolve(__dirname, './src/core/abstracts'),
+			'@managers': path.resolve(__dirname, './src/managers'),
 			'@components': path.resolve(__dirname, './src/components'),
 			'@scenes': path.resolve(__dirname, './src/scenes'),
 			'@services': path.resolve(__dirname, './src/services'),
@@ -13,12 +16,8 @@ export default defineConfig({
 			'@gametypes': path.resolve(__dirname, './src/types'),
 			'@core': path.resolve(__dirname, './src/core'),
 			'@styles': path.resolve(__dirname, './src/styles'),
-			'@decorators': path.resolve(__dirname, './src/utils/decorators'),
-			'@abstracts': path.resolve(__dirname, './src/core/abstracts'),
-			'@managers': path.resolve(__dirname, './src/managers'),
 
-			// single aliases
-			'@main': path.resolve(__dirname, './src/main.ts'),
+			'@': path.resolve(__dirname, './src'),
 		},
 	},
 });

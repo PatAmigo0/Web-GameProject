@@ -1,16 +1,10 @@
 // src/services/EventService.ts
 
-import { GameEventTypes } from '@config/events.config';
+import { BaseService } from '@abstracts/service/BaseService';
+import { GAME_EVENT_TYPES } from '@config/events.config';
 import { STARTING_MENU } from '@config/game.config';
-import type { GameService } from '@services/GameService';
 
-export class EventService {
-	private game: GameService;
-
-	constructor(gameInstance: GameService) {
-		this.game = gameInstance;
-	}
-
+export class EventService extends BaseService {
 	public init() {
 		this.setupCommonListeners();
 		this.setupUncommonListeners();
@@ -18,7 +12,7 @@ export class EventService {
 
 	private setupCommonListeners(): void {
 		this.game.events.on('blur', () =>
-			this.game.events.emit(GameEventTypes.INPUT_RESET),
+			this.game.events.emit(GAME_EVENT_TYPES.INPUT_RESET),
 		);
 
 		// блокирует context menu в canvas (сценах)
@@ -34,15 +28,15 @@ export class EventService {
 	}
 
 	private setupUncommonListeners(): void {
-		this.game.events.addListener(GameEventTypes.BOOT, () => {
+		this.game.events.addListener(GAME_EVENT_TYPES.BOOT, () => {
 			this.game.events.emit(
-				GameEventTypes.MAIN_SCENE_CHANGE,
+				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
 				STARTING_MENU,
 			);
 		});
 
 		this.game.events.addListener(
-			GameEventTypes.MAIN_SCENE_CHANGE,
+			GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
 			(sceneKey: string) => {
 				this.game.scene.changeMainScene(sceneKey);
 			},

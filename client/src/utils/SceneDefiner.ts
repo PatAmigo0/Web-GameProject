@@ -1,4 +1,4 @@
-import { TypedScene } from '@abstracts/scenes/TypedScene';
+import { TypedScene } from '@abstracts/scene/TypedScene';
 import { type ISceneHandlers } from '@gametypes/scene.types';
 
 export function sceneDefiner(scene: TypedScene, SceneHandlers: ISceneHandlers) {

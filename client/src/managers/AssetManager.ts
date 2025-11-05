@@ -1,9 +1,9 @@
 //#region IMPORTS
-import { BaseHtmlScene } from '@abstracts/scenes/BaseHtmlScene';
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
+import type { TypedScene } from '@abstracts/scene/TypedScene';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
-import { ManifestEntryCheck } from '@decorators/assetManager/ManifestEntryCheck.decorator';
-import { ManifestExistsCheck } from '@decorators/assetManager/ManifestExistsCheck.decorator';
+import { ManifestEntryCheck } from '@decorators/ManifestEntryCheck.decorator';
+import { ManifestExistsCheck } from '@decorators/ManifestExistsCheck.decorator';
 import type {
 	IHtmlAssetManifest,
 	IMapAssetManifest,
@@ -23,15 +23,12 @@ export class AssetManager {
 	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
 	public static readonly assetManifest: Record<string, IMapAssetManifest> =
 		{};
-	assetManifest: Record<string, IMapAssetManifest>;
 
 	public static readonly stylesManifest: Record<string, IMapAssetManifest> =
 		{};
-	stylesManifest: Record<string, IMapAssetManifest>;
 
 	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
 	public static manifestBuilt = false;
-	manifestBuilt: boolean;
 	//#endregion
 
 	//#region PUBLIC STATIC METHODS

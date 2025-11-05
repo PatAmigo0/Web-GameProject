@@ -1,10 +1,16 @@
-export const GameEventTypes = {
+export const GAME_EVENT_TYPES = {
 	BOOT: 'BOOT',
 	MAIN_SCENE_CHANGE: 'MAIN_SCENE_CHANGE',
 	INPUT_RESET: 'INPUT_RESET',
 } as const;
 
-export const PlayerEventTyoes = {
+export const PLAYER_EVENT_TYPES = {
 	PLAYER_ADDED: 'PLAYER_ADDED',
 	PLAYER_REMOVING: 'PLAYER_REMOVING',
+} as const;
+
+export const KEYBOARD_EVENT_TYPES = {
+	KEY_UP: 'keyup',
+	KEY_DOWN: 'keydown',
+	KEY_PRESSED: 'GLOBAL_KEY_PRESSED',
 } as const;

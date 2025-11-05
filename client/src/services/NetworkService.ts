@@ -1,5 +1,6 @@
 // src/services/NetworkService.ts
+import { BaseService } from '@abstracts/service/BaseService';
 
-import Phaser from 'phaser';
-
-export class NetworkService extends Phaser.Events.EventEmitter {}
+export class NetworkService extends BaseService {
+	public init(): void {}
+}

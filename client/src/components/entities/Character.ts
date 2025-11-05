@@ -1,7 +1,9 @@
-import { TypedScene } from '@abstracts/scenes/TypedScene';
+import { TypedScene } from '@abstracts/scene/TypedScene';
 import type { IAnimatable, IInputable } from '@gametypes/interface.types';
 import { AnimatorComponent } from './playerComponents/AnimatorComponent';
+import { HealthComponent } from './playerComponents/HealthComponent';
 import { InputComponent } from './playerComponents/InputComponent';
+import { MoveComponent } from './playerComponents/MoveComponent';
 
 export class Character
 	extends Phaser.Physics.Arcade.Sprite
@@ -9,6 +11,8 @@ export class Character
 {
 	public keyinput!: InputComponent;
 	public animator!: AnimatorComponent;
+	public move!: MoveComponent;
+	public health!: HealthComponent;
 
 	constructor(
 		scene: TypedScene,
@@ -18,7 +22,9 @@ export class Character
 		frame?: string | number,
 	) {
 		super(scene, x, y, texture, frame);
-		this.keyinput = new InputComponent(this);
+		this.keyinput = new InputComponent();
 		this.animator = new AnimatorComponent(this);
+		this.move = new MoveComponent(this.body as Phaser.Physics.Arcade.Body);
+		this.health = new HealthComponent();
 	}
 }

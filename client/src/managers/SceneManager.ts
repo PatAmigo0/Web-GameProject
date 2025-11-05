@@ -1,5 +1,5 @@
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
-import type { WithPhaserLifecycle } from '@abstracts/scenes/WithPhaserLifecycle';
+import type { TypedScene } from '@abstracts/scene/TypedScene';
+import type { WithPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
 import type { IInitializiable } from '@gametypes/interface.types';
 import type { ITypedSceneManager } from '@gametypes/phaser.types';
 
@@ -18,6 +18,7 @@ export class SceneManager
 		console.debug(
 			`[SceneManager] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
 		);
+
 		if (this._currentMainScene != null) {
 			this.stop(this.currentMainScene.sceneKey);
 			this._currentMainScene.shutdown();
@@ -31,8 +32,9 @@ export class SceneManager
 	//#region SETTERS
 	set currentMainScene(scene: WithPhaserLifecycle) {
 		if (!this._currentMainScene) this._currentMainScene = scene;
-		else
+		else {
 			throw 'Нельзя изменять currentMainScene без вызова события, если он не равен null';
+		}
 	}
 
 	//#endregion

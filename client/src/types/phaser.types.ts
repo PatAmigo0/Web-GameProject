@@ -1,4 +1,4 @@
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { TypedScene } from '@abstracts/scene/TypedScene';
 
 export interface ITypedSceneManager extends Phaser.Scenes.SceneManager {
 	scenes: TypedScene[];

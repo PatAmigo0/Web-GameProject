@@ -1,9 +1,7 @@
-import type { Character } from '../Character';
-
 export class AnimatorComponent {
-	private character!: Character;
+	private sprite: Phaser.GameObjects.Sprite;
 
-	constructor(character: Character) {
-		this.character = character;
+	constructor(sprite: Phaser.GameObjects.Sprite) {
+		this.sprite = sprite;
 	}
 }

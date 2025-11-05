@@ -7,10 +7,10 @@ import {
 	PLAYER_SPAWN,
 } from '@config/tiled.config';
 // импортируем наш кастомный класс Map
-import { Map } from '@components/phaser/GameMap';
+import { Map } from '@components/phaser/scene/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
-import type { BaseGameScene } from '@abstracts/scenes/BaseGameScene';
-import type { TypedScene } from '@abstracts/scenes/TypedScene';
+import type { BaseGameScene } from '@abstracts/scene/BaseGameScene';
+import type { TypedScene } from '@abstracts/scene/TypedScene';
 import { TILE_SIZE } from '@config/game.config';
 import type { IBooleanPropertie, IPropertie } from '@gametypes/layer.types';
 //#endregion

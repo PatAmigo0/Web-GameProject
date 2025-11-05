@@ -1,7 +1,7 @@
-import { BaseHtmlScene } from '@abstracts/scenes/BaseHtmlScene';
-import { GameEventTypes } from '@config/events.config';
+import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
+import { GAME_EVENT_TYPES } from '@config/events.config';
 import { STARTING_SCENE } from '@config/game.config';
-import { SceneInfo } from '@decorators/scene/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.UIScene)
@@ -43,7 +43,7 @@ export class MainMenuScene extends BaseHtmlScene {
 			if (this.isStarting) this._showErrorMessage();
 			this.isStarting = true;
 			this.game.events.emit(
-				GameEventTypes.MAIN_SCENE_CHANGE,
+				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
 				STARTING_SCENE,
 			);
 		});
@@ -77,6 +77,10 @@ export class MainMenuScene extends BaseHtmlScene {
 			background.remove();
 			this.isStarting = false;
 		}, 5000);
+	}
+
+	public destroy() {
+		console.warn('HELLO FROM DESTROY!');
 	}
 	//#endregion
 }

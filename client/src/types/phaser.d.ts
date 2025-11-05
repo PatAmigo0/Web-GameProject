@@ -2,7 +2,7 @@
 
 import 'phaser';
 
-import { TypedScene } from '@abstracts/scenes/TypedScene';
+import { TypedScene } from '@abstracts/scene/TypedScene';
 import type { SceneManager } from '@managers/SceneManager';
 import { GameService } from '@services/GameService';
 
