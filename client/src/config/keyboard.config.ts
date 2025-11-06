@@ -25,4 +25,5 @@ export const PhaserKeys = {
 	[Keys.A]: KeyCodes.A,
 	[Keys.S]: KeyCodes.S,
 	[Keys.D]: KeyCodes.D,
+	[Keys.SPACE]: KeyCodes.SPACE,
 } as const;

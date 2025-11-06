@@ -10,7 +10,7 @@ export const PLAYER_EVENT_TYPES = {
 } as const;
 
 export const KEYBOARD_EVENT_TYPES = {
-	KEY_UP: 'keyup',
-	KEY_DOWN: 'keydown',
+	KEY_UP: 'keyup', // НЕ ИЗМЕНЯТЬ
+	KEY_DOWN: 'keydown', // НЕ ИЗМЕНЯТЬ
 	KEY_PRESSED: 'GLOBAL_KEY_PRESSED',
 } as const;

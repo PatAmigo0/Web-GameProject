@@ -5,10 +5,11 @@
  * Уникальные ключи для идентификации сцен Phaser
  * Используются для запуска, остановки и получения сцен
  */
-export const enum SceneKeys {
+export enum SceneKeys {
 	BootScene = 'BootScene', // Сцена начальной загрузки
 	MainMenu = 'MainMenu', // Главное меню
 	TestPlace = 'TestPlace', // Основная игровая сцена (тестовая)
+	CharacterTestPlace = 'CharacterTestPlace',
 }
 //#endregion
 
@@ -17,7 +18,7 @@ export const enum SceneKeys {
  * Категории или типы сцен
  * Используются для внутренней архитектуры и управления сценами
  */
-export const enum SceneTypes {
+export enum SceneTypes {
 	GameScene = 'GAME', // Основные игровые сцены (уровни, миры)
 	UIScene = 'UI', // Сцены пользовательского интерфейса (инвентарь, HUD)
 	HTMLScene = 'HTML',

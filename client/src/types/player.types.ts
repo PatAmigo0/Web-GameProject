@@ -1,5 +1,7 @@
 // src/types/player.types.ts
 
+import type { KEYBOARD_LISTENING_KEYS } from '@config/controls.config';
+
 //#region DIRECTION TYPES
 /**
  * Типы для обозначения направления движения игрока
@@ -23,3 +25,23 @@ export type PlayerEvent = {
 	readonly DIED: unique symbol;
 };
 //#endregion
+
+export type InputState = {
+	[key in KEYBOARD_LISTENING_KEYS]: boolean;
+};
+
+// export type InputSignal = {
+// 	[K in KEYBOARD_LISTENING_KEYS]: {
+// 		readonly [P in K]: boolean;
+// 	};
+// }[KEYBOARD_LISTENING_KEYS];
+
+export type InputSignal = {
+	key: KEYBOARD_LISTENING_KEYS;
+	state: boolean;
+};
+
+export type InputStateAggregation = {
+	inputState: InputState;
+	isdiagonal: boolean;
+};

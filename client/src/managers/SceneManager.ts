@@ -19,7 +19,7 @@ export class SceneManager
 			`[SceneManager] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
 		);
 
-		if (this._currentMainScene != null) {
+		if (this._currentMainScene) {
 			this.stop(this.currentMainScene.sceneKey);
 			this._currentMainScene.shutdown();
 		}

@@ -5,4 +5,5 @@ export enum KEYBOARD_LISTENING_KEYS {
 	MOVE_LEFT = Keys.A,
 	MOVE_DOWN = Keys.S,
 	MOVE_RIGHT = Keys.D,
+	ACTION = Keys.SPACE,
 }
