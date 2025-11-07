@@ -44,7 +44,7 @@ export class MainMenuScene extends BaseHtmlScene {
 			this.isStarting = true;
 			this.game.events.emit(
 				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-				STARTING_SCENE,
+				SceneKeys.LoginScene,
 			);
 		});
 	}

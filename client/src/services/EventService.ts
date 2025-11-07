@@ -2,7 +2,7 @@
 
 import { BaseService } from '@abstracts/service/BaseService';
 import { GAME_EVENT_TYPES } from '@config/events.config';
-import { STARTING_MENU } from '@config/game.config';
+import { STARTING_SCENE } from '@config/game.config';
 
 export class EventService extends BaseService {
 	public init() {
@@ -31,7 +31,7 @@ export class EventService extends BaseService {
 		this.game.events.addListener(GAME_EVENT_TYPES.BOOT, () => {
 			this.game.events.emit(
 				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-				STARTING_MENU,
+				STARTING_SCENE,
 			);
 		});
 
