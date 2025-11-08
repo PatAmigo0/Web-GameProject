@@ -2,7 +2,7 @@
 import { AbstractBaseScene } from '@abstracts/scene/AbstractBaseScene';
 import type { Map } from '@components/phaser/scene/GameMap';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
-import { PLAYER_DEPTH } from '@config/game.config';
+import { CAMERA_ZOOM, PLAYER_DEPTH } from '@config/game.config';
 import { AssetManager } from '@managers/AssetManager';
 import { MapManager } from '@managers/MapManager';
 import { TiledConverter } from '@utils/TiledConverter';
@@ -33,13 +33,13 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		const mapData = MapManager.createMap(this);
 		this.map = mapData.map;
 
-		// 3. Обработка спавна игрока
 		const spawnPoint = mapData.playerSpawn;
 		if (!spawnPoint) {
 			throw 'Кто-то забыл добавить спавн на карту -_-';
 		}
 
-		// 4. Позиционирование и создание игрока
+		this.cameras.main.setZoom(CAMERA_ZOOM);
+
 		const playerPosition =
 			TiledConverter.tiledObjectToPhaserCenter(spawnPoint);
 
@@ -52,19 +52,18 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		this.player.setCollideWorldBounds(true);
 		this.player.setDepth(PLAYER_DEPTH);
 
-		// 5. Вызов хука для специфической инициализации дочерней сцены
 		this.onCreate();
 
-		// 6. Инициализация физики карты (коллизии игрока и слоев)
 		MapManager.initMapPhysics(this, this.map, mapData.collidableLayers);
 	}
 
 	public update(time: number, delta: number): void {
-		// Делегируем логику кадра абстрактному методу
 		this.heartbeat(time, delta);
 	}
 
-	public shutdown(): void {}
+	public shutdown(): void {
+		this.onShutdown();
+	}
 	//#endregion
 
 	//#region ACCESSORS

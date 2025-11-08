@@ -15,6 +15,11 @@ export type Direction = {
 };
 //#endregion
 
+export enum MovementType {
+	Vertical = 'Vertical',
+	Horizontal = 'Horizontal',
+}
+
 //#region PLAYER EVENT TYPES
 /**
  * Типы событий, связанных с состоянием игрока
@@ -44,4 +49,17 @@ export type InputSignal = {
 export type InputStateAggregation = {
 	inputState: InputState;
 	isdiagonal: boolean;
+};
+
+export type MoveStateInfo = {
+	state: boolean;
+	handler: Function;
+	direction: MovementType;
+};
+
+export type MoveState = {
+	[KEYBOARD_LISTENING_KEYS.MOVE_UP]: MoveStateInfo;
+	[KEYBOARD_LISTENING_KEYS.MOVE_LEFT]: MoveStateInfo;
+	[KEYBOARD_LISTENING_KEYS.MOVE_DOWN]: MoveStateInfo;
+	[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT]: MoveStateInfo;
 };

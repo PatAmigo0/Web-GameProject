@@ -41,9 +41,9 @@ export class AssetManager {
 			case SceneTypes.GameScene:
 				this.loadMapAssets(scene);
 				break;
-			case SceneTypes.UIScene:
+			case SceneTypes.HTMLScene:
 				if (!(scene instanceof BaseHtmlScene)) {
-					throw 'Не UI сцена имеет тип UI, ошибка';
+					throw 'Не HTML сцена имеет тип HTML, ошибка';
 				}
 				this.loadHtmlAssets(scene);
 				break;
@@ -88,7 +88,8 @@ export class AssetManager {
 		scene: BaseHtmlScene,
 		manifestEntry?: IHtmlAssetManifest,
 	): void {
-		scene.load.html(scene.sceneKey, manifestEntry.HTML);
+		if (!scene.cache.html.has(scene.sceneKey))
+			scene.load.html(scene.sceneKey, manifestEntry.HTML);
 		scene.loadCSS(manifestEntry.CSS);
 	}
 

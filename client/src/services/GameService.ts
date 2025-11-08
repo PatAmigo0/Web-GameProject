@@ -1,13 +1,14 @@
 import { BaseService } from '@abstracts/service/BaseService';
 import { StandaloneService } from '@abstracts/service/StandaloneService';
+import type { IInitializiable } from '@gametypes/interface.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { SceneManager } from '@managers/SceneManager';
 import { BootScene } from '@scenes/system/BootScene';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
 import { PlayerService } from '@services/PlayerService';
+import { UserInputService } from '@services/UserInputService';
 import Phaser from 'phaser';
-import { UserInputService } from './UserInputService';
 
 //#region GAME CLASS DEFINITION
 export class GameService extends Phaser.Game {
@@ -17,9 +18,9 @@ export class GameService extends Phaser.Game {
 
 	//#region CORE SERVICES
 	public playerService = new PlayerService(this);
+	public userInputService = new UserInputService(this.input.keyboard);
 	private networkService = new NetworkService(this);
 	private eventService = new EventService(this);
-	private userInputService = new UserInputService(this.input.keyboard);
 	//#endregion
 
 	//#region GAME CONTEXT
@@ -63,15 +64,19 @@ export class GameService extends Phaser.Game {
 	private initServices() {
 		// инициализируем все сервисы автоматически
 		Object.values(this).forEach((propertyValue) => {
-			if (
-				propertyValue &&
-				(propertyValue instanceof BaseService ||
-					propertyValue instanceof StandaloneService)
-			) {
+			if (this.isService(propertyValue)) {
 				console.debug('Calling init on:', propertyValue);
-				(propertyValue as unknown as { init: () => void }).init();
+				propertyValue.init();
 			}
 		});
+	}
+
+	private isService(propertyValue: any): propertyValue is IInitializiable {
+		return (
+			propertyValue &&
+			(propertyValue instanceof BaseService ||
+				propertyValue instanceof StandaloneService)
+		);
 	}
 	//#endregion
 
