@@ -31,6 +31,6 @@ export class BootScene extends withPhaserLifecycle(TypedScene) {
 
 	public async loadAssets() {
 		await AssetManager.buildManifest();
-		this.game.events.emit(GAME_EVENT_TYPES.BOOT);
+		this.game.events.emit(GAME_EVENT_TYPES.BOOT); // -> EventService слушает это событие
 	}
 }

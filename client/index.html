@@ -2,18 +2,63 @@
 <html lang="en">
 	<head>
 		<style>
-			html,
-			body {
+			* {
 				margin: 0;
 				padding: 0;
+				box-sizing: border-box;
+			}
+
+			html,
+			body {
+				height: 100%;
+				width: 100%;
 				overflow: hidden;
 			}
+
+			body {
+				font-family: 'Arial', sans-serif;
+				background: #000;
+				color: white;
+				justify-content: center;
+				align-items: center;
+				user-select: none;
+				-webkit-user-select: none;
+				touch-action: none;
+			}
+
+			#noscript-message {
+				text-align: center;
+				padding: 20px;
+				font-size: 1.2em;
+			}
 		</style>
+
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+		<meta
+			name="description"
+			content="Захватывающая 2D-игра в стиле найди предателя"
+		/>
+		<meta name="author" content="Student team" />
+
 		<title>game-webproject</title>
 	</head>
 	<body>
+		<noscript>
+			<div id="noscript-message">
+				<p>
+					JavaScript is required to play this game. Please enable it
+					in your browser settings.
+				</p>
+				<p>
+					Для запуска игры необходим JavaScript. Пожалуйста, включите
+					его в настройках вашего браузера.
+				</p>
+			</div>
+		</noscript>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
 </html>

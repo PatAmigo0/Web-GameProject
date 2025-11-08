@@ -2,8 +2,11 @@
 
 import { BaseService } from '@abstracts/service/BaseService';
 import { GAME_EVENT_TYPES } from '@config/events.config';
-import { STARTING_MENU } from '@config/game.config';
+import { STARTING_SCENE } from '@config/game.config';
 
+/**
+ * Сервис событий, который обрабатывает почти все возможные события
+ */
 export class EventService extends BaseService {
 	public init() {
 		this.setupCommonListeners();
@@ -11,8 +14,9 @@ export class EventService extends BaseService {
 	}
 
 	private setupCommonListeners(): void {
+		// если игрок потерял фокус на страницу то ресетаем input
 		this.game.events.on('blur', () =>
-			this.game.events.emit(GAME_EVENT_TYPES.INPUT_RESET),
+			this.game.userInputService.emit(GAME_EVENT_TYPES.INPUT_RESET),
 		);
 
 		// блокирует context menu в canvas (сценах)
@@ -31,10 +35,11 @@ export class EventService extends BaseService {
 		this.game.events.addListener(GAME_EVENT_TYPES.BOOT, () => {
 			this.game.events.emit(
 				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-				STARTING_MENU,
+				STARTING_SCENE,
 			);
 		});
 
+		// событие на изменение главной сцены
 		this.game.events.addListener(
 			GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
 			(sceneKey: string) => {
