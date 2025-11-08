@@ -24,7 +24,7 @@ import obstacleImg from '/assets/images/typescript.svg';
 //#endregion
 
 //#region SCENE DEFINITION
-@SceneInfo(SceneKeys.TestPlace, SceneTypes.GameScene)
+@SceneInfo(SceneKeys.Lobby, SceneTypes.GameScene)
 export class TestPlace extends BaseGameScene {
 	//#region SCENE ATTRIBUTES (State)
 	private keys!: { [key: string]: Phaser.Input.Keyboard.Key };

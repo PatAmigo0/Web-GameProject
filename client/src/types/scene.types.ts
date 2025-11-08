@@ -10,6 +10,7 @@ export enum SceneKeys {
 	MainMenu = 'MainMenu', // Главное меню
 	TestPlace = 'TestPlace', // Основная игровая сцена (тестовая)
 	CharacterTestPlace = 'CharacterTestPlace',
+	Lobby = 'Lobby',
 }
 //#endregion
 

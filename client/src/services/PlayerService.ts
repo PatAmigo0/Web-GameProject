@@ -17,8 +17,6 @@ export class PlayerService extends BaseService implements IInitializiable {
 	public init() {
 		this.playerManager = new PlayerManager(this.game);
 		this.localPlayer = new Player();
-		this.localPlayer;
-		this.playerManager;
 	}
 	//#endregion
 
@@ -30,6 +28,10 @@ export class PlayerService extends BaseService implements IInitializiable {
 	 */
 	public getPlayerByUserID(userID: string): Player | undefined {
 		return this.players.get(userID);
+	}
+
+	public getLocalPlayer() {
+		return this.localPlayer;
 	}
 	//#endregion
 

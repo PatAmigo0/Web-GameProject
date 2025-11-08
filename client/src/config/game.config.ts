@@ -43,7 +43,7 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
  * Ключи сцен, с которых начинается игра/меню
  */
 export const STARTING_MENU = SceneKeys.MainMenu;
-export const STARTING_SCENE = SceneKeys.TestPlace;
+export const STARTING_SCENE = SceneKeys.Lobby;
 //#endregion
 
 //#region PLAYER & WORLD CONFIGURATION
