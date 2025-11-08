@@ -7,6 +7,8 @@
  */
 export enum SceneKeys {
 	BootScene = 'BootScene', // Сцена начальной загрузки
+	LoginScene = 'Login',
+	SignupScene = 'Signup',
 	MainMenu = 'MainMenu', // Главное меню
 	TestPlace = 'TestPlace', // Основная игровая сцена (тестовая)
 	CharacterTestPlace = 'CharacterTestPlace',
