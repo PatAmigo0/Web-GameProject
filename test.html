@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Colyseus Test</title>
+		<script type="module" src="./client/src/network/GameClient.ts"></script>
+	</head>
+	<body>
+		<h1>Colyseus Chat Test</h1>
+		<div
+			id="messages"
+			style="
+				border: 1px solid #ccc;
+				height: 200px;
+				overflow: auto;
+				padding: 10px;
+			"
+		></div>
+		<input type="text" id="messageInput" placeholder="Введите сообщение" />
+		<button onclick="sendMessage()">Отправить</button>
+
+		<script>
+			function sendMessage() {
+				const input = document.getElementById('messageInput');
+				if (window.send) {
+					send(input.value);
+					input.value = '';
+				}
+			}
+
+			// Также логируем в div
+			const originalLog = console.log;
+			console.log = function (...args) {
+				originalLog.apply(console, args);
+				const messagesDiv = document.getElementById('messages');
+				if (messagesDiv) {
+					messagesDiv.innerHTML += args.join(' ') + '<br>';
+					messagesDiv.scrollTop = messagesDiv.scrollHeight;
+				}
+			};		</script>
+	</body>
+</html>

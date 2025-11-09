@@ -1,51 +1,37 @@
-import config from "@colyseus/tools";
-import { monitor } from "@colyseus/monitor";
-import { playground } from "@colyseus/playground";
-
-/**
- * Import your Room files
- */
-import { MyRoom } from "./rooms/MyRoom";
+import config from '@colyseus/tools';
+import { monitor } from '@colyseus/monitor';
+import { playground } from '@colyseus/playground';
+import { MyRoom } from './rooms/MyRoom';
+import express from 'express';
 
 export default config({
+	initializeGameServer: (gameServer) => {
+		console.log('Registering rooms...');
+		gameServer.define('my_room', MyRoom);
+		console.log('Room "my_room" registered');
+	},
 
-    initializeGameServer: (gameServer) => {
-        /**
-         * Define your room handlers:
-         */
-        gameServer.define('my_room', MyRoom);
+	initializeExpress: (app) => {
+		app.use((req, res, next) => {
+			res.header('Access-Control-Allow-Origin', '*');
+			res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+			res.header('Access-Control-Allow-Headers', 'Content-Type');
+			if (req.method === 'OPTIONS') return res.status(200).end();
+			next();
+		});
 
-    },
+		app.get('/health', (req, res) => {
+			res.json({ status: 'ok', message: 'Server is running' });
+		});
 
-    initializeExpress: (app) => {
-        /**
-         * Bind your custom express routes here:
-         * Read more: https://expressjs.com/en/starter/basic-routing.html
-         */
-        app.get("/hello_world", (req, res) => {
-            res.send("It's time to kick ass and chew bubblegum!");
-        });
+		if (process.env.NODE_ENV !== 'production') {
+			app.use('/', playground());
+		}
 
-        /**
-         * Use @colyseus/playground
-         * (It is not recommended to expose this route in a production environment)
-         */
-        if (process.env.NODE_ENV !== "production") {
-            app.use("/", playground());
-        }
+		app.use('/monitor', monitor());
+	},
 
-        /**
-         * Use @colyseus/monitor
-         * It is recommended to protect this route with a password
-         * Read more: https://docs.colyseus.io/tools/monitor/#restrict-access-to-the-panel-using-a-password
-         */
-        app.use("/monitor", monitor());
-    },
-
-
-    beforeListen: () => {
-        /**
-         * Before before gameServer.listen() is called.
-         */
-    }
+	beforeListen: () => {
+		console.log(' Server configuration complete');
+	},
 });
