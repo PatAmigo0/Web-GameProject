@@ -63,3 +63,8 @@ export type MoveState = {
 	[KEYBOARD_LISTENING_KEYS.MOVE_DOWN]: MoveStateInfo;
 	[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT]: MoveStateInfo;
 };
+
+export type KeyInformation = {
+	eventName: string;
+	phaserKey: number;
+};

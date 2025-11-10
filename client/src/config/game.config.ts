@@ -1,6 +1,8 @@
 //#region IMPORTS
 import { SceneKeys } from '@gametypes/scene.types';
 import { scenes } from '@scenes/index';
+import AwaitLoaderPlugin from 'phaser3-rex-plugins/plugins/awaitloader-plugin.js';
+
 //#endregion
 
 export const GAME_WIDTH = 1280;
@@ -19,6 +21,16 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 	version: import.meta.env.VERSION || '0.0.1',
 	scene: scenes,
 	pixelArt: true,
+
+	plugins: {
+		global: [
+			{
+				key: 'rexAwaitLoader',
+				plugin: AwaitLoaderPlugin,
+				start: true,
+			},
+		],
+	},
 
 	scale: {
 		mode: Phaser.Scale.ENVELOP,
@@ -73,3 +85,12 @@ export const MAIN_DIV_STYLE = `
 			width: ${GAME_WIDTH}px; 
 			height: ${GAME_HEIGHT}px;
 			`.replace(/\s/g, '');
+
+export const TRANSITION_CANVAS_STYLE = `
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 9999;
+		`.replace(/\s/g, '');
+
+export const CUSTOM_CACHE_KEY = '__custom_cache__';

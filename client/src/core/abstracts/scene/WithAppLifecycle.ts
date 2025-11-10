@@ -1,4 +1,4 @@
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import { CoreScene } from '@abstracts/scene/CoreScene';
 
 export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
 	Base: T,
@@ -14,5 +14,5 @@ export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
 }
 
 export abstract class CommonAbstractWrapper extends withAppLifecycle(
-	TypedScene,
+	CoreScene,
 ) {}

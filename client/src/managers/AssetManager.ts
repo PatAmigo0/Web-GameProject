@@ -1,6 +1,7 @@
 //#region IMPORTS
 import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
-import type { TypedScene } from '@abstracts/scene/TypedScene';
+import type { CoreScene } from '@abstracts/scene/CoreScene';
+import { BaseService } from '@abstracts/service/BaseService';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { ManifestEntryCheck } from '@decorators/ManifestEntryCheck.decorator';
 import { ManifestExistsCheck } from '@decorators/ManifestExistsCheck.decorator';
@@ -9,6 +10,7 @@ import type {
 	IMapAssetManifest,
 } from '@gametypes/interface.types';
 import { SceneTypes } from '@gametypes/scene.types';
+import { StyleManager } from './StyleManager';
 //#endregion
 
 //#region CLASS DEFINITION
@@ -17,26 +19,30 @@ import { SceneTypes } from '@gametypes/scene.types';
  * Отвечает за создание манифеста (списка всех ассетов) при запуске
  * и за загрузку нужных ассетов для каждой конкретной сцены
  */
-export class AssetManager {
-	//#region STATIC STATE
+export class AssetManager extends BaseService {
+	//#region STATE
 	// Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
 	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
-	public static readonly assetManifest: Record<string, IMapAssetManifest> =
-		{};
+	public readonly assetManifest: Record<string, IMapAssetManifest> = {};
 
-	public static readonly stylesManifest: Record<string, IMapAssetManifest> =
-		{};
+	public readonly stylesManifest: Record<string, IMapAssetManifest> = {};
 
 	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
-	public static manifestBuilt = false;
+	public manifestBuilt = false;
 	//#endregion
 
-	//#region PUBLIC STATIC METHODS
+	private styleManager!: StyleManager;
+
+	//#region PUBLIC METHODS
+	public init(): void {
+		this.styleManager = new StyleManager();
+	}
+
 	/**
 	 * Метод AssetManager, который сам выбирает как ему загружать ассеты в сцену
 	 * @param scene поддерживаемый тип сцены
 	 */
-	public static loadAssets(scene: TypedScene | BaseHtmlScene): void {
+	public loadAssets(scene: CoreScene): void {
 		switch (scene.sceneType) {
 			case SceneTypes.GameScene:
 				this.loadMapAssets(scene);
@@ -61,16 +67,19 @@ export class AssetManager {
 	 */
 	@ManifestEntryCheck // 2
 	@ManifestExistsCheck // 1
-	public static loadMapAssets(
-		scene: TypedScene,
+	public loadMapAssets(
+		scene: CoreScene,
 		manifestEntry?: IMapAssetManifest,
 	): void {
+		if (!manifestEntry) return;
+
 		// Загружаем все необходимые изображения тайлсетов
 		for (const url of manifestEntry.tilesetUrls) {
 			// ключ для Phaser - это просто имя файла без расширения
 			const tilesetKey = url.split('/').pop()!.replace('.png', '');
-			if (!scene.textures.exists(tilesetKey))
+			if (!scene.textures.exists(tilesetKey)) {
 				scene.load.image(tilesetKey, url);
+			}
 		}
 
 		// Загружаем JSON карту
@@ -84,20 +93,24 @@ export class AssetManager {
 	 */
 	@ManifestEntryCheck // 2
 	@ManifestExistsCheck // 1
-	public static loadHtmlAssets(
+	public loadHtmlAssets(
 		scene: BaseHtmlScene,
 		manifestEntry?: IHtmlAssetManifest,
 	): void {
-		if (!scene.cache.html.has(scene.sceneKey))
+		if (!manifestEntry) return;
+
+		if (!scene.cache.html.has(scene.sceneKey)) {
 			scene.load.html(scene.sceneKey, manifestEntry.HTML);
-		scene.loadCSS(manifestEntry.CSS);
+		}
+
+		this.styleManager.preloadStyle(scene, manifestEntry.CSS);
 	}
 
 	/**
 	 * АСИНХРОННО: Этот метод должен быть вызван ОДИН РАЗ при запуске игры
 	 * (например, в BootScene), до загрузки игровых сцен
 	 */
-	public static async buildManifest(): Promise<void> {
+	public async buildManifest(): Promise<void> {
 		if (this.manifestBuilt) return;
 
 		// Map manifest

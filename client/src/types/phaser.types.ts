@@ -1,8 +1,8 @@
-import type { TypedScene } from '@abstracts/scene/TypedScene';
+import type { CoreScene } from '@abstracts/scene/CoreScene';
 
-export interface ITypedSceneManager extends Phaser.Scenes.SceneManager {
-	scenes: TypedScene[];
-	getScene<T extends TypedScene>(key: string): T;
+export interface ICoreSceneManager extends Phaser.Scenes.SceneManager {
+	scenes: CoreScene[];
+	getScene<T extends CoreScene>(key: string): T;
 	run(key: string, data?: object): this;
 	start(key: string, data?: object): this;
 }

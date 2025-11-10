@@ -3,7 +3,6 @@ import { AbstractBaseScene } from '@abstracts/scene/AbstractBaseScene';
 import type { Map } from '@components/phaser/scene/GameMap';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { CAMERA_ZOOM, PLAYER_DEPTH } from '@config/game.config';
-import { AssetManager } from '@managers/AssetManager';
 import { MapManager } from '@managers/MapManager';
 import { TiledConverter } from '@utils/TiledConverter';
 //#endregion
@@ -20,8 +19,7 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
-	public preload(): void {
-		AssetManager.loadAssets(this);
+	public prepareAssets(): void {
 		this.load.image(
 			ASSET_KEYS.PLAYER_SPRITE,
 			ASSET_URLS[ASSET_KEYS.PLAYER_SPRITE],
@@ -29,7 +27,7 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		this.onPreload();
 	}
 
-	public create(): void {
+	public setupScene(): void {
 		const mapData = MapManager.createMap(this);
 		this.map = mapData.map;
 
@@ -55,6 +53,7 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		this.onCreate();
 
 		MapManager.initMapPhysics(this, this.map, mapData.collidableLayers);
+		console.warn(this.cache);
 	}
 
 	public update(time: number, delta: number): void {

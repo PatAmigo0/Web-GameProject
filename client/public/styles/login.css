@@ -1,3 +1,4 @@
+/* Этот класс отвечает за центрирование, его 'height' трогать не надо */
 .pns {
 	width: 100%;
 	max-width: 400px;
@@ -22,7 +23,7 @@
 
 .game-title {
 	text-align: center;
-	margin-bottom: 40px;
+	margin-bottom: 20px; /* Было: 40px */
 }
 
 .game-title h1 {
@@ -36,33 +37,36 @@
 	font-size: 1.1em;
 }
 
+/* "Сжимаем" саму серую форму */
 .auth-form {
 	background: #2d2d2d;
-	padding: 30px;
+	padding: 20px; /* Было: 30px */
 	border-radius: 8px;
 	border: 1px solid #444444;
 }
 
 .auth-form h2 {
 	text-align: center;
-	margin-bottom: 25px;
+	margin-bottom: 15px; /* Было: 25px */
 	color: #8b0000;
 	font-size: 1.5em;
 }
 
+/* "Сжимаем" отступы между полями */
 .input-group {
-	margin-bottom: 20px;
+	margin-bottom: 10px; /* Было: 20px */
 }
 
+/* "Сжимаем" сами поля */
 .input-group input {
 	height: 70%;
 	width: 100%;
-	padding: 12px;
+	padding: 10px; /* Было: 12px */
 	background: #1a1a1a;
 	border: 1px solid #444444;
 	border-radius: 4px;
 	color: #ffffff;
-	font-size: 16px;
+	font-size: 15px; /* Было: 16px */
 }
 
 .input-group input:focus {
@@ -70,16 +74,17 @@
 	border-color: #8b0000;
 }
 
+/* "Сжимаем" кнопку */
 .btn {
 	width: 100%;
-	padding: 12px;
+	padding: 10px; /* Было: 12px */
 	background: #8b0000;
 	color: white;
 	border: none;
 	border-radius: 4px;
-	font-size: 16px;
+	font-size: 15px; /* Было: 16px */
 	cursor: pointer;
-	margin-bottom: 15px;
+	margin-bottom: 10px; /* Было: 15px */
 	transition: background 0.3s;
 }
 
@@ -96,16 +101,18 @@
 	background: #444444;
 }
 
+/* "Сжимаем" блок соц. кнопок */
 .social-buttons {
-	margin: 25px 0;
+	margin: 15px 0; /* Было: 25px 0 */
 	border-top: 1px solid #444444;
 	border-bottom: 1px solid #444444;
-	padding: 20px 0;
+	padding: 15px 0; /* Было: 20px 0 */
 }
 
+/* "Сжимаем" нижний отступ */
 .form-switch {
 	text-align: center;
-	margin-top: 20px;
+	margin-top: 15px; /* Было: 20px */
 	color: #cccccc;
 }
 

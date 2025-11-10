@@ -2,6 +2,7 @@ import { BaseService } from '@abstracts/service/BaseService';
 import { StandaloneService } from '@abstracts/service/StandaloneService';
 import type { IInitializiable } from '@gametypes/interface.types';
 import { SceneKeys } from '@gametypes/scene.types';
+import { AssetManager } from '@managers/AssetManager';
 import { SceneManager } from '@managers/SceneManager';
 import { BootScene } from '@scenes/system/BootScene';
 import { EventService } from '@services/EventService';
@@ -14,6 +15,10 @@ import Phaser from 'phaser';
 export class GameService extends Phaser.Game {
 	//#region PHASER OVERRIDES
 	declare readonly scene: SceneManager;
+	//#endregion
+
+	//#region
+	public assetManager = new AssetManager(this);
 	//#endregion
 
 	//#region CORE SERVICES
@@ -86,8 +91,9 @@ export class GameService extends Phaser.Game {
 	 */
 	private __boot__() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
+		BootScene.shutdown();
 		if (BootScene) {
-			this.scene.currentMainScene = BootScene;
+			this.scene.changeMainScene(BootScene.sceneKey);
 			BootScene.loadAssets();
 		} else throw 'Ошибка [game]: Не удалось загрузить boot сцену';
 	}

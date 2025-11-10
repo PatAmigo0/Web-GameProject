@@ -1,7 +1,20 @@
-import { withAppLifecycle } from '@abstracts/scene/CommonSceneWrapper';
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import { CoreScene } from '@abstracts/scene/CoreScene';
+import { withAppLifecycle } from '@abstracts/scene/WithAppLifecycle';
 import { withPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
 
 export abstract class AbstractBaseScene extends withAppLifecycle(
-	withPhaserLifecycle(TypedScene),
-) {}
+	withPhaserLifecycle(CoreScene),
+) {
+	abstract prepareAssets(): void;
+	abstract setupScene(): void;
+
+	public preload(): void {
+		super.preload();
+		this.prepareAssets();
+	}
+
+	public create(): void {
+		this.setupScene();
+		super.create();
+	}
+}

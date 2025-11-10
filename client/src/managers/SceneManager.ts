@@ -1,47 +1,65 @@
-import type { TypedScene } from '@abstracts/scene/TypedScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
 import type { IInitializiable } from '@gametypes/interface.types';
-import type { ITypedSceneManager } from '@gametypes/phaser.types';
+import type { ICoreSceneManager } from '@gametypes/phaser.types';
+import { SceneTypes } from '@gametypes/scene.types';
+import type { GameService } from '@services/GameService';
+import { TransitionManager } from './TransitionManager';
 
 export class SceneManager
 	extends Phaser.Scenes.SceneManager
-	implements ITypedSceneManager, IInitializiable
+	implements ICoreSceneManager, IInitializiable
 {
-	declare scenes: TypedScene[];
-	private _currentMainScene: WithPhaserLifecycle | undefined = null;
+	declare scenes: WithPhaserLifecycle[];
+	declare game: GameService;
+
+	private currentMainScene: WithPhaserLifecycle | undefined = null;
+	private transitionManager!: TransitionManager;
 
 	public init() {
 		this.currentMainScene = null;
+		this.transitionManager = new TransitionManager(this);
 	}
 
 	public changeMainScene(sceneKey: string) {
 		console.debug(
-			`[SceneManager] меняю главную сцену: ${this._currentMainScene?.sceneKey} -> ${sceneKey}`,
+			`[SceneManager] меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`,
 		);
 
-		const newScene = this.getScene<WithPhaserLifecycle>(sceneKey);
-		if (this._currentMainScene) {
-			this.stop(this._currentMainScene.sceneKey);
-			this.start(newScene);
-			this._currentMainScene.shutdown();
-		} else this.start(newScene);
+		const newScene = this.getScene(sceneKey);
+		this.handleSceneType(newScene);
 
-		this._currentMainScene = newScene;
+		if (this.currentMainScene) {
+			this.transitionManager.swapScenes(this.currentMainScene, newScene);
+		} else {
+			this.start(newScene);
+		}
+
+		this.currentMainScene = newScene;
 	}
 
-	//#region SETTERS
-	set currentMainScene(scene: WithPhaserLifecycle) {
-		if (!this._currentMainScene) this._currentMainScene = scene;
-		else {
-			throw 'Нельзя изменять currentMainScene без вызова события, если он не равен null';
+	public stop<T extends WithPhaserLifecycle>(
+		key: string | T,
+		data?: object,
+	): this {
+		const scene = this.getScene<WithPhaserLifecycle>(key);
+		console.debug(`Stopping ${scene.sceneKey}`);
+		super.stop(scene, data);
+		scene.shutdown();
+		return this;
+	}
+
+	private handleSceneType(scene: WithPhaserLifecycle) {
+		switch (scene.sceneType) {
+			case SceneTypes.GameScene:
+				this.game.userInputService.lockMainKeys();
+				break;
+			case SceneTypes.HTMLScene:
+				this.game.userInputService.unlockMainKeys();
+				break;
+			default:
+				console.warn('[SceneManager] неподдерживаемый тип сцены');
 		}
 	}
 
-	//#endregion
-
-	//#region GETTERS
-	get currentMainScene() {
-		return this._currentMainScene;
-	}
 	//#endregion
 }

@@ -1,7 +1,7 @@
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import { CoreScene } from '@abstracts/scene/CoreScene';
 import { type ISceneHandlers } from '@gametypes/scene.types';
 
-export function sceneDefiner(scene: TypedScene, SceneHandlers: ISceneHandlers) {
+export function sceneDefiner(scene: CoreScene, SceneHandlers: ISceneHandlers) {
 	const f = SceneHandlers[scene.sceneType];
 	if (f) {
 		f();

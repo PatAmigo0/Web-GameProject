@@ -1,5 +1,5 @@
 //#region IMPORTS
-import type { TypedScene } from '@abstracts/scene/TypedScene';
+import type { CoreScene } from '@abstracts/scene/CoreScene';
 import Phaser from 'phaser';
 //#endregion
 
@@ -10,7 +10,7 @@ export class Map extends Phaser.Tilemaps.Tilemap {
 	//#endregion
 
 	//#region CONSTRUCTOR
-	constructor(scene: TypedScene) {
+	constructor(scene: CoreScene) {
 		super(
 			scene,
 			// Парсинг JSON-данных карты из кэша по ключу сцены

@@ -1,4 +1,4 @@
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import { CoreScene } from '@abstracts/scene/CoreScene';
 import type { IAnimatable, IInputable } from '@gametypes/interface.types';
 import { AnimatorComponent } from './playerComponents/AnimatorComponent';
 import { HealthComponent } from './playerComponents/HealthComponent';
@@ -15,7 +15,7 @@ export class Character
 	public health!: HealthComponent;
 
 	constructor(
-		scene: TypedScene,
+		scene: CoreScene,
 		x: number,
 		y: number,
 		texture: string | Phaser.Textures.Texture,

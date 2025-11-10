@@ -10,7 +10,7 @@ import {
 import { Map } from '@components/phaser/scene/GameMap';
 // импортируем типы, чтоб TypeScript не ругался
 import type { BaseGameScene } from '@abstracts/scene/BaseGameScene';
-import type { TypedScene } from '@abstracts/scene/TypedScene';
+import type { CoreScene } from '@abstracts/scene/CoreScene';
 import { TILE_SIZE } from '@config/game.config';
 import type { IBooleanPropertie, IPropertie } from '@gametypes/layer.types';
 //#endregion
@@ -29,7 +29,7 @@ export class MapManager {
 	 * @param scene - Сцена, в которой создается карта
 	 * @returns Объект, содержащий созданную карту, слои для коллизий и точку спавна игрока
 	 */
-	public static createMap(scene: TypedScene): {
+	public static createMap(scene: CoreScene): {
 		map: Map;
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[]; // слои, в которые можно врезаться
 		playerSpawn: Phaser.Types.Tilemaps.TiledObject | null; // где появляется игрок
@@ -42,7 +42,6 @@ export class MapManager {
 		// 1. Добавляем тайлсеты
 		// пробегаем по всем тайлсетам, которые есть в json'е карты
 		map.tilesets.forEach((tilesetData) => {
-			// _addTilesetImage - это наш приватный хелпер (помощник) внизу
 			const tileset = this._addTilesetImage(map, tilesetData.name);
 			if (tileset) {
 				tilesets.push(tileset);
@@ -50,26 +49,24 @@ export class MapManager {
 		});
 
 		// 2. Создаем слои
-		console.debug(map.layers); // позырить в консоли, какие слои вообще есть
-		// теперь пробегаем по всем слоям из json'а
+		console.debug(map.layers);
+		// теперь пробегаем по всем слоям
 		map.layers.forEach((layerData) => {
-			// _createLayer - еще один хелпер, он создает слой и говорит, коллайдится ли он
+			// создаем слой и определяем, коллайдится ли он
 			const result = this._createLayer(map, layerData, tilesets);
-			// если слой создался И он коллайдится (типа стена)
 			if (result && result.isCollidable) {
 				collidableLayers.push(result.layer);
 			}
 		});
 
 		// 3. Находим объекты, например, точку спавна
-		// _findPlayerSpawn - третий хелпер, ищет объект спавна
+		// ищем объект спавна
 		const playerSpawn = this._findPlayerSpawn(map);
 		if (!playerSpawn) {
 			console.warn('[MapManager] Не удалось найти объект спавна игрока');
 		}
 		console.log(`[MapManager] Карта для сцены ${scene.sceneKey} создана`);
 
-		// возвращаем тот самый "пакет" со всем добром
 		return { map, collidableLayers, playerSpawn };
 	}
 
@@ -94,13 +91,10 @@ export class MapManager {
 
 		const player = scene.getPlayer();
 		if (!player) {
-			// если игрока нет, то и физику настраивать не для кого
 			throw 'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики';
 		}
 
-		// говорим игроку, чтоб он бился о границы мира (которые мы выше поставили)
 		player.setCollideWorldBounds(true);
-		// а теперь говорим ему биться о каждый слой из нашего списка
 		collidableLayers.forEach((layer) => {
 			scene.physics.add.collider(player, layer); // создаем коллизию
 		});
@@ -143,9 +137,7 @@ export class MapManager {
 			return null;
 		}
 
-		// по дефолту слой не коллайдится
 		let isCollidable = false;
-		// берем кастомные проперти слоя из Tiled
 		const properties = layerData.properties as IBooleanPropertie[];
 
 		// ищем проперти 'collides' и проверяем, что оно 'true'

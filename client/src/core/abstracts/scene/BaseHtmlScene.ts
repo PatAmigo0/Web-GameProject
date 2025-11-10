@@ -1,4 +1,3 @@
-import { AssetManager } from '@/managers/AssetManager';
 import { AbstractBaseScene } from '@abstracts/scene/AbstractBaseScene';
 import { MAIN_DIV_STYLE } from '@config/game.config';
 
@@ -7,12 +6,11 @@ export abstract class BaseHtmlScene extends AbstractBaseScene {
 	private link!: HTMLLinkElement;
 
 	//#region WithPhaserCycle Implementation
-	public preload(): void {
-		AssetManager.loadAssets(this);
+	public prepareAssets(): void {
 		this.onPreload();
 	}
 
-	public create(): void {
+	public setupScene(): void {
 		this.div = this.add
 			.dom(0, 0)
 			.createFromCache(this.sceneKey)
@@ -28,18 +26,13 @@ export abstract class BaseHtmlScene extends AbstractBaseScene {
 	public shutdown(): void {
 		this.onShutdown();
 		this.div.remove();
-		if (this.link) document.head.removeChild(this.link);
+		if (this.link) this.link.disabled = true;
 		else console.warn(`[BaseHtmlScene] link не существует`);
 	}
-	//#endregion
 
-	//#region Extra methods
-	public loadCSS(url: string): void {
-		this.link = document.createElement('link');
-		this.link.rel = 'stylesheet';
-		this.link.href = url;
-		this.link.id = `css-for-${this.sceneKey}`;
-		document.head.append(this.link);
+	public setLink(link: HTMLLinkElement) {
+		this.link = link;
 	}
+
 	//#endregion
 }

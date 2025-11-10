@@ -1,14 +1,13 @@
 // src/scenes/system/BootScene.ts
 
-import { AssetManager } from '@/managers/AssetManager';
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import { CoreScene } from '@abstracts/scene/CoreScene';
 import { withPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
 import { GAME_EVENT_TYPES } from '@config/events.config';
 import { SceneInfo } from '@decorators/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
-export class BootScene extends withPhaserLifecycle(TypedScene) {
+export class BootScene extends withPhaserLifecycle(CoreScene) {
 	private loadingText!: Phaser.GameObjects.Text;
 
 	public preload() {
@@ -22,7 +21,6 @@ export class BootScene extends withPhaserLifecycle(TypedScene) {
 			.setOrigin(0.5);
 	}
 
-	public create() {}
 	public heartbeat() {}
 
 	public shutdown() {
@@ -30,7 +28,7 @@ export class BootScene extends withPhaserLifecycle(TypedScene) {
 	}
 
 	public async loadAssets() {
-		await AssetManager.buildManifest();
+		await this.game.assetManager.buildManifest();
 		this.game.events.emit(GAME_EVENT_TYPES.BOOT); // -> EventService слушает это событие
 	}
 }
