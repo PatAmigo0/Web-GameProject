@@ -1,10 +1,10 @@
-import { BaseService } from '@abstracts/service/BaseService';
-import { StandaloneService } from '@abstracts/service/StandaloneService';
-import type { IInitializiable } from '@gametypes/interface.types';
+import { BaseService } from '@abstracts/service-base/BaseService';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
+import type { IInitializiable } from '@gametypes/core.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { AssetManager } from '@managers/AssetManager';
 import { SceneManager } from '@managers/SceneManager';
-import { BootScene } from '@scenes/system/BootScene';
+import { BootScene } from '@scenes/system-scenes/BootScene';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
 import { PlayerService } from '@services/PlayerService';
@@ -17,7 +17,7 @@ export class GameService extends Phaser.Game {
 	declare readonly scene: SceneManager;
 	//#endregion
 
-	//#region
+	//#region MANAGERS
 	public assetManager = new AssetManager(this);
 	//#endregion
 
@@ -28,21 +28,11 @@ export class GameService extends Phaser.Game {
 	private eventService = new EventService(this);
 	//#endregion
 
-	//#region GAME CONTEXT
-	//#endregion
-
 	//#region CONSTRUCTOR
 	constructor(config: Phaser.Types.Core.GameConfig) {
 		super(config);
 		this.events.once(Phaser.Core.Events.READY, () => this.init());
 	}
-	//#endregion
-
-	//#region PUBLIC METHODS
-
-	//#endregion
-
-	//#region PRIVATE MAIN METHODS
 	//#endregion
 
 	//#region PRIVATE INITIALIZATION
@@ -58,12 +48,7 @@ export class GameService extends Phaser.Game {
 
 	private setNewPrototypes() {
 		// обновляю this.scene чтобы он поддерживал новый функционал из SceneManager (кастомный)
-		(
-			Object.setPrototypeOf(
-				this.scene,
-				SceneManager.prototype,
-			) as SceneManager
-		).init();
+		(Object.setPrototypeOf(this.scene, SceneManager.prototype) as SceneManager).init();
 	}
 
 	private initServices() {
@@ -79,8 +64,7 @@ export class GameService extends Phaser.Game {
 	private isService(propertyValue: any): propertyValue is IInitializiable {
 		return (
 			propertyValue &&
-			(propertyValue instanceof BaseService ||
-				propertyValue instanceof StandaloneService)
+			(propertyValue instanceof BaseService || propertyValue instanceof StandaloneService)
 		);
 	}
 	//#endregion

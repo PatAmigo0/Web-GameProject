@@ -1,4 +1,4 @@
-import type { CoreScene } from '@abstracts/scene/CoreScene';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 
 export interface ICoreSceneManager extends Phaser.Scenes.SceneManager {
 	scenes: CoreScene[];
@@ -6,3 +6,7 @@ export interface ICoreSceneManager extends Phaser.Scenes.SceneManager {
 	run(key: string, data?: object): this;
 	start(key: string, data?: object): this;
 }
+
+export const PhaserEvents = {
+	SHUTDOWN: 'shutdown',
+} as const;

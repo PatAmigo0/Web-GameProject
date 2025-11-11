@@ -1,26 +1,23 @@
-import type { WithPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
-import type { IInitializiable } from '@gametypes/interface.types';
-import type { ICoreSceneManager } from '@gametypes/phaser.types';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
+import type { IInitializiable } from '@gametypes/core.types';
+import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
 import { TransitionManager } from './TransitionManager';
 
-export class SceneManager
-	extends Phaser.Scenes.SceneManager
-	implements ICoreSceneManager, IInitializiable
-{
+export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSceneManager, IInitializiable {
 	declare scenes: WithPhaserLifecycle[];
 	declare game: GameService;
 
 	private currentMainScene: WithPhaserLifecycle | undefined = null;
 	private transitionManager!: TransitionManager;
 
-	public init() {
+	public init(): void {
 		this.currentMainScene = null;
 		this.transitionManager = new TransitionManager(this);
 	}
 
-	public changeMainScene(sceneKey: string) {
+	public changeMainScene(sceneKey: string): void {
 		console.debug(
 			`[SceneManager] меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`,
 		);
@@ -37,18 +34,16 @@ export class SceneManager
 		this.currentMainScene = newScene;
 	}
 
-	public stop<T extends WithPhaserLifecycle>(
-		key: string | T,
-		data?: object,
-	): this {
+	public stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
 		const scene = this.getScene<WithPhaserLifecycle>(key);
-		console.debug(`Stopping ${scene.sceneKey}`);
+		scene.events.once(PhaserEvents.SHUTDOWN, () => {
+			scene.shutdown();
+		});
 		super.stop(scene, data);
-		scene.shutdown();
 		return this;
 	}
 
-	private handleSceneType(scene: WithPhaserLifecycle) {
+	private handleSceneType(scene: WithPhaserLifecycle): void {
 		switch (scene.sceneType) {
 			case SceneTypes.GameScene:
 				this.game.userInputService.lockMainKeys();

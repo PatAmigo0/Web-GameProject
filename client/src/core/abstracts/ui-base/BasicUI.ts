@@ -1,5 +1,5 @@
 //#region IMPORTS
-import { MAX_DEPTH } from '@config/game.config';
+import { MAX_DEPTH } from '@config/render.config';
 import { CoordinatesConverter } from '@utils/CoordinatesConverter';
 //#endregion
 

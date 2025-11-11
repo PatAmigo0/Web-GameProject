@@ -1,9 +1,9 @@
 // src/scenes/system/BootScene.ts
 
-import { CoreScene } from '@abstracts/scene/CoreScene';
-import { withPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
-import { GAME_EVENT_TYPES } from '@config/events.config';
+import { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { withPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene)
@@ -29,6 +29,6 @@ export class BootScene extends withPhaserLifecycle(CoreScene) {
 
 	public async loadAssets() {
 		await this.game.assetManager.buildManifest();
-		this.game.events.emit(GAME_EVENT_TYPES.BOOT); // -> EventService слушает это событие
+		this.game.events.emit(GameEvents.BOOT); // -> EventService слушает это событие
 	}
 }

@@ -1,7 +1,7 @@
-import type { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
-import type { CoreScene } from '@abstracts/scene/CoreScene';
+import type { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { CacheComponent } from '@components/shared/CacheComponent';
-import type { BaseFunction } from '@gametypes/function.types';
+import type { BaseFunction } from '@gametypes/core.types';
 
 export class StyleManager {
 	private styleCache = new CacheComponent();
@@ -13,7 +13,11 @@ export class StyleManager {
 		if (!this.styleCache.exists(scene.sceneKey)) {
 			this.createLink(scene.sceneKey, url);
 		}
-		scene.setLink(this.loadLink(scene));
+		const link = this.loadLink(scene);
+
+		scene.events.once('shutdown', () => {
+			link.disabled = true;
+		});
 	}
 
 	private createLink(cacheKey: string, url: string): void {

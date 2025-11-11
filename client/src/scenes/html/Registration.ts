@@ -1,6 +1,6 @@
-import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
-import { GAME_EVENT_TYPES } from '@config/events.config';
+import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.SignupScene, SceneTypes.HTMLScene)
@@ -31,14 +31,14 @@ export class RegistrationScene extends BaseHtmlScene {
 	private _init_click_events() {
 		this.changeToLoginButton.addEventListener('click', () => {
 			this.game.events.emit(
-				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
+				GameEvents.MAIN_SCENE_CHANGE,
 				SceneKeys.LoginScene,
 			);
 		});
 
 		this.registrationButton.addEventListener('click', () => {
 			this.game.events.emit(
-				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
+				GameEvents.MAIN_SCENE_CHANGE,
 				SceneKeys.MainMenu,
 			);
 		});

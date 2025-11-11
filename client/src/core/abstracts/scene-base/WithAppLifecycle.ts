@@ -1,4 +1,4 @@
-import { CoreScene } from '@abstracts/scene/CoreScene';
+import { CoreScene } from '@abstracts/scene-base/CoreScene';
 
 export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
 	Base: T,

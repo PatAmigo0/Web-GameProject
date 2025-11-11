@@ -2,7 +2,7 @@
 
 import 'phaser';
 
-import type { WithPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import type { SceneManager } from '@managers/SceneManager';
 import { GameService } from '@services/GameService';
 

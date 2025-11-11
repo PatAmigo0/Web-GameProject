@@ -1,5 +1,5 @@
-import type { CoreScene } from '@abstracts/scene/CoreScene';
-import { SCENE_EVENT_TYPES } from '@config/events.config';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { SceneEvents } from '@gametypes/event.types';
 
 /**
  * Отвечает за плавный переход между сценами
@@ -15,7 +15,7 @@ export class TransitionManager extends Phaser.Events.EventEmitter {
 
 	public swapScenes(oldScene: CoreScene, newScene: CoreScene) {
 		this.scenePlugin.start(newScene);
-		newScene.events.once(SCENE_EVENT_TYPES.SCENE_IS_READY_TO_RUN, () => {
+		newScene.events.once(SceneEvents.SCENE_IS_READY_TO_RUN, () => {
 			this.scenePlugin.stop(oldScene);
 		});
 	}

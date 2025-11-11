@@ -1,7 +1,7 @@
 //#region IMPORTS
-import { BaseService } from '@abstracts/service/BaseService';
+import { BaseService } from '@abstracts/service-base/BaseService';
 import { Player } from '@components/entities/Player';
-import type { IInitializiable } from '@gametypes/interface.types';
+import type { IInitializiable } from '@gametypes/core.types';
 import { PlayerManager } from '@managers/PlayerManager';
 //#endregion
 
@@ -36,10 +36,5 @@ export class PlayerService extends BaseService implements IInitializiable {
 	//#region PRIVATE METHODS
 
 	//#endregion
-
-	// TODO: добавить другие методы для управления игроками:
-	// public addPlayer(player: Player): void { ... }
-	// public removePlayer(playerID: string): void { ... }
-	// public getAllPlayers(): Player[] { ... }
 }
 //#endregion

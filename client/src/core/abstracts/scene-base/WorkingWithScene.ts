@@ -1,6 +1,6 @@
 // src/utils/abstracts/scenes/WorkingWithScene.ts
 
-import type { BaseGameScene } from '@abstracts/scene/BaseGameScene';
+import type { BaseGameScene } from '@abstracts/scene-base/BaseGameScene';
 
 export abstract class WorkingWithScene {
 	protected scene!: BaseGameScene;

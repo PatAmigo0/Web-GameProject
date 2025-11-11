@@ -1,19 +1,19 @@
+// src/types/core.types.ts
+
 import type { AnimatorComponent } from '@components/entities/playerComponents/AnimatorComponent';
 import type { InputComponent } from '@components/entities/playerComponents/InputComponent';
 import type { GameService } from '@services/GameService';
 
-export interface IMapAssetManifest {
-	mapJsonUrl: string;
-	tilesetUrls: string[];
-}
+// Функциональные типы
+export type BaseFunction = () => void;
 
-export interface IHtmlAssetManifest {
-	CSS: string;
-	HTML: string;
-}
-
+//  Общие интерфейсы
 export interface IInitializiable {
-	init: () => void;
+	init: () => any;
+}
+
+export interface IUpdatable {
+	update: (...args: any) => void;
 }
 
 export interface IInputable {

@@ -1,53 +1,38 @@
-import { KEYBOARD_LISTENING_KEYS } from '@config/controls.config';
-import type {
-	InputSignal,
-	InputState,
-	InputStateAggregation,
-} from '@gametypes/player.types';
+import { Actions } from '@config/controls.config';
+import type { InputSignal, InputStateAggregation, InputStateByAction } from '@gametypes/controls.types';
 
 export class InputComponent {
-	private inputState: InputState = {
-		[KEYBOARD_LISTENING_KEYS.MOVE_UP]: false,
-		[KEYBOARD_LISTENING_KEYS.MOVE_LEFT]: false,
-		[KEYBOARD_LISTENING_KEYS.MOVE_DOWN]: false,
-		[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT]: false,
-		[KEYBOARD_LISTENING_KEYS.ACTION]: false,
+	private inputState: InputStateByAction = {
+		[Actions.MoveUp]: false,
+		[Actions.MoveLeft]: false,
+		[Actions.MoveDown]: false,
+		[Actions.MoveRight]: false,
+		[Actions.Interact]: false,
 	};
 	private isdiagonal: boolean = false;
 
 	public changeInputState(inputSignal: InputSignal): void {
-		console.debug(
-			`[InputComponent] меняю state: ${inputSignal.key} ${
-				this.inputState[inputSignal.key]
-			} -> ${!this.inputState[inputSignal.key]}`,
-		);
-		this.inputState[inputSignal.key] = inputSignal.state;
+		this.inputState[inputSignal.action] = inputSignal.state;
 
-		// нет смысла проверять на диагональ если у нас был action
-		if (inputSignal.key != KEYBOARD_LISTENING_KEYS.ACTION) {
+		if (inputSignal.action != Actions.Interact) {
 			this.isdiagonal = this.checkForDiagonal();
 		}
 	}
 
 	public getInputState(): InputStateAggregation {
 		return {
-			inputState: { ...this.inputState },
+			inputState: this.inputState,
 			isdiagonal: this.isdiagonal,
 		} as InputStateAggregation;
 	}
 
 	public resetAction(): void {
-		this.inputState[KEYBOARD_LISTENING_KEYS.ACTION] = false;
+		this.inputState[Actions.Interact] = false;
 	}
 
 	private checkForDiagonal(): boolean {
-		const horizontalMovement =
-			this.inputState[KEYBOARD_LISTENING_KEYS.MOVE_LEFT] ||
-			this.inputState[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT];
-		const verticalMovement =
-			this.inputState[KEYBOARD_LISTENING_KEYS.MOVE_UP] ||
-			this.inputState[KEYBOARD_LISTENING_KEYS.MOVE_DOWN];
-
+		const horizontalMovement = this.inputState[Actions.MoveLeft] || this.inputState[Actions.MoveRight];
+		const verticalMovement = this.inputState[Actions.MoveUp] || this.inputState[Actions.MoveDown];
 		return horizontalMovement && verticalMovement;
 	}
 }

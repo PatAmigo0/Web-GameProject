@@ -1,13 +1,13 @@
-import { StandaloneService } from '@abstracts/service/StandaloneService';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import type { Character } from '@components/entities/Character';
-import { KEYBOARD_LISTENING_KEYS as ListenableKeyCodes } from '@config/controls.config';
-import { KEYBOARD_EVENT_TYPES } from '@config/events.config';
-import { PhaserKeys } from '@config/keyboard.config';
-import type { KeyInformation } from '@gametypes/player.types';
+import { ACTION_MAP } from '@config/controls.config';
+import { Keys, PHASER_KEYS } from '@config/keyboard.config';
+import type { Action, MappedKeyInfo } from '@gametypes/controls.types';
+import { KeyboardEvents } from '@gametypes/event.types';
 
 export class UserInputService extends StandaloneService {
 	private localCharacter: Character | null = null;
-	private keyMap = new Map<ListenableKeyCodes, KeyInformation>();
+	private keyMap = new Map<Keys, MappedKeyInfo>();
 	private keyboard!: Phaser.Input.Keyboard.KeyboardManager;
 	private target!: EventTarget;
 
@@ -44,12 +44,13 @@ export class UserInputService extends StandaloneService {
 	}
 
 	private initKeys(): void {
-		// W, A, S, D
-		Object.entries(ListenableKeyCodes).forEach(([eventName, keyCode]) => {
-			const phaserKeyCode = PhaserKeys[keyCode];
+		Object.entries(ACTION_MAP).forEach(([action, keyCode]) => {
+			const phaserKeyCode = PHASER_KEYS[keyCode as keyof typeof PHASER_KEYS];
+
 			if (phaserKeyCode) {
 				this.keyMap.set(keyCode, {
-					eventName: eventName,
+					baseKey: keyCode,
+					action: action as Action,
 					phaserKey: phaserKeyCode,
 				});
 			} else {
@@ -59,44 +60,30 @@ export class UserInputService extends StandaloneService {
 			}
 		});
 
-		this.lockMainKeys();
+		this.lockMainKeys(); // locking by default
 	}
 
 	private initEvents(): void {
-		const handler = (key: Event) =>
-			this.emit(KEYBOARD_EVENT_TYPES.KEY_PRESSED, key as KeyboardEvent);
-
-		this.target.addEventListener(
-			KEYBOARD_EVENT_TYPES.KEY_DOWN,
-			handler,
-			false,
-		);
-
-		this.target.addEventListener(
-			KEYBOARD_EVENT_TYPES.KEY_UP,
-			handler,
-			false,
-		);
+		const handler = (key: Event) => this.emit(KeyboardEvents.KEY_PRESSED, key as KeyboardEvent);
+		this.target.addEventListener(KeyboardEvents.KEY_DOWN, handler, false);
+		this.target.addEventListener(KeyboardEvents.KEY_UP, handler, false);
 	}
 
 	private listenEvents(): void {
-		this.on(KEYBOARD_EVENT_TYPES.KEY_PRESSED, (key: KeyboardEvent) => {
-			if (this.keyMap.has(key.code as ListenableKeyCodes)) {
+		this.on(KeyboardEvents.KEY_PRESSED, (key: KeyboardEvent) => {
+			if (this.keyMap.has(key.code as Keys)) {
 				this.handleKeyPressed(key);
 			}
 		});
 	}
 
 	private handleKeyPressed(key: KeyboardEvent): void {
-		if (this.localCharacter) {
-			const keycode = key.code as ListenableKeyCodes;
+		const keyInfo = this.keyMap.get(key.code as Keys);
+
+		if (this.localCharacter && !key.repeat && keyInfo) {
 			this.localCharacter.keyinput.changeInputState({
-				key: keycode,
-				state: key.type == KEYBOARD_EVENT_TYPES.KEY_DOWN, // true если key down, false если key up
-			});
-			console.log({
-				key: keycode,
-				state: key.type == KEYBOARD_EVENT_TYPES.KEY_DOWN, // true если key down, false если key up
+				action: keyInfo.action,
+				state: key.type == KeyboardEvents.KEY_DOWN,
 			});
 		}
 	}

@@ -1,31 +1,23 @@
 // src/types/scene.types.ts
 
 //#region SCENE KEYS
-/**
- * Уникальные ключи для идентификации сцен Phaser
- * Используются для запуска, остановки и получения сцен
- */
 export enum SceneKeys {
-	BootScene = 'BootScene', // Сцена начальной загрузки
+	BootScene = 'BootScene',
 	LoginScene = 'Login',
 	SignupScene = 'Signup',
-	MainMenu = 'MainMenu', // Главное меню
-	TestPlace = 'TestPlace', // Основная игровая сцена (тестовая)
+	MainMenu = 'MainMenu',
+	TestPlace = 'TestPlace',
 	CharacterTestPlace = 'CharacterTestPlace',
 }
 //#endregion
 
 //#region SCENE TYPES
-/**
- * Категории или типы сцен
- * Используются для внутренней архитектуры и управления сценами
- */
 export enum SceneTypes {
-	GameScene = 'GAME', // Основные игровые сцены (уровни, миры)
-	UIScene = 'UI', // Сцены пользовательского интерфейса (инвентарь, HUD)
+	GameScene = 'GAME',
+	UIScene = 'UI',
 	HTMLScene = 'HTML',
-	SystemScene = 'SYS', // Системные сцены (загрузка ассетов, переходы)
-	Undefined = 'UNDEFINED', // Тип по умолчанию / Неопределенная сцена
+	SystemScene = 'SYS',
+	Undefined = 'UNDEFINED',
 }
 //#endregion
 

@@ -1,4 +1,4 @@
-import type { IInitializiable } from '@gametypes/interface.types';
+import type { IInitializiable } from '@gametypes/core.types';
 
 export abstract class StandaloneService
 	extends Phaser.Events.EventEmitter

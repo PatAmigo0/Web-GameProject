@@ -1,37 +1,50 @@
 //#region IMPORTS
-import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
-import type { CoreScene } from '@abstracts/scene/CoreScene';
-import { BaseService } from '@abstracts/service/BaseService';
+import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { BaseService } from '@abstracts/service-base/BaseService';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { ManifestEntryCheck } from '@decorators/ManifestEntryCheck.decorator';
 import { ManifestExistsCheck } from '@decorators/ManifestExistsCheck.decorator';
-import type {
-	IHtmlAssetManifest,
-	IMapAssetManifest,
-} from '@gametypes/interface.types';
+import type { IHtmlAssetManifest, IMapAssetManifest } from '@gametypes/assets.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import { StyleManager } from './StyleManager';
 //#endregion
 
 //#region CLASS DEFINITION
 /**
- * Статический класс для управления ассетами
+ * Класс для управления ассетами
+ *
  * Отвечает за создание манифеста (списка всех ассетов) при запуске
  * и за загрузку нужных ассетов для каждой конкретной сцены
  */
 export class AssetManager extends BaseService {
-	//#region STATE
-	// Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
-	// Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
+	//#region ATTRIBUTES
+	/**
+	 * Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
+	 *
+	 * Это словарь, сопоставляющий ключ сцены (например, 'test_place') со списком её ассетов
+	 */
 	public readonly assetManifest: Record<string, IMapAssetManifest> = {};
 
+	/**
+	 * Этот манифест будет хранить все заранее найденные пути в html и css для каждой HTML сцены
+	 *
+	 * Это словарь, сопоставляющий ключ сцены (например, 'Login') с хранилищем путей (по одному) к HTML и CSS файлам
+	 */
 	public readonly stylesManifest: Record<string, IMapAssetManifest> = {};
 
-	// флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
+	/**
+	 *  Флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
+	 */
 	public manifestBuilt = false;
-	//#endregion
 
+	/**
+	 * Экзэмпляр мэнэджера по управлению стилями (CSS)
+	 *
+	 * Нужен для разделения работы AssetManager и подгрузки css для HTML сцен
+	 */
 	private styleManager!: StyleManager;
+	//#endregion
 
 	//#region PUBLIC METHODS
 	public init(): void {
@@ -54,9 +67,7 @@ export class AssetManager extends BaseService {
 				this.loadHtmlAssets(scene);
 				break;
 			default:
-				console.warn(
-					'Тип сцены не поддерживается для загрузки ассетов',
-				);
+				console.warn('Тип сцены не поддерживается для загрузки ассетов');
 		}
 	}
 
@@ -67,12 +78,7 @@ export class AssetManager extends BaseService {
 	 */
 	@ManifestEntryCheck // 2
 	@ManifestExistsCheck // 1
-	public loadMapAssets(
-		scene: CoreScene,
-		manifestEntry?: IMapAssetManifest,
-	): void {
-		if (!manifestEntry) return;
-
+	public loadMapAssets(scene: CoreScene, manifestEntry?: IMapAssetManifest): void {
 		// Загружаем все необходимые изображения тайлсетов
 		for (const url of manifestEntry.tilesetUrls) {
 			// ключ для Phaser - это просто имя файла без расширения
@@ -93,16 +99,10 @@ export class AssetManager extends BaseService {
 	 */
 	@ManifestEntryCheck // 2
 	@ManifestExistsCheck // 1
-	public loadHtmlAssets(
-		scene: BaseHtmlScene,
-		manifestEntry?: IHtmlAssetManifest,
-	): void {
-		if (!manifestEntry) return;
-
+	public loadHtmlAssets(scene: BaseHtmlScene, manifestEntry?: IHtmlAssetManifest): void {
 		if (!scene.cache.html.has(scene.sceneKey)) {
 			scene.load.html(scene.sceneKey, manifestEntry.HTML);
 		}
-
 		this.styleManager.preloadStyle(scene, manifestEntry.CSS);
 	}
 
@@ -115,18 +115,12 @@ export class AssetManager extends BaseService {
 
 		// Map manifest
 		let response = await fetch(ASSET_URLS[ASSET_KEYS.MAP_MANIFEST]);
-		let manifestData = (await response.json()) as Record<
-			string,
-			IMapAssetManifest
-		>;
+		let manifestData = (await response.json()) as Record<string, IMapAssetManifest>;
 		Object.assign(this.assetManifest, manifestData);
 
 		// Html manifest
 		response = await fetch(ASSET_URLS[ASSET_KEYS.HTML_MANIFEST]);
-		manifestData = (await response.json()) as Record<
-			string,
-			IMapAssetManifest
-		>;
+		manifestData = (await response.json()) as Record<string, IMapAssetManifest>;
 		Object.assign(this.stylesManifest, manifestData);
 
 		this.manifestBuilt = true;

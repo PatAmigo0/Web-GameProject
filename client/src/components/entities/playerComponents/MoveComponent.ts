@@ -1,109 +1,65 @@
-import { KEYBOARD_LISTENING_KEYS } from '@config/controls.config';
-import { MOVE_SPEED } from '@config/game.config';
-import {
-	MovementType,
-	type InputStateAggregation,
-	type MoveState,
-} from '@gametypes/player.types';
+import { MOVEMENT_MULTIPLIERS, VERTICAL_ACTIONS } from '@config/controls.config';
+import { DIAGONAL_MOVE_SPEED, MOVE_SPEED } from '@config/movement.config';
+import type { MovementState, MovementStateKey } from '@gametypes/controls.types';
+import type { IUpdatable } from '@gametypes/core.types';
 
-export class MoveComponent {
-	private body!: Phaser.Physics.Arcade.Body;
-	private states!: MoveState;
-	private speed: number = MOVE_SPEED;
-	private diagonalSpeed: number = MOVE_SPEED / Math.sqrt(2);
-	private xMultiplier: number = 1;
-	private yMultiplier: number = 1;
+export class MoveComponent implements IUpdatable {
+	private targetBody!: Phaser.Physics.Arcade.Body;
+	private queue = new Set<MovementStateKey>();
 
-	constructor(body: Phaser.Physics.Arcade.Body) {
-		this.body = body;
-		this.states = {
-			[KEYBOARD_LISTENING_KEYS.MOVE_UP]: {
-				state: false,
-				handler: this.body.setVelocityY.bind(this),
-				direction: MovementType.Vertical,
-			},
-			[KEYBOARD_LISTENING_KEYS.MOVE_LEFT]: {
-				state: false,
-				handler: this.body.setVelocityX.bind(this),
-				direction: MovementType.Horizontal,
-			},
-			[KEYBOARD_LISTENING_KEYS.MOVE_DOWN]: {
-				state: false,
-				handler: this.body.setVelocityY.bind(this),
-				direction: MovementType.Vertical,
-			},
-			[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT]: {
-				state: false,
-				handler: this.body.setVelocityX.bind(this),
-				direction: MovementType.Horizontal,
-			},
-		};
+	constructor(targetBody: Phaser.Physics.Arcade.Body) {
+		this.targetBody = targetBody;
 	}
 
-	public update(inputStateAggregation: InputStateAggregation): void {
-		const inputState = inputStateAggregation.inputState;
-		const isDiagonal = inputStateAggregation.isdiagonal;
+	public update(movementState: MovementState): void {
+		this.updateQueue(movementState);
+		this.move();
+	}
 
-		this.resetVelocity();
-
-		Object.entries(inputState).forEach(([key, state]) => {
-			if (this.keyChecker(key)) {
-				if (state) this[key]();
-				else this.states[key].state = false;
+	private updateQueue(movementState: MovementState): void {
+		(Object.entries(movementState) as [MovementStateKey, boolean][]).forEach(([action, state]) => {
+			if (this.queue.has(action)) {
+				if (!state) {
+					this.queue.delete(action);
+				}
+			} else if (state) {
+				this.queue.add(action);
 			}
 		});
+	}
 
-		if (isDiagonal) {
-			this.body.setVelocity(
-				this.diagonalSpeed * this.xMultiplier,
-				this.diagonalSpeed * this.yMultiplier,
-			);
-		} else {
-			for (const stateInfo of Object.values(this.states)) {
-				if (stateInfo.state) {
-					stateInfo.handler(
-						this.speed *
-							(stateInfo.direction == MovementType.Horizontal
-								? this.xMultiplier
-								: this.yMultiplier),
-					);
+	private move(): void {
+		let xMultiplier = 0;
+		let yMultiplier = 0;
+
+		let foundHorizontal = false;
+		let foundVertical = false;
+
+		const normalizedQueue = [...this.queue];
+		for (let i = normalizedQueue.length - 1; i >= 0; i--) {
+			const action = normalizedQueue[i];
+
+			if (VERTICAL_ACTIONS.has(action)) {
+				if (!foundVertical) {
+					foundVertical = true;
+					yMultiplier = MOVEMENT_MULTIPLIERS[action];
+				}
+			} else {
+				if (!foundHorizontal) {
+					foundHorizontal = true;
+					xMultiplier = MOVEMENT_MULTIPLIERS[action];
 				}
 			}
-		}
-	}
 
-	//#region Кастомные handlers для сложной логики
-	private [KEYBOARD_LISTENING_KEYS.MOVE_UP](): void {
-		if (!this.states[KEYBOARD_LISTENING_KEYS.MOVE_DOWN].state) {
-			this.states[KEYBOARD_LISTENING_KEYS.MOVE_UP].state = true;
-			this.yMultiplier = -1;
+			if (foundHorizontal && foundVertical) {
+				this.targetBody.setVelocity(
+					DIAGONAL_MOVE_SPEED * xMultiplier,
+					DIAGONAL_MOVE_SPEED * yMultiplier,
+				);
+				return;
+			}
 		}
-	}
-	private [KEYBOARD_LISTENING_KEYS.MOVE_LEFT](): void {
-		if (!this.states[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT].state) {
-			this.states[KEYBOARD_LISTENING_KEYS.MOVE_LEFT].state = true;
-			this.xMultiplier = -1;
-		}
-	}
-	private [KEYBOARD_LISTENING_KEYS.MOVE_DOWN](): void {
-		if (!this.states[KEYBOARD_LISTENING_KEYS.MOVE_UP].state) {
-			this.states[KEYBOARD_LISTENING_KEYS.MOVE_DOWN].state = true;
-			this.yMultiplier = 1;
-		}
-	}
-	private [KEYBOARD_LISTENING_KEYS.MOVE_RIGHT](): void {
-		if (!this.states[KEYBOARD_LISTENING_KEYS.MOVE_LEFT].state) {
-			this.states[KEYBOARD_LISTENING_KEYS.MOVE_RIGHT].state = true;
-			this.xMultiplier = 1;
-		}
-	}
-	//#endregion
 
-	private resetVelocity() {
-		this.body.setVelocity(0, 0);
-	}
-
-	private keyChecker(key: string): key is keyof MoveState {
-		return key in this.states;
+		this.targetBody.setVelocity(MOVE_SPEED * xMultiplier, MOVE_SPEED * yMultiplier);
 	}
 }

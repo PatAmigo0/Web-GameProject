@@ -1,7 +1,7 @@
-import { BaseHtmlScene } from '@abstracts/scene/BaseHtmlScene';
-import { GAME_EVENT_TYPES } from '@config/events.config';
-import { TEST_SCENE } from '@config/game.config';
+import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
+import { TEST_SCENE } from '@config/scene.config';
 import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.HTMLScene)
@@ -38,10 +38,7 @@ export class MainMenuScene extends BaseHtmlScene {
 
 	private _init_click_events() {
 		this.createGameLocal.addEventListener('click', () => {
-			this.game.events.emit(
-				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-				TEST_SCENE,
-			);
+			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, TEST_SCENE);
 		});
 	}
 	//#endregion

@@ -1,5 +1,5 @@
 //#region IMPORTS
-import { BasicUI } from '@/core/abstracts/ui/BasicUI';
+import { BasicUI } from '@abstracts/ui-base/BasicUI';
 //#endregion
 
 //#region CLASS DEFINITION

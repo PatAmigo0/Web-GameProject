@@ -1,4 +1,4 @@
-import type { IInitializiable } from '@gametypes/interface.types';
+import type { IInitializiable } from '@gametypes/core.types';
 import type { GameService } from '@services/GameService';
 
 export abstract class BaseService

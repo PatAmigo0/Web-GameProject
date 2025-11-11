@@ -1,18 +1,10 @@
 //#region IMPORTS
-// импортируем константы для Tiled, чтоб не писать строки руками
-import {
-	DEPTH_PROPERTIE_NAME,
-	LAYER_PROPERTIE_COLLIDES,
-	OBJECT_SPAWNS_LAYER,
-	PLAYER_SPAWN,
-} from '@config/tiled.config';
-// импортируем наш кастомный класс Map
-import { Map } from '@components/phaser/scene/GameMap';
-// импортируем типы, чтоб TypeScript не ругался
-import type { BaseGameScene } from '@abstracts/scene/BaseGameScene';
-import type { CoreScene } from '@abstracts/scene/CoreScene';
-import { TILE_SIZE } from '@config/game.config';
-import type { IBooleanPropertie, IPropertie } from '@gametypes/layer.types';
+import type { BaseGameScene } from '@abstracts/scene-base/BaseGameScene';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { Map } from '@components/phaser/scene-components/GameMap';
+import { LayerProperties, Layers, ObjectNames } from '@config/tiled.config';
+import { TILE_SIZE } from '@config/world.config';
+import type { IBooleanPropertie, IPropertie } from '@gametypes/world.types';
 //#endregion
 
 /**
@@ -82,22 +74,12 @@ export class MapManager {
 		collidableLayers: Phaser.Tilemaps.TilemapLayer[],
 	): void {
 		// устанавливаем границы мира по размеру карты, чтоб игрок не улетел в бесконечность
-		scene.physics.world.setBounds(
-			0,
-			0,
-			map.widthInPixels,
-			map.heightInPixels,
-		);
+		scene.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-		const player = scene.getPlayer();
-		if (!player) {
-			throw 'Ошибка [MapManager]: Не удалось найти игрока для инициализации физики';
-		}
-
-		player.setCollideWorldBounds(true);
-		collidableLayers.forEach((layer) => {
-			scene.physics.add.collider(player, layer); // создаем коллизию
-		});
+		// player.setCollideWorldBounds(true);
+		// collidableLayers.forEach((layer) => {
+		// 	scene.physics.add.collider(player, layer); // создаем коллизию
+		// });
 	}
 	//#endregion
 
@@ -106,14 +88,7 @@ export class MapManager {
 		map: Map,
 		tilesetName: string, // 'grass', 'water' и тд
 	): Phaser.Tilemaps.Tileset | null {
-		// Предполагаем, что ключ текстуры в Phaser совпадает с именем тайлсета в Tiled
-		// напр. картинка 'grass.png' в Tiled называется 'grass', и в Phaser мы ее загрузили как 'grass'
-		const tileset = map.addTilesetImage(
-			tilesetName,
-			tilesetName,
-			TILE_SIZE.width,
-			TILE_SIZE.height,
-		);
+		const tileset = map.addTilesetImage(tilesetName, tilesetName, TILE_SIZE.width, TILE_SIZE.height);
 
 		if (!tileset) {
 			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
@@ -131,9 +106,7 @@ export class MapManager {
 	): { layer: Phaser.Tilemaps.TilemapLayer; isCollidable: boolean } | null {
 		const layer = map.createLayer(layerData.name, tilesets, 0, 0);
 		if (!layer) {
-			console.warn(
-				`[MapManager] Не удалось создать слой: "${layerData.name}"`,
-			);
+			console.warn(`[MapManager] Не удалось создать слой: "${layerData.name}"`);
 			return null;
 		}
 
@@ -142,10 +115,7 @@ export class MapManager {
 
 		// ищем проперти 'collides' и проверяем, что оно 'true'
 		if (Array.isArray(properties)) {
-			isCollidable = MapManager._initLayer(
-				layer,
-				properties,
-			).isCollidable;
+			isCollidable = MapManager._initLayer(layer, properties).isCollidable;
 		}
 		// возвращаем и слой, и флаг
 		return { layer, isCollidable };
@@ -156,30 +126,22 @@ export class MapManager {
 		properties: IPropertie[],
 	): { isCollidable: boolean } {
 		let isCollidable = false;
-		if (
-			properties.find((p) => p.name === LAYER_PROPERTIE_COLLIDES)
-				?.value === true
-		) {
+		if (properties.find((p) => p.name === LayerProperties.Collides)?.value === true) {
 			// Устанавливаем коллизию для всех тайлов, кроме -1 (пустого)
 			layer.setCollisionByExclusion([-1]);
 			isCollidable = true;
 		}
 
 		// Устанавливаем глубину (Z-порядок) из Tiled
-		layer.setDepth(
-			properties.find((p) => p.name === DEPTH_PROPERTIE_NAME)?.value ||
-				layer.depth,
-		);
+		layer.setDepth(properties.find((p) => p.name === LayerProperties.Depth)?.value || layer.depth);
 
 		return { isCollidable };
 	}
 
-	private static _findPlayerSpawn(
-		map: Map,
-	): Phaser.Types.Tilemaps.TiledObject | null {
+	private static _findPlayerSpawn(map: Map): Phaser.Types.Tilemaps.TiledObject | null {
 		return map.findObject(
-			OBJECT_SPAWNS_LAYER, // 'spawns'
-			(obj) => obj.name === PLAYER_SPAWN, // 'PlayerSpawn'
+			Layers.Spawns, // 'spawns'
+			(obj) => obj.name === ObjectNames.PlayerSpawn, // 'PlayerSpawn'
 		);
 	}
 	//#endregion
