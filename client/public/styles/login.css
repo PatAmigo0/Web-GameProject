@@ -34,39 +34,43 @@
 
 .game-title p {
 	color: #cccccc;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
-/* "Сжимаем" саму серую форму */
+/* Увеличиваем высоту серой формы */
 .auth-form {
 	background: #2d2d2d;
-	padding: 20px; /* Было: 30px */
+	padding: 26px; /* Увеличили: было 20px */
 	border-radius: 8px;
 	border: 1px solid #444444;
+	min-height: 300px; /* Добавили минимальную высоту */
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around; /* Равномерное распределение элементов */
 }
 
 .auth-form h2 {
 	text-align: center;
-	margin-bottom: 15px; /* Было: 25px */
+	margin-bottom: 23px; /* Увеличили: было 15px */
 	color: #8b0000;
 	font-size: 1.5em;
 }
 
-/* "Сжимаем" отступы между полями */
+/* Увеличиваем отступы между полями */
 .input-group {
-	margin-bottom: 10px; /* Было: 20px */
+	margin-bottom: 10px; /* Увеличили: было 10px */
 }
 
-/* "Сжимаем" сами поля */
+/* Увеличиваем сами поля */
 .input-group input {
-	height: 70%;
+	height: 80%; /* Увеличили: было 70% */
 	width: 100%;
-	padding: 10px; /* Было: 12px */
+	padding: 13px; /* Увеличили: было 10px */
 	background: #1a1a1a;
 	border: 1px solid #444444;
 	border-radius: 4px;
 	color: #ffffff;
-	font-size: 15px; /* Было: 16px */
+	font-size: 15px; /* Увеличили: было 15px */
 }
 
 .input-group input:focus {
@@ -74,17 +78,17 @@
 	border-color: #8b0000;
 }
 
-/* "Сжимаем" кнопку */
+/* Увеличиваем кнопку */
 .btn {
 	width: 100%;
-	padding: 10px; /* Было: 12px */
+	padding: 12px; /* Увеличили: было 10px */
 	background: #8b0000;
 	color: white;
 	border: none;
 	border-radius: 4px;
-	font-size: 15px; /* Было: 16px */
+	font-size: 15px; /* Увеличили: было 15px */
 	cursor: pointer;
-	margin-bottom: 10px; /* Было: 15px */
+	margin-bottom: 10px; /* Увеличили: было 10px */
 	transition: background 0.3s;
 }
 
@@ -101,18 +105,18 @@
 	background: #444444;
 }
 
-/* "Сжимаем" блок соц. кнопок */
+/* Увеличиваем блок соц. кнопок */
 .social-buttons {
-	margin: 15px 0; /* Было: 25px 0 */
+	margin: 20px 0; /* Увеличили: было 15px 0 */
 	border-top: 1px solid #444444;
 	border-bottom: 1px solid #444444;
-	padding: 15px 0; /* Было: 20px 0 */
+	padding: 20px 0; /* Увеличили: было 15px 0 */
 }
 
-/* "Сжимаем" нижний отступ */
+/* Увеличиваем нижний отступ */
 .form-switch {
 	text-align: center;
-	margin-top: 15px; /* Было: 20px */
+	margin-top: 20px; /* Увеличили: было 15px */
 	color: #cccccc;
 }
 
