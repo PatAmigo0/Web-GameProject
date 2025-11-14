@@ -4,16 +4,21 @@ import type { AnimatorComponent } from '@components/entities/playerComponents/An
 import type { InputComponent } from '@components/entities/playerComponents/InputComponent';
 import type { GameService } from '@services/GameService';
 
+// Классовые типы
+export type BaseClass = { new (...args: any[]): {} };
+
 // Функциональные типы
 export type BaseFunction = () => void;
 
+export type BaseInit = (...args: any[]) => any;
+
 //  Общие интерфейсы
 export interface IInitializiable {
-	init: () => any;
+	init: (...args: any[]) => any;
 }
 
 export interface IUpdatable {
-	update: (...args: any) => void;
+	update: (...args: any[]) => void;
 }
 
 export interface IInputable {

@@ -2,18 +2,28 @@ import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import type { Character } from '@components/entities/Character';
 import { ACTION_MAP } from '@config/controls.config';
 import { Keys, PHASER_KEYS } from '@config/keyboard.config';
-import type { Action, MappedKeyInfo } from '@gametypes/controls.types';
-import { KeyboardEvents } from '@gametypes/event.types';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { UISCharacterCheck } from '@decorators/UISCharacterCheck.decorator';
+import type { Action, InputSignal, MappedKeyInfo } from '@gametypes/controls.types';
+import { GameEvents, KeyboardEvents } from '@gametypes/event.types';
 
+@injectInitializator((service: UserInputService) => {
+	service.initAttributes();
+	service.initKeys();
+	service.initEvents();
+	service.listenEvents();
+})
 export class UserInputService extends StandaloneService {
-	private localCharacter: Character | null = null;
+	public localCharacter: Character | null = null;
 	private keyMap = new Map<Keys, MappedKeyInfo>();
-	private keyboard!: Phaser.Input.Keyboard.KeyboardManager;
 	private target!: EventTarget;
+	private falsyInput: InputSignal[] = [];
 
-	constructor(keyboard: Phaser.Input.Keyboard.KeyboardManager) {
+	constructor(
+		private keyboard: Phaser.Input.Keyboard.KeyboardManager,
+		private events: Phaser.Events.EventEmitter,
+	) {
 		super();
-		this.keyboard = keyboard;
 	}
 
 	public setLocalCharacter(character: Character): void {
@@ -32,15 +42,13 @@ export class UserInputService extends StandaloneService {
 		this.toggleKeyCapture(false);
 	}
 
-	public init(): void {
-		this.initAttributes();
-		this.initKeys();
-		this.initEvents();
-		this.listenEvents();
-	}
+	public declare init: () => void;
 
 	private initAttributes(): void {
 		this.target = this.keyboard.target;
+		for (const actionKey of Object.keys(ACTION_MAP)) {
+			this.falsyInput.push({ action: actionKey as Action, state: false });
+		}
 	}
 
 	private initKeys(): void {
@@ -75,17 +83,7 @@ export class UserInputService extends StandaloneService {
 				this.handleKeyPressed(key);
 			}
 		});
-	}
-
-	private handleKeyPressed(key: KeyboardEvent): void {
-		const keyInfo = this.keyMap.get(key.code as Keys);
-
-		if (this.localCharacter && !key.repeat && keyInfo) {
-			this.localCharacter.keyinput.changeInputState({
-				action: keyInfo.action,
-				state: key.type == KeyboardEvents.KEY_DOWN,
-			});
-		}
+		this.events.on(GameEvents.INPUT_RESET, () => this.resetInput());
 	}
 
 	private toggleKeyCapture(lock: boolean): void {
@@ -94,5 +92,21 @@ export class UserInputService extends StandaloneService {
 		for (const keyInfo of this.keyMap.values()) {
 			this.keyboard[method](keyInfo.phaserKey);
 		}
+	}
+
+	@UISCharacterCheck
+	private handleKeyPressed(key: KeyboardEvent): void {
+		const keyInfo = this.keyMap.get(key.code as Keys);
+		if (keyInfo && !key.repeat) {
+			this.localCharacter.keyinput.changeInputState({
+				action: keyInfo.action,
+				state: key.type == KeyboardEvents.KEY_DOWN,
+			});
+		}
+	}
+
+	@UISCharacterCheck
+	private resetInput(): void {
+		this.localCharacter.keyinput.changeInputState(this.falsyInput);
 	}
 }

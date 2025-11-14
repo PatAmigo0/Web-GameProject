@@ -2,6 +2,7 @@
 
 import 'phaser';
 
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import type { SceneManager } from '@managers/SceneManager';
 import { GameService } from '@services/GameService';
@@ -9,10 +10,7 @@ import { GameService } from '@services/GameService';
 declare global {
 	namespace Phaser {
 		namespace Loader {
-			type AwaitCallback = (
-				successCallback: () => void,
-				failureCallback: () => void,
-			) => void;
+			type AwaitCallback = (successCallback: () => void, failureCallback: () => void) => void;
 
 			interface LoaderPlugin {
 				/**
@@ -44,18 +42,15 @@ declare global {
 			interface SceneManager {
 				scenes: WithPhaserLifecycle[];
 				getScene<T extends WithPhaserLifecycle>(key: string): T;
-				stop<T extends WithPhaserLifecycle>(
-					key: string | T,
-					data?: object,
-				): this;
+				start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
+				stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
+				isShutdown<T extends CoreScene>(key: string | T): boolean;
+				isInitialized<T extends CoreScene>(key: string | T): boolean;
 			}
 
 			interface ScenePlugin {
 				get<T extends WithPhaserLifecycle>(key: string): T;
-				run<T extends WithPhaserLifecycle>(
-					key: string,
-					data?: object,
-				): T;
+				run<T extends WithPhaserLifecycle>(key: string, data?: object): T;
 			}
 		}
 	}

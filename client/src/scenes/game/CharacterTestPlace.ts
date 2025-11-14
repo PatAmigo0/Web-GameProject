@@ -5,7 +5,7 @@ import { CHARACTER_SPRITESHEET_CONFIG } from '@config/render.config';
 import { SceneInfo } from '@decorators/SceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
-@SceneInfo(SceneKeys.CharacterTestPlace, SceneTypes.GameScene)
+@SceneInfo(SceneKeys.CharacterTestPlace, SceneTypes.GameScene, { to: [SceneKeys.MainMenu] })
 export class CharacterTestPlace extends BaseGameScene {
 	private char: Character;
 

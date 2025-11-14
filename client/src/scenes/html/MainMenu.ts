@@ -4,7 +4,7 @@ import { SceneInfo } from '@decorators/SceneInfo.decorator';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
-@SceneInfo(SceneKeys.MainMenu, SceneTypes.HTMLScene)
+@SceneInfo(SceneKeys.MainMenu, SceneTypes.HTMLScene, { to: SceneKeys.CharacterTestPlace })
 export class MainMenuScene extends BaseHtmlScene {
 	//#region CLASS ATTRIBUTES
 	private createGameLocal!: HTMLButtonElement;
@@ -31,9 +31,7 @@ export class MainMenuScene extends BaseHtmlScene {
 
 	//#region INITIALIZERS
 	private _init_class_attributes() {
-		this.createGameLocal = this.div.querySelector(
-			'.play-button',
-		) as HTMLButtonElement;
+		this.createGameLocal = this.div.querySelector('.play-button') as HTMLButtonElement;
 	}
 
 	private _init_click_events() {

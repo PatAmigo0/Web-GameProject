@@ -13,6 +13,7 @@ export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 	version: import.meta.env.VERSION || '0.0.1',
 	scene: scenes,
 	pixelArt: true,
+	disableContextMenu: true,
 
 	plugins: {
 		global: [

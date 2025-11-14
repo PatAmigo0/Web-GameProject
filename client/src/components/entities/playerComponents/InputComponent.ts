@@ -11,12 +11,17 @@ export class InputComponent {
 	};
 	private isdiagonal: boolean = false;
 
-	public changeInputState(inputSignal: InputSignal): void {
-		this.inputState[inputSignal.action] = inputSignal.state;
+	public changeInputState(inputSignal: InputSignal | InputSignal[]): void {
+		const inputSignalHandler = (inputSignal: InputSignal) => {
+			this.inputState[inputSignal.action] = inputSignal.state;
 
-		if (inputSignal.action != Actions.Interact) {
-			this.isdiagonal = this.checkForDiagonal();
-		}
+			if (inputSignal.action != Actions.Interact) {
+				this.isdiagonal = this.checkForDiagonal();
+			}
+		};
+
+		if (!Array.isArray(inputSignal)) inputSignalHandler(inputSignal);
+		else inputSignal.forEach((inputSignal) => inputSignalHandler(inputSignal));
 	}
 
 	public getInputState(): InputStateAggregation {

@@ -3,11 +3,14 @@ import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { BaseService } from '@abstracts/service-base/BaseService';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
-import { ManifestEntryCheck } from '@decorators/ManifestEntryCheck.decorator';
-import { ManifestExistsCheck } from '@decorators/ManifestExistsCheck.decorator';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectLogger } from '@decorators/InjectLogger.decorator';
+import { resolveManifestEntry } from '@decorators/ResolveManifestEntry';
 import type { IHtmlAssetManifest, IMapAssetManifest } from '@gametypes/assets.types';
 import { SceneTypes } from '@gametypes/scene.types';
-import { StyleManager } from './StyleManager';
+import type { GameService } from '@services/GameService';
+import type { Logger } from '@utils/Logger';
+import type { StyleManager } from './StyleManager';
 //#endregion
 
 //#region CLASS DEFINITION
@@ -17,7 +20,11 @@ import { StyleManager } from './StyleManager';
  * Отвечает за создание манифеста (списка всех ассетов) при запуске
  * и за загрузку нужных ассетов для каждой конкретной сцены
  */
+@injectLogger()
+@injectInitializator(() => {})
 export class AssetManager extends BaseService {
+	protected declare logger: Logger;
+
 	//#region ATTRIBUTES
 	/**
 	 * Этот манифест будет хранить все заранее найденные пути к ассетам для каждой карты
@@ -37,19 +44,22 @@ export class AssetManager extends BaseService {
 	 *  Флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
 	 */
 	public manifestBuilt = false;
+	//#endregion
 
 	/**
+	 *
+	 * @param game
+	 * @param assetManager
 	 * Экзэмпляр мэнэджера по управлению стилями (CSS)
 	 *
 	 * Нужен для разделения работы AssetManager и подгрузки css для HTML сцен
 	 */
-	private styleManager!: StyleManager;
-	//#endregion
+	constructor(game: GameService, private styleManager: StyleManager) {
+		super(game);
+	}
 
 	//#region PUBLIC METHODS
-	public init(): void {
-		this.styleManager = new StyleManager();
-	}
+	public declare init: () => void;
 
 	/**
 	 * Метод AssetManager, который сам выбирает как ему загружать ассеты в сцену
@@ -67,7 +77,7 @@ export class AssetManager extends BaseService {
 				this.loadHtmlAssets(scene);
 				break;
 			default:
-				console.warn('Тип сцены не поддерживается для загрузки ассетов');
+				this.logger.warn('Тип сцены не поддерживается для загрузки ассетов');
 		}
 	}
 
@@ -76,8 +86,7 @@ export class AssetManager extends BaseService {
 	 * из предварительно созданного манифеста
 	 * @param scene Сцена, в которую нужно загрузить ассеты
 	 */
-	@ManifestEntryCheck // 2
-	@ManifestExistsCheck // 1
+	@resolveManifestEntry
 	public loadMapAssets(scene: CoreScene, manifestEntry?: IMapAssetManifest): void {
 		// Загружаем все необходимые изображения тайлсетов
 		for (const url of manifestEntry.tilesetUrls) {
@@ -97,8 +106,7 @@ export class AssetManager extends BaseService {
 	 * из предварительно созданного манифеста (stylesManifest)
 	 * @param scene Сцена, в которую нужно загрузить ассеты
 	 */
-	@ManifestEntryCheck // 2
-	@ManifestExistsCheck // 1
+	@resolveManifestEntry
 	public loadHtmlAssets(scene: BaseHtmlScene, manifestEntry?: IHtmlAssetManifest): void {
 		if (!scene.cache.html.has(scene.sceneKey)) {
 			scene.load.html(scene.sceneKey, manifestEntry.HTML);
@@ -124,11 +132,7 @@ export class AssetManager extends BaseService {
 		Object.assign(this.stylesManifest, manifestData);
 
 		this.manifestBuilt = true;
-		console.log(
-			'[AssetManager] Манифест ассетов успешно создан',
-			this.assetManifest,
-			this.stylesManifest,
-		);
+		this.logger.log('Манифест ассетов успешно создан', this.assetManifest, this.stylesManifest);
 	}
 	//#endregion
 }

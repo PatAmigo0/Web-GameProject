@@ -24,3 +24,11 @@ export enum SceneTypes {
 export type ISceneHandlers = {
 	[key in SceneTypes]?: Function;
 };
+
+export type SceneConfigDecorator = {
+	to?: SceneKeys | SceneKeys[];
+};
+
+export type SceneConfig = {
+	to?: Set<SceneKeys>;
+};

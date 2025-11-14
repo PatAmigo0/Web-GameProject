@@ -1,6 +1,6 @@
 // src/game/utils/ABC/CoreScene.ts
 import { SceneEvents } from '@gametypes/event.types';
-import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
+import { SceneKeys, SceneTypes, type SceneConfig } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
 import Phaser from 'phaser';
 
@@ -23,11 +23,6 @@ import Phaser from 'phaser';
  * @abstract
  */
 export abstract class CoreScene extends Phaser.Scene {
-	/** Уникальный ключ сцены из `SceneKeys` */
-	public sceneKey!: SceneKeys;
-	/** Тип сцены (GameScene, MenuScene и т.д.) из `SceneTypes` */
-	public sceneType!: SceneTypes;
-
 	/**
 	 * [!] **ВАЖНОЕ ПЕРЕОПРЕДЕЛЕНИЕ ТИПА**
 	 *
@@ -43,12 +38,12 @@ export abstract class CoreScene extends Phaser.Scene {
 	 * @param sceneKey Ключ этой сцены из `SceneKeys`
 	 * @param sceneType [Optional] Тип этой сцены из `SceneTypes` (По умолчанию: `Undefined`)
 	 */
-	constructor(sceneKey: SceneKeys, sceneType: SceneTypes = SceneTypes.Undefined) {
+	constructor(
+		public sceneKey: SceneKeys,
+		public sceneType: SceneTypes = SceneTypes.Undefined,
+		public config?: SceneConfig,
+	) {
 		super(sceneKey);
-		this.sceneKey = sceneKey;
-		if (sceneType == SceneTypes.Undefined)
-			console.warn('[ WARNING ] У сцены не определен стиль, это очень плохо');
-		this.sceneType = sceneType;
 	}
 
 	/**

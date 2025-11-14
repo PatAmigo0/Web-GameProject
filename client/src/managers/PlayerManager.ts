@@ -1,10 +1,5 @@
-import type { GameService } from '@services/GameService';
+import { BaseService } from '@abstracts/service-base/BaseService';
 
-export class PlayerManager {
-	private game!: GameService;
-
-	constructor(game: GameService) {
-		this.game = game;
-		this.game;
-	}
+export class PlayerManager extends BaseService {
+	init(): void {}
 }

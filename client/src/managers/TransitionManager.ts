@@ -1,22 +1,27 @@
-import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import { SceneEvents } from '@gametypes/event.types';
+import { SceneDisposalService } from '@services/SceneDisposalService';
+import type { SceneManager } from './SceneManager';
 
 /**
  * Отвечает за плавный переход между сценами
- * В своей основе изсользует html2canvas
  */
 export class TransitionManager extends Phaser.Events.EventEmitter {
-	private scenePlugin!: Phaser.Scenes.SceneManager;
-
-	constructor(scenePlugin: Phaser.Scenes.SceneManager) {
+	constructor(private sceneManager: SceneManager, private sceneDisposalService: SceneDisposalService) {
 		super();
-		this.scenePlugin = scenePlugin;
 	}
 
-	public swapScenes(oldScene: CoreScene, newScene: CoreScene) {
-		this.scenePlugin.start(newScene);
+	public swapScenes(oldScene: WithPhaserLifecycle, newScene: WithPhaserLifecycle) {
+		this.sceneManager.start(newScene);
 		newScene.events.once(SceneEvents.SCENE_IS_READY_TO_RUN, () => {
-			this.scenePlugin.stop(oldScene);
+			this.sceneManager.stop(oldScene);
+			(() => this.sceneDisposalService.shake())();
 		});
+
+		// console.log(this.sceneManager.switch);
+
+		// this.sceneManager.dump();
+		// this.sceneManager.switch(oldScene, newScene);
+		// this.sceneManager.dump();
 	}
 }

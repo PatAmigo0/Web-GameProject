@@ -4,12 +4,9 @@ import type { MovementState, MovementStateKey } from '@gametypes/controls.types'
 import type { IUpdatable } from '@gametypes/core.types';
 
 export class MoveComponent implements IUpdatable {
-	private targetBody!: Phaser.Physics.Arcade.Body;
 	private queue = new Set<MovementStateKey>();
 
-	constructor(targetBody: Phaser.Physics.Arcade.Body) {
-		this.targetBody = targetBody;
-	}
+	constructor(private targetBody: Phaser.Physics.Arcade.Body) {}
 
 	public update(movementState: MovementState): void {
 		this.updateQueue(movementState);
@@ -18,10 +15,8 @@ export class MoveComponent implements IUpdatable {
 
 	private updateQueue(movementState: MovementState): void {
 		(Object.entries(movementState) as [MovementStateKey, boolean][]).forEach(([action, state]) => {
-			if (this.queue.has(action)) {
-				if (!state) {
-					this.queue.delete(action);
-				}
+			if (this.queue.has(action) && !state) {
+				this.queue.delete(action);
 			} else if (state) {
 				this.queue.add(action);
 			}
@@ -44,11 +39,9 @@ export class MoveComponent implements IUpdatable {
 					foundVertical = true;
 					yMultiplier = MOVEMENT_MULTIPLIERS[action];
 				}
-			} else {
-				if (!foundHorizontal) {
-					foundHorizontal = true;
-					xMultiplier = MOVEMENT_MULTIPLIERS[action];
-				}
+			} else if (!foundHorizontal) {
+				foundHorizontal = true;
+				xMultiplier = MOVEMENT_MULTIPLIERS[action];
 			}
 
 			if (foundHorizontal && foundVertical) {

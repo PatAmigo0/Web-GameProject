@@ -4,7 +4,9 @@ import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { Map } from '@components/phaser/scene-components/GameMap';
 import { LayerProperties, Layers, ObjectNames } from '@config/tiled.config';
 import { TILE_SIZE } from '@config/world.config';
+import { injectLogger } from '@decorators/InjectLogger.decorator';
 import type { IBooleanPropertie, IPropertie } from '@gametypes/world.types';
+import type { Logger } from '@utils/Logger';
 //#endregion
 
 /**
@@ -13,7 +15,10 @@ import type { IBooleanPropertie, IPropertie } from '@gametypes/world.types';
  * Типа "библиотека" функций чисто для карт
  */
 //#region CLASS DEFINITION
+@injectLogger({ static: true })
 export class MapManager {
+	private declare static logger: Logger;
+
 	//#region PUBLIC STATIC METHODS
 	/**
 	 * Основной метод, который создает карту и все ее компоненты
@@ -57,7 +62,7 @@ export class MapManager {
 		if (!playerSpawn) {
 			console.warn('[MapManager] Не удалось найти объект спавна игрока');
 		}
-		console.log(`[MapManager] Карта для сцены ${scene.sceneKey} создана`);
+		MapManager.logger.debug(`Карта для сцены ${scene.sceneKey} создана`);
 
 		return { map, collidableLayers, playerSpawn };
 	}
@@ -91,7 +96,7 @@ export class MapManager {
 		const tileset = map.addTilesetImage(tilesetName, tilesetName, TILE_SIZE.width, TILE_SIZE.height);
 
 		if (!tileset) {
-			console.warn(`[MapManager] Не удалось добавить тайлсет: "${tilesetName}"
+			MapManager.logger.warn(`Не удалось добавить тайлсет: "${tilesetName}"
             > Правильный ли ключ текстуры?
             > Был ли он загружен?
             > Совпадает ли имя в Tiled с именем файла?`);
@@ -106,7 +111,7 @@ export class MapManager {
 	): { layer: Phaser.Tilemaps.TilemapLayer; isCollidable: boolean } | null {
 		const layer = map.createLayer(layerData.name, tilesets, 0, 0);
 		if (!layer) {
-			console.warn(`[MapManager] Не удалось создать слой: "${layerData.name}"`);
+			MapManager.logger.warn(`Не удалось создать слой: "${layerData.name}"`);
 			return null;
 		}
 

@@ -26,4 +26,8 @@ export class CacheComponent {
 	exists(key: string): boolean {
 		return this.cache.exists(key);
 	}
+
+	remove(key: string) {
+		return this.cache.remove(key);
+	}
 }
