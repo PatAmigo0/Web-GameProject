@@ -25,3 +25,7 @@ client/public/assets/manifests/*.json
 *.sw?
 *.env
 *.txt
+*.vscode
+
+.colyseus-cloud.json
+.devmode.json

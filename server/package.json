@@ -11,8 +11,7 @@
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development tsx watch src/app.ts",
 		"start": "cross-env NODE_ENV=production node --enable-source-maps dist/app.js",
-		"build": "npm run clean && tsup",
-		"clean": "rimraf dist",
+		"build": "tsup",
 		"prisma:generate": "dotenv -e .env.development npx prisma generate",
 		"prisma:dev": "dotenv -e .env.development npx prisma migrate dev",
 		"prisma:deploy": "dotenv -e .env.production npx prisma migrate deploy",
@@ -35,6 +34,7 @@
 		"@types/node": "^24.10.1",
 		"cross-env": "^10.1.0",
 		"dotenv-cli": "^11.0.0",
+		"esbuild-plugin-copy": "^2.1.1",
 		"mocha": "^10.2.0",
 		"prisma": "^6.19.0",
 		"rimraf": "^5.0.0",

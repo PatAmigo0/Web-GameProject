@@ -1,6 +1,7 @@
-import { defineConfig } from 'tsup';
+import { copy } from 'esbuild-plugin-copy';
+import { defineConfig, Options } from 'tsup';
 
-export default defineConfig({
+export default defineConfig((options: Options) => ({
 	format: 'esm',
 
 	platform: 'node',
@@ -21,14 +22,28 @@ export default defineConfig({
 		'mongoose',
 		'@prisma/client',
 	],
+	// noExternal: ['nanoid'],
 
 	entry: ['src/app.ts'],
+	outDir: 'dist',
 
 	bundle: true,
 	treeshake: true,
-	sourcemap: true,
+	sourcemap: !options.watch,
 	// minifyWhitespace: true,
 	// minifyIdentifiers: false,
 	// minifySyntax: true,
-	minify: true,
-});
+	minify: !options.watch,
+
+	esbuildPlugins: [
+		copy({
+			resolveFrom: 'cwd',
+			assets: {
+				from: ['./prisma/schema.prisma'],
+				to: ['./dist/prisma'],
+			},
+		}),
+	],
+
+	clean: !options.watch,
+}));
