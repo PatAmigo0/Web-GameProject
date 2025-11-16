@@ -1,3 +1,4 @@
+import { DEV_LOCAL_URL, HTTPS_URL } from '@config/core.config';
 import { GAME_CONFIG } from '@config/game.config';
 import { GameService } from '@services/GameService';
 
@@ -7,7 +8,7 @@ import { GameService } from '@services/GameService';
 export const Game = new GameService(GAME_CONFIG);
 
 //#region тест запроса
-const response = await fetch('http://localhost:2567/api/auth/test', {
+const response = await fetch(__PRODUCTION__ ? `${HTTPS_URL}/api/auth/test` : DEV_LOCAL_URL, {
 	method: 'POST',
 	headers: {
 		'Content-Type': 'application/json',

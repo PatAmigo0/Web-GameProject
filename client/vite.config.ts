@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({ mode }) => ({
 	define: {
 		__LOGGER_ENABLED__: mode === 'development',
+		__PRODUCTION__: mode === 'production',
 	},
 	build: {
 		minify: 'terser',

@@ -10,8 +10,8 @@
 	},
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development tsx watch src/app.ts",
-		"start": "cross-env NODE_ENV=production node dist/app.js",
-		"build": "npm run clean && tsup src/app.ts --format esm --platform node --target=node20 --no-splitting --external @colyseus/tools --external @colyseus/monitor --external @colyseus/playground --external colyseus --external cors --external express --external dotenv --external debug --external nanoid --external bcrypt --external mongoose --external @prisma/client --external help",
+		"start": "cross-env NODE_ENV=production node --enable-source-maps dist/app.js",
+		"build": "npm run clean && tsup",
 		"clean": "rimraf dist",
 		"prisma:generate": "dotenv -e .env.development npx prisma generate",
 		"prisma:dev": "dotenv -e .env.development npx prisma migrate dev",

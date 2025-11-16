@@ -31,6 +31,6 @@ export class Logger {
 		if (__LOGGER_ENABLED__) {
 			console.error(`{ERROR} ${this.format(' - [PARAMS] - ')}`, ...args);
 		}
-		throw this.format(log);
+		throw new Error(this.format(log));
 	}
 }
