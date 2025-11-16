@@ -1,7 +1,7 @@
 import { BaseService } from '@abstracts/service-base/BaseService';
 import { StandaloneService } from '@abstracts/service-base/StandaloneService';
-import { injectInitializator } from '@decorators/InjectInitializator.decorator';
-import { injectLogger } from '@decorators/InjectLogger.decorator';
+import { injectInitializator } from '@decorators/injectInitializator.decorator';
+import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IInitializiable } from '@gametypes/core.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import { AssetManager } from '@managers/AssetManager';
@@ -12,10 +12,10 @@ import { BootScene } from '@scenes/system-scenes/BootScene';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
 import { PlayerService } from '@services/PlayerService';
+import { SceneDisposalService } from '@services/SceneDisposalService';
 import { UserInputService } from '@services/UserInputService';
-import type { Logger } from '@utils/Logger';
+import type { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
-import { SceneDisposalService } from './SceneDisposalService';
 
 //#region GAME CLASS DEFINITION
 @injectLogger()
@@ -62,6 +62,9 @@ export class GameService extends Phaser.Game {
 
 		this.createManagers();
 		this.initManagers();
+
+		this.networkService;
+		this.eventService;
 	}
 
 	private setNewPrototypes() {

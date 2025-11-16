@@ -1,7 +1,7 @@
 //#region IMPORTS
 import { BaseService } from '@abstracts/service-base/BaseService';
 import { Player } from '@components/entities/Player';
-import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import type { IInitializiable } from '@gametypes/core.types';
 //#endregion
 
@@ -26,6 +26,7 @@ export class PlayerService extends BaseService implements IInitializiable {
 	 * @returns Объект Player или undefined, если игрок не найден
 	 */
 	public getPlayerByUserID(userID: string): Player | undefined {
+		this.localPlayer;
 		return this.players.get(userID);
 	}
 	//#endregion

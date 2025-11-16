@@ -1,19 +1,36 @@
 {
-  "compilerOptions": {
-    "outDir": "build",
-    "target": "ESNext",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "strict": true,
-    "allowJs": true,
-    "strictNullChecks": false,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": false
-  },
-  "include": [
-    "src"
-  ]
+	"compilerOptions": {
+		"outDir": "dist",
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+		"strict": true,
+		"allowJs": true,
+		"strictNullChecks": true,
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"useDefineForClassFields": true,
+
+		"baseUrl": ".",
+		"paths": {
+			"@app": ["src/configuration/app.config.ts"],
+			"@apiroutes": ["src/api/index.ts"],
+			"@schema/*": ["src/rooms/schema/*"],
+			"@rooms/*": ["src/rooms/*"],
+			"@api/*": ["src/api/*"],
+			"@database/*": ["src/database/*"],
+			"@utils/*": ["src/utils/*"],
+			"@controllers/*": ["src/controllers/*"],
+			"@routes/*": ["src/api/routes/*"],
+			"@config/*": ["src/configuration/*"],
+			"@/*": ["src/*"]
+		}
+	},
+	"include": ["src", "__tests__"]
 }

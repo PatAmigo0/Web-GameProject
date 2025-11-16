@@ -1,6 +1,6 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import { TEST_SCENE } from '@config/scene.config';
-import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 

@@ -39,7 +39,6 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		this.onCreate();
 
 		MapManager.initMapPhysics(this, this.map, mapData.collidableLayers);
-		console.warn(this.cache);
 	}
 
 	public update(time: number, delta: number): void {

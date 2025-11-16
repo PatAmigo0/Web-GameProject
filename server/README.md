@@ -1,29 +1,69 @@
-# Welcome to Colyseus!
+# Серверное приложение Colyseus
 
-This project has been created using [⚔️ `create-colyseus-app`](https://github.com/colyseus/create-colyseus-app/) - an npm init template for kick starting a Colyseus project in TypeScript.
+Этот документ описывает структуру и стек серверной части игрового проекта на базе Colyseus.
 
-[Documentation](http://docs.colyseus.io/)
+---
 
-## :crossed_swords: Usage
+## Технологический стек
 
-```
-npm start
-```
+-   **Ядро:** Colyseus
+-   **Веб-сервер:** Express
+-   **Язык:** TypeScript
+-   **ORM:** Prisma
+-   **Аутентификация:** JSON Web Tokens (jsonwebtoken), bcrypt
+-   **Тестирование:** Mocha, @colyseus/loadtest
+-   **Кэширование / Сессии:** Redis (connect-redis, ioredis)
 
-## Structure
+---
 
-- `index.ts`: main entry point, register an empty room handler and attach [`@colyseus/monitor`](https://github.com/colyseus/colyseus-monitor)
-- `src/rooms/MyRoom.ts`: an empty room handler for you to implement your logic
-- `src/rooms/schema/MyRoomState.ts`: an empty schema used on your room's state.
-- `loadtest/example.ts`: scriptable client for the loadtest tool (see `npm run loadtest`)
-- `package.json`:
-    - `scripts`:
-        - `npm start`: runs `ts-node-dev index.ts`
-        - `npm test`: runs mocha test suite
-        - `npm run loadtest`: runs the [`@colyseus/loadtest`](https://github.com/colyseus/colyseus-loadtest/) tool for testing the connection, using the `loadtest/example.ts` script.
-- `tsconfig.json`: TypeScript configuration file
+## Начало работы
 
+1.  Установите зависимости:
 
-## License
+    ```bash
+    npm install
+    ```
+
+2.  Запустите сервер в режиме разработки:
+
+    ```bash
+    npm run dev
+    ```
+
+---
+
+## Структура проекта
+
+Файловая структура проекта организована следующим образом:
+
+-   `app.ts`: Главная точка входа.
+-   `package.json`: Определяет скрипты и зависимости проекта.
+-   `tsconfig.json`: Конфигурация компилятора TypeScript.
+-   `prisma/`: Содержит схему базы данных Prisma и файлы миграций.
+-   `src/`: Основной исходный код приложения.
+    -   `api/`: Маршруты и логика для REST API (Express).
+    -   `configuration/`: Файлы конфигурации приложения.
+    -   `controllers/`: Обработчики HTTP-запросов (контроллеры).
+    -   `database/`: Модули для взаимодействия с базой данных (Prisma Client).
+    -   `rooms/`: Логика игровых комнат Colyseus.
+        -   `schema/`: Схемы состояния комнат (Colyseus Schema).
+    -   `utils/`: Вспомогательные функции и утилиты.
+-   `__tests__/`: Корневая папка для всех тестов.
+    -   `loadtest/`: Скрипты для нагрузочного тестирования.
+    -   `spec/`: Юнит-тесты и интеграционные тесты (Mocha).
+-   `dist/`: Скомпилированный JavaScript код (игнорируется системой контроля версий).
+
+---
+
+## Основные скрипты
+
+-   `npm build`: Компилирует проект в js код и сохраняет его в папку **dist**.
+-   `npm start`: Запускает сервер в режиме production из папки **dist**.
+-   `npm test`: Запускает набор тестов Mocha из папки `__tests__/spec`.
+-   `npm run loadtest`: Запускает инструмент нагрузочного тестирования `@colyseus/loadtest`, используя скрипты из `__tests__/loadtest`.
+
+---
+
+## Лицензия
 
 MIT

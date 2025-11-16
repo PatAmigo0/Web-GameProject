@@ -1,6 +1,6 @@
 //#region IMPORTS
 import { MAX_DEPTH } from '@config/render.config';
-import { CoordinatesConverter } from '@utils/CoordinatesConverter';
+import * as CoordinateConverters from '@utils/coordinateConverters.util';
 //#endregion
 
 //#region CLASS DEFINITION
@@ -11,7 +11,7 @@ export abstract class BasicUI extends Phaser.GameObjects.Container {
 
 	//#region CONSTRUCTOR
 	constructor(scene: Phaser.Scene, x: number, y: number) {
-		const vector = CoordinatesConverter.convertXY(scene, x, y);
+		const vector = CoordinateConverters.convertXY(scene, x, y);
 		super(scene, vector.x, vector.y);
 
 		this.x = vector.x;

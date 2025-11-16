@@ -1,53 +1,47 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
-		"useDefineForClassFields": true,
-		"module": "ESNext",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"typeRoots": ["./node_modules/@types", "./node_modules/phaser/types", "./src/types"],
-		"types": ["vite/client", "node", "phaser"],
-		"skipLibCheck": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": false,
-		"forceConsistentCasingInFileNames": true,
+		/* ------------------ Базовые Опции Проекта ------------------ */
+		"target": "ES2022", // В какой стандарт JavaScript компилировать код
+		"module": "ESNext", // Какую систему модулей использовать
+		"outDir": "dist", // Куда складывать скомпилированные .js файлы
+		"esModuleInterop": true, // Улучшает совместимость между CommonJS и ES-модулями
+		"experimentalDecorators": true, // Включить поддержку декораторов (нужно для Colyseus)
+		"useDefineForClassFields": true, // Использовать стандартный синтаксис полей класса
+		"skipLibCheck": true, // Не проверять .d.ts файлы из node_modules (ускоряет сборку)
+		"forceConsistentCasingInFileNames": true, // Ошибка, если регистр в import не совпадает с файлом
 
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": true,
-		"moduleDetection": "force",
-		"noEmit": true,
+		/* ------------------ Режим Сборщика (Bundler) ------------------ */
+		// Эти опции оптимизированы для работы с современными сборщиками (типа esbuild, Vite)
+		"moduleResolution": "bundler", // Современный алгоритм поиска модулей
+		"allowImportingTsExtensions": true, // Разрешить импорты с расширением .ts
+		"verbatimModuleSyntax": true, // Требует точного соответствия импортов (type vs value)
+		"moduleDetection": "force", // Принудительно считать файлы модулями (а не скриптами)
+		"noEmit": true, // Не создавать .js файлы (т.к. сборщик сделает это сам)
 
-		/* Linting */
-		"strict": true,
-		"strictNullChecks": false,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"erasableSyntaxOnly": false,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
-		"allowJs": true,
-		"checkJs": true,
+		/* ------------------ Линтинг и Строгость ------------------ */
+		"strict": true, // Включить ВСЕ строгие проверки (рекомендуется)
+		"allowJs": true, // Разрешить TypeScript "видеть" и импортировать .js файлы
+		"strictNullChecks": true, // Строго проверять на null и undefined
 
-		/* Path aliases */
-		"baseUrl": "./src",
+		/* ------------------ Алиасы Путей ------------------ */
+		"baseUrl": ".", // "Корень" проекта, от которого строятся пути ниже
 		"paths": {
-			"@decorators/*": ["utils/decorators/*"],
-			"@abstracts/*": ["core/abstracts/*"],
-			"@components/*": ["components/*"],
-			"@scenes/*": ["scenes/*"],
-			"@managers/*": ["managers/*"],
-			"@services/*": ["services/*"],
-			"@config/*": ["config/*"],
-			"@utils/*": ["utils/*"],
-			"@gametypes/*": ["types/*"],
-			"@core/*": ["core/*"],
-			"@styles/*": ["styles/*"],
-			"@main": ["main"],
-
-			"@/*": ["*"]
+			// Алиасы для импортов (чтобы не писать ../../../)
+			"@app": ["src/configuration/app.config.ts"],
+			"@apiroutes": ["src/api/index.ts"],
+			"@schema/*": ["src/rooms/schema/*"],
+			"@rooms/*": ["src/rooms/*"],
+			"@api/*": ["src/api/*"],
+			"@database/*": ["src/database/*"],
+			"@utils/*": ["src/utils/*"],
+			"@controllers/*": ["src/controllers/*"],
+			"@routes/*": ["src/api/routes/*"],
+			"@config/*": ["src/configuration/*"],
+			"@/*": ["src/*"]
 		}
 	},
 
-	"include": ["src", "vite-env.d.ts"]
+	// "Белый список" папок, которые TypeScript должен проверять
+	// Все, что не здесь, будет проигнорировано
+	"include": ["src", "__tests__"]
 }

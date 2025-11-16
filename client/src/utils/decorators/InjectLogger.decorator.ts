@@ -1,5 +1,5 @@
 import type { BaseClass } from '@gametypes/core.types';
-import { Logger } from '@utils/Logger';
+import { Logger } from '@utils/Logger.util';
 
 export function injectLogger(config?: { loggerKey?: string; static?: boolean }) {
 	return function <T extends BaseClass>(constructor: T) {
@@ -12,7 +12,7 @@ export function injectLogger(config?: { loggerKey?: string; static?: boolean }) 
 				const logger = new Logger(constructor.name);
 				Object.defineProperty(this, loggerPropertyKey, {
 					value: logger,
-					writable: true,
+					writable: false,
 				});
 				return logger;
 			},

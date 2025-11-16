@@ -1,7 +1,40 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default defineConfig(({ mode }) => ({
+	define: {
+		__LOGGER_ENABLED__: mode === 'development',
+	},
+	build: {
+		minify: 'terser',
+		terserOptions: {
+			compress: {
+				pure_funcs: ['Logger.prototype.debug', 'Logger.prototype.log', 'Logger.prototype.warn'],
+				passes: 2,
+				unsafe: true,
+				unsafe_arrows: false,
+				ecma: 2020,
+			},
+			module: true,
+			format: {
+				comments: false,
+				ecma: 2020,
+			},
+		},
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (id.includes('phaser')) {
+						return 'phaser';
+					}
+				},
+			},
+		},
+	},
 	resolve: {
 		alias: {
 			'@main': path.resolve(__dirname, './src/main.ts'),
@@ -16,11 +49,10 @@ export default defineConfig({
 			'@gametypes': path.resolve(__dirname, './src/types'),
 			'@core': path.resolve(__dirname, './src/core'),
 			'@styles': path.resolve(__dirname, './src/styles'),
-
 			'@': path.resolve(__dirname, './src'),
 		},
 	},
 	server: {
 		port: 666,
 	},
-});
+}));

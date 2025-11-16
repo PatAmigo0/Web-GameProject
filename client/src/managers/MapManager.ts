@@ -4,9 +4,9 @@ import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { Map } from '@components/phaser/scene-components/GameMap';
 import { LayerProperties, Layers, ObjectNames } from '@config/tiled.config';
 import { TILE_SIZE } from '@config/world.config';
-import { injectLogger } from '@decorators/InjectLogger.decorator';
+import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IBooleanPropertie, IPropertie } from '@gametypes/world.types';
-import type { Logger } from '@utils/Logger';
+import type { Logger } from '@utils/Logger.util';
 //#endregion
 
 /**
@@ -46,7 +46,7 @@ export class MapManager {
 		});
 
 		// 2. Создаем слои
-		console.debug(map.layers);
+		this.logger.debug('Слои карты:', map.layers);
 		// теперь пробегаем по всем слоям
 		map.layers.forEach((layerData) => {
 			// создаем слой и определяем, коллайдится ли он
@@ -60,7 +60,7 @@ export class MapManager {
 		// ищем объект спавна
 		const playerSpawn = this._findPlayerSpawn(map);
 		if (!playerSpawn) {
-			console.warn('[MapManager] Не удалось найти объект спавна игрока');
+			this.logger.warn('Не удалось найти объект спавна игрока');
 		}
 		MapManager.logger.debug(`Карта для сцены ${scene.sceneKey} создана`);
 
@@ -85,6 +85,7 @@ export class MapManager {
 		// collidableLayers.forEach((layer) => {
 		// 	scene.physics.add.collider(player, layer); // создаем коллизию
 		// });
+		collidableLayers;
 	}
 	//#endregion
 

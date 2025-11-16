@@ -2,11 +2,14 @@ import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import type { Character } from '@components/entities/Character';
 import { ACTION_MAP } from '@config/controls.config';
 import { Keys, PHASER_KEYS } from '@config/keyboard.config';
-import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectInitializator } from '@decorators/injectInitializator.decorator';
+import { injectLogger } from '@decorators/injectLogger.decorator';
 import { UISCharacterCheck } from '@decorators/UISCharacterCheck.decorator';
-import type { Action, InputSignal, MappedKeyInfo } from '@gametypes/controls.types';
+import type { Action, ActionKeyValues, InputSignal, MappedKeyInfo } from '@gametypes/controls.types';
 import { GameEvents, KeyboardEvents } from '@gametypes/event.types';
+import type { Logger } from '@utils/Logger.util';
 
+@injectLogger()
 @injectInitializator((service: UserInputService) => {
 	service.initAttributes();
 	service.initKeys();
@@ -18,6 +21,7 @@ export class UserInputService extends StandaloneService {
 	private keyMap = new Map<Keys, MappedKeyInfo>();
 	private target!: EventTarget;
 	private falsyInput: InputSignal[] = [];
+	private declare logger: Logger;
 
 	constructor(
 		private keyboard: Phaser.Input.Keyboard.KeyboardManager,
@@ -52,18 +56,18 @@ export class UserInputService extends StandaloneService {
 	}
 
 	private initKeys(): void {
-		Object.entries(ACTION_MAP).forEach(([action, keyCode]) => {
-			const phaserKeyCode = PHASER_KEYS[keyCode as keyof typeof PHASER_KEYS];
+		(Object.entries(ACTION_MAP) as [Action, ActionKeyValues][]).forEach(([action, keyCode]) => {
+			const phaserKeyCode = PHASER_KEYS[keyCode];
 
 			if (phaserKeyCode) {
 				this.keyMap.set(keyCode, {
 					baseKey: keyCode,
-					action: action as Action,
+					action: action,
 					phaserKey: phaserKeyCode,
 				});
 			} else {
-				console.warn(
-					`[UserInputService] не удалось получить код клавиши (${keyCode}) из хранилища, пропуск инициализации клавиши в KeyboardManager`,
+				this.logger.warn(
+					`Не удалось получить код клавиши (${keyCode}) из хранилища, пропуск инициализации клавиши в KeyboardManager`,
 				);
 			}
 		});

@@ -10,7 +10,9 @@ export function resolveManifestEntry<T extends AssetManager>(
 	const originalMethod = descriptor.value as Function;
 	descriptor.value = function (this: T, ...args: any[]) {
 		if (!this.manifestBuilt) {
-			throw 'Ошибка [AssetManager]: Манифест ассетов еще не был создан. Вызовите AssetManager.buildManifest() в загрузочной сцене';
+			this.logger.error(
+				'Манифест ассетов еще не был создан. Вызовите AssetManager.buildManifest() в загрузочной сцене',
+			);
 		}
 
 		const scene = args[0] as CoreScene;
@@ -18,7 +20,7 @@ export function resolveManifestEntry<T extends AssetManager>(
 			this.assetManifest[scene.sceneKey] || this.stylesManifest[scene.sceneKey];
 
 		if (!manifestEntry) {
-			throw `Ошибка [AssetManager] Не найдена запись в манифесте для сцены: ${scene.sceneKey}`;
+			this.logger.error(`Не найдена запись в манифесте для сцены: ${scene.sceneKey}`);
 		}
 
 		this.logger.debug(`Загрузка ассетов для сцены: ${scene.sceneKey}`);

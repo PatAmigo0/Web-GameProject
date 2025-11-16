@@ -1,8 +1,8 @@
 import type { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
-import { injectLogger } from '@decorators/InjectLogger.decorator';
+import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { BaseFunction } from '@gametypes/core.types';
-import type { Logger } from '@utils/Logger';
+import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
 export class StyleManager {

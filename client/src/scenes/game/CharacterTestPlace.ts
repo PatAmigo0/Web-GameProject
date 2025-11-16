@@ -2,7 +2,7 @@ import { BaseGameScene } from '@abstracts/scene-base/BaseGameScene';
 import { Character } from '@components/entities/Character';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { CHARACTER_SPRITESHEET_CONFIG } from '@config/render.config';
-import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.CharacterTestPlace, SceneTypes.GameScene, { to: [SceneKeys.MainMenu] })
@@ -29,7 +29,7 @@ export class CharacterTestPlace extends BaseGameScene {
 		this.game.userInputService.setLocalCharacter(this.char);
 	}
 
-	heartbeat(time?: number, delta?: number): void {
+	heartbeat(): void {
 		this.char.update();
 	}
 

@@ -17,11 +17,5 @@ export class TransitionManager extends Phaser.Events.EventEmitter {
 			this.sceneManager.stop(oldScene);
 			(() => this.sceneDisposalService.shake())();
 		});
-
-		// console.log(this.sceneManager.switch);
-
-		// this.sceneManager.dump();
-		// this.sceneManager.switch(oldScene, newScene);
-		// this.sceneManager.dump();
 	}
 }

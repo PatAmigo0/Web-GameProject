@@ -6,8 +6,5 @@ export function sceneDefiner(scene: CoreScene, SceneHandlers: ISceneHandlers) {
 	if (f) {
 		f();
 	} else {
-		console.warn(
-			`[ SceneDefiner ] не нашел обработчик для типа сцены ${scene.sceneType}`,
-		);
 	}
 }

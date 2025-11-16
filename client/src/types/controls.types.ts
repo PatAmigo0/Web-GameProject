@@ -11,7 +11,7 @@ export type InputStateByAction = {
 export type MovementState = Pick<InputStateByAction, 'MOVE_UP' | 'MOVE_RIGHT' | 'MOVE_LEFT' | 'MOVE_DOWN'>;
 export type MovementStateKey = keyof MovementState;
 
-type ActionKeyValues = (typeof ACTION_MAP)[Action];
+export type ActionKeyValues = (typeof ACTION_MAP)[Action];
 export type KeyStateByValue = {
 	[key in ActionKeyValues]: boolean;
 };

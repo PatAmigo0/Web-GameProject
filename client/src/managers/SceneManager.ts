@@ -1,13 +1,13 @@
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
-import { injectInitializator } from '@decorators/InjectInitializator.decorator';
-import { injectLogger } from '@decorators/InjectLogger.decorator';
+import { injectInitializator } from '@decorators/injectInitializator.decorator';
+import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IInitializiable } from '@gametypes/core.types';
 import { GameEvents } from '@gametypes/event.types';
 import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
-import type { Logger } from '@utils/Logger';
+import type { Logger } from '@utils/Logger.util';
 import { TransitionManager } from './TransitionManager';
 
 @injectLogger()
@@ -72,7 +72,7 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 				this.game.userInputService.unlockMainKeys();
 				break;
 			default:
-				this.logger.warn('Неподдерживаемый тип сцены');
+				this.logger.warn(`Неподдерживаемый тип сцены [${scene.sceneType}]`);
 		}
 	}
 

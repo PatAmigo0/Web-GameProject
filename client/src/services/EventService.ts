@@ -1,7 +1,7 @@
 // src/services/EventService.ts
 
 import { StandaloneService } from '@abstracts/service-base/StandaloneService';
-import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { GameEvents } from '@gametypes/event.types';
 
 /**

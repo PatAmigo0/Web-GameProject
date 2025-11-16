@@ -1,5 +1,5 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
-import { SceneInfo } from '@decorators/SceneInfo.decorator';
+import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
@@ -15,7 +15,7 @@ export class RegistrationScene extends BaseHtmlScene {
 		this._init_click_events();
 	}
 
-	public heartbeat(time?: number, delta?: number): void {}
+	public heartbeat(): void {}
 	public onShutdown(): void {}
 
 	private _init_class_attributes() {
@@ -26,7 +26,6 @@ export class RegistrationScene extends BaseHtmlScene {
 
 	private _init_click_events() {
 		this.changeToLoginButton.addEventListener('click', () => {
-			console.log('Test');
 			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
 		});
 
