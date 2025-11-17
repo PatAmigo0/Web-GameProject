@@ -21,6 +21,7 @@ export default defineConfig((options: Options) => ({
 		'bcrypt',
 		'mongoose',
 		'@prisma/client',
+		'@colyseus/ws-transport',
 	],
 	// noExternal: ['nanoid'],
 

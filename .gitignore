@@ -29,3 +29,12 @@ client/public/assets/manifests/*.json
 
 .colyseus-cloud.json
 .devmode.json
+
+# Playwright
+client/test-results/
+client/playwright-report/
+client/blob-report/
+client/playwright/.cache/
+client/playwright/.auth/
+
+client/.github

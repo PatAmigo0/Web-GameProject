@@ -49,5 +49,6 @@
 		}
 	},
 
-	"include": ["src", "vite-env.d.ts"]
+	"include": ["src", "vite-env.d.ts", "__tests__"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }

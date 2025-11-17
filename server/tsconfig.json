@@ -30,13 +30,15 @@
 			"@app": ["src/configuration/app.config.ts"],
 			"@apiroutes": ["src/api/index.ts"],
 			"@schema/*": ["src/rooms/schema/*"],
+			"@routes/*": ["src/api/routes/*"],
 			"@rooms/*": ["src/rooms/*"],
 			"@api/*": ["src/api/*"],
 			"@database/*": ["src/database/*"],
 			"@utils/*": ["src/utils/*"],
 			"@controllers/*": ["src/controllers/*"],
-			"@routes/*": ["src/api/routes/*"],
+			"@services/*": ["src/services/*"],
 			"@config/*": ["src/configuration/*"],
+
 			"@/*": ["src/*"]
 		}
 	},

@@ -46,6 +46,7 @@
 	"dependencies": {
 		"@colyseus/monitor": "^0.16.0",
 		"@colyseus/playground": "^0.16.0",
+		"@colyseus/redis-driver": "^0.16.1",
 		"@colyseus/tools": "^0.16.0",
 		"@prisma/client": "^6.19.0",
 		"bcrypt": "^6.0.0",

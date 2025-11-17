@@ -1,6 +1,3 @@
-import app from '@app';
-import { listen } from '@colyseus/tools';
-import { loadenv } from '@utils/loadenv.util';
+import { ServerService } from '@services/ServerService';
 
-loadenv();
-listen(app);
+export const serverService: ServerService = await new ServerService().start();
