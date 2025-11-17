@@ -1,7 +1,7 @@
+import { db } from '@/instances/db.instance';
 import { matchMaker } from '@colyseus/core';
 import { CODE_GENERATION_MAX_RETRIES } from '@config/codegeneration.config';
-import { prisma } from '@database/database';
-import { generateRoomCode } from '@utils/codeGenerator.util';
+import { generateRoomCode } from '@utils/codegen.util';
 import type { Request, Response } from 'express';
 
 export const createRoom = async (req: Request, res: Response) => {
@@ -12,11 +12,11 @@ export const createRoom = async (req: Request, res: Response) => {
 
 		do {
 			shortCode = generateRoomCode();
-			link = await prisma.roomCodes.findUnique({ where: { shortRoomId: shortCode } });
+			link = await db.core!.findUniqueRoomByCode(shortCode);
 			retries--;
 		} while (link && retries > 0);
 
-		if (!shortCode && link) {
+		if (link) {
 			throw new Error('Не удалось сгененерировать короткий код комнаты');
 		}
 
@@ -25,14 +25,7 @@ export const createRoom = async (req: Request, res: Response) => {
 			shortCode: shortCode,
 		});
 
-		const t = await prisma.roomCodes.create({
-			data: {
-				shortRoomId: shortCode,
-				longRoomId: room.roomId,
-			},
-		});
-
-		console.log(t);
+		await db.core?.insertRoom(shortCode, room.roomId); // ждем пока не обновим дб
 
 		res.status(200).json({ code: shortCode, roomId: room.roomId });
 	} catch (e) {

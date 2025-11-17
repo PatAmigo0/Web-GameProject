@@ -1,12 +1,14 @@
+import { db } from '@/instances/db.instance';
 import app from '@app';
 import { Server } from '@colyseus/core';
 import { listen } from '@colyseus/tools';
-import { prisma } from '@database/database';
+import { DatabasePostgreSQL } from '@database/database';
 import { loadenv } from '@utils/loadenv.util';
 
 export class ServerService {
 	private initalized = false;
 	public gameServer!: Server;
+	public db!: DatabasePostgreSQL;
 
 	public async start() {
 		if (this.initalized) {
@@ -31,12 +33,12 @@ export class ServerService {
 		try {
 			console.log('Очистка дб (roomCodes)');
 
-			const { count } = await prisma.roomCodes.deleteMany({});
-			console.log(`Очистил ${count} записеq`);
+			const { count } = await this.db.clearRoomCodes();
+			console.log(`Очистил ${count} записей`);
 		} catch (e) {
 			console.log(`Ошибка очистки дб: ${e}`);
 		} finally {
-			prisma.$disconnect();
+			this.db.prisma.$disconnect();
 			console.log('Отключился от дб');
 		}
 
@@ -47,8 +49,19 @@ export class ServerService {
 	private init() {
 		loadenv();
 		this.listenForProcessSignals();
-		prisma.roomCodes.deleteMany({}).then(() => {
-			console.log('Успешно удалил очистил записи о комнатах в дб');
+		this.initDB();
+	}
+
+	private initDB() {
+		this.db = new DatabasePostgreSQL();
+		db.core = this.db; // db.core -> глобальный эзэмпляр бд
+
+		this.clearDB();
+	}
+
+	private clearDB() {
+		this.db.clearRoomCodes().then(() => {
+			console.log('Успешно удалил записи о комнатах в дб');
 		});
 	}
 

@@ -15,8 +15,8 @@
 		"prisma:generate": "dotenv -e .env.development npx prisma generate",
 		"prisma:dev": "dotenv -e .env.development npx prisma migrate dev",
 		"prisma:deploy": "dotenv -e .env.production npx prisma migrate deploy",
-		"loadtest": "tsx __tests__/loadtest/example.ts --room my_room --numClients 2",
-		"test": "mocha -r tsx __tests__/spec/**_test.ts --exit --timeout 15000"
+		"loadtest": "tsx __tests__/loadtest/example.spec.ts  --room baseGameRoom --numClients 8",
+		"test": "mocha -r tsx __tests__/spec/**.test.ts --exit --timeout 15000"
 	},
 	"author": "",
 	"license": "UNLICENSED",
@@ -48,6 +48,7 @@
 		"@colyseus/playground": "^0.16.0",
 		"@colyseus/redis-driver": "^0.16.1",
 		"@colyseus/tools": "^0.16.0",
+		"@colyseus/ws-transport": "^0.16.5",
 		"@prisma/client": "^6.19.0",
 		"bcrypt": "^6.0.0",
 		"colyseus": "^0.14.17",

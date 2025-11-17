@@ -1,5 +1,5 @@
+import { db } from '@/instances/db.instance';
 import { Room, type Client } from '@colyseus/core';
-import { prisma } from '@database/database';
 import { BaseGameRoomState } from '@schema/BaseGameRoomState';
 
 export class BaseGameRoom extends Room<BaseGameRoomState> {
@@ -33,17 +33,12 @@ export class BaseGameRoom extends Room<BaseGameRoomState> {
 		console.log(client.sessionId, 'left!');
 	}
 
-	onDispose() {
+	async onDispose() {
 		console.log('room', this.roomId, 'disposing...');
-		prisma.roomCodes
-			.delete({
-				where: { longRoomId: this.roomId, shortRoomId: this.shortCode },
-			})
-			.then(() => {
-				console.log('Успешно удалил запись о комнате из дб');
-			})
-			.catch((e) => {
-				console.log(`Не удалось очистить комнату в бд: ${e}`);
-			});
+		await db.core?.prisma.roomCodes.delete({
+			where: { longRoomId: this.roomId, shortRoomId: this.shortCode },
+		});
+
+		console.log('Успешно удалил запись о комнате из дб');
 	}
 }
