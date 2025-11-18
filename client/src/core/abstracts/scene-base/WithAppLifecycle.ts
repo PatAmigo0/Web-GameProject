@@ -1,9 +1,8 @@
 import { CoreScene } from '@abstracts/scene-base/CoreScene';
 
-export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
-	Base: T,
-) {
+export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(Base: T) {
 	abstract class CommonTypedWrappedAbstraction extends Base {
+		// функции второго слоя (вызываются функциями высшего слоя)
 		abstract onPreload(): void;
 		abstract onCreate(): void;
 		abstract heartbeat(time?: number, delta?: number): void;
@@ -13,6 +12,4 @@ export function withAppLifecycle<T extends abstract new (...args: any[]) => {}>(
 	return CommonTypedWrappedAbstraction;
 }
 
-export abstract class CommonAbstractWrapper extends withAppLifecycle(
-	CoreScene,
-) {}
+export abstract class CommonAbstractWrapper extends withAppLifecycle(CoreScene) {}

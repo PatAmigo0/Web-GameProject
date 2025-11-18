@@ -1,11 +1,10 @@
 import { CoreScene } from '@abstracts/scene-base/CoreScene';
 
-export function withPhaserLifecycle<
-	T extends abstract new (...args: any[]) => {},
->(Base: T) {
+export function withPhaserLifecycle<T extends abstract new (...args: any[]) => {}>(Base: T) {
 	abstract class CommonTypedWrappedAbstraction extends Base {
 		declare events: Phaser.Events.EventEmitter;
 
+		// функции верхнего слоя
 		abstract preload(): void;
 		abstract create(): void;
 		abstract update(time?: number, delta?: number): void;
@@ -15,6 +14,4 @@ export function withPhaserLifecycle<
 	return CommonTypedWrappedAbstraction;
 }
 
-export abstract class WithPhaserLifecycle extends withPhaserLifecycle(
-	CoreScene,
-) {}
+export abstract class WithPhaserLifecycle extends withPhaserLifecycle(CoreScene) {}

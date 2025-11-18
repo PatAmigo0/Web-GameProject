@@ -1,0 +1,13 @@
+{
+	"name": "game-web-project",
+	"version": "1.0.0",
+	"description": "Корень проекта",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"...\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.22.0"
+}

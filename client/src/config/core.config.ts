@@ -10,6 +10,10 @@ export const CUSTOM_CACHE_KEY = '__custom_cache__';
  */
 export const SHAKING_ALLOWED = true;
 
-export const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-export const WSS_URL = `wss://${SERVER_URL}`;
-export const HTTPS_URL = `https://${SERVER_URL}`;
+export const SERVER_HOST = import.meta.env.VITE_SERVER_HOST;
+
+const WEB_SOCKET_PROTOCOL = __PRODUCTION__ ? 'wss' : 'ws';
+const TRANSFER_PROTOCOL = __PRODUCTION__ ? 'https' : 'http';
+
+export const WSS_URL = `${WEB_SOCKET_PROTOCOL}://${SERVER_HOST}`;
+export const TRANSFER_HOST = `${TRANSFER_PROTOCOL}://${SERVER_HOST}`;

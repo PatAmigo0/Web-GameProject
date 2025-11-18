@@ -34,6 +34,8 @@
 			"@rooms/*": ["src/rooms/*"],
 			"@api/*": ["src/api/*"],
 			"@database/*": ["src/database/*"],
+			"@servertypes/*": ["src/types/*"],
+			"@middlewares/*": ["src/middlewares/*"],
 			"@utils/*": ["src/utils/*"],
 			"@controllers/*": ["src/controllers/*"],
 			"@services/*": ["src/services/*"],
@@ -43,5 +45,6 @@
 		}
 	},
 
-	"include": ["src", "__tests__"]
+	"include": ["src", "__tests__"],
+	"references": [{ "path": "../packages/shared" }]
 }

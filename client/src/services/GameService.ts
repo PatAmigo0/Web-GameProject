@@ -16,6 +16,7 @@ import { SceneDisposalService } from '@services/SceneDisposalService';
 import { UserInputService } from '@services/UserInputService';
 import type { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
+import { AuthService } from './AuthService';
 
 //#region GAME CLASS DEFINITION
 @injectLogger()
@@ -39,7 +40,8 @@ export class GameService extends Phaser.Game {
 	//#region CORE SERVICES
 	public playerService!: PlayerService;
 	public userInputService!: UserInputService;
-	private networkService!: NetworkService;
+	public networkService!: NetworkService;
+	public authService!: AuthService;
 	private eventService!: EventService;
 	public sceneDisposalService!: SceneDisposalService;
 	//#endregion
@@ -75,9 +77,10 @@ export class GameService extends Phaser.Game {
 	private createServices() {
 		this.playerService = new PlayerService(this);
 		this.userInputService = new UserInputService(this.input.keyboard, this.events);
-		this.networkService = new NetworkService(this);
+		this.networkService = new NetworkService(this, this.events, this.scene);
 		this.eventService = new EventService(this.events, this.domContainer);
 		this.sceneDisposalService = new SceneDisposalService(this.scene);
+		this.authService = new AuthService(this.networkService, this.events);
 	}
 
 	private initServices() {
@@ -117,8 +120,8 @@ export class GameService extends Phaser.Game {
 		BootScene.shutdown();
 		if (BootScene) {
 			this.scene.changeMainScene(BootScene.sceneKey);
-			BootScene.loadAssets();
-		} else throw 'Ошибка [game]: Не удалось загрузить boot сцену';
+			BootScene.loadAssets().then(() => BootScene.handleStartup());
+		} else this.logger.error('Не удалось загрузить boot сцену');
 	}
 	//#endregion
 }

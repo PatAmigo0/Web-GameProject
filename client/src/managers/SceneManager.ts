@@ -56,10 +56,13 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 
 	public stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
 		const scene = this.getScene<WithPhaserLifecycle>(key);
-		scene.events.once(PhaserEvents.SHUTDOWN, () => {
-			scene.shutdown();
-		});
-		super.stop(scene, data);
+		if (this.isActive(scene)) {
+			scene.events.once(PhaserEvents.SHUTDOWN, () => {
+				scene.shutdown();
+			});
+			super.stop(scene, data);
+		}
+
 		return this;
 	}
 

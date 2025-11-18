@@ -2,9 +2,7 @@
 
 import { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { withPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
-import { STARTING_SCENE } from '@config/scene.config';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
-import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene, { to: SceneKeys.LoginScene })
@@ -28,6 +26,15 @@ export class BootScene extends withPhaserLifecycle(CoreScene) {
 
 	public async loadAssets() {
 		await this.game.assetManager.buildManifest();
-		this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, STARTING_SCENE);
+		// this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, STARTING_SCENE);
+	}
+
+	/**
+	 * Отвечает за логику: что делать?
+	 * - Могу ли я сразу войти в сеть?
+	 * - Или мне нужно сначало попросить пользователя войти самому?
+	 */
+	public async handleStartup() {
+		await this.game.authService.tryAuth(true, 'login');
 	}
 }

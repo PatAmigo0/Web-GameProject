@@ -1,6 +1,7 @@
 import apiRoutes from '@apiroutes';
 import { monitor } from '@colyseus/monitor';
 import { playground } from '@colyseus/playground';
+import { monitorMiddleware } from '@middlewares/monitor.middleware';
 import cors from 'cors';
 import express from 'express';
 import path from 'path';
@@ -17,12 +18,10 @@ export const initializeExpress = (app: express.Express) => {
 		}),
 	);
 
+	app.use(express.json());
+
 	app.use('/api', apiRoutes);
 
-	/**
-	 * Use @colyseus/playground
-	 * (It is not recommended to expose this route in a production environment)
-	 */
 	if (process.env.NODE_ENV !== 'production') {
 		console.log(`using playground cuz ${process.env.NODE_ENV}`);
 		app.use('/', playground());
@@ -34,10 +33,5 @@ export const initializeExpress = (app: express.Express) => {
 		app.use(express.static(clientBuildPath));
 	}
 
-	/**
-	 * Use @colyseus/monitor
-	 * It is recommended to protect this route with a password
-	 * Read more: https://docs.colyseus.io/tools/monitor/#restrict-access-to-the-panel-using-a-password
-	 */
-	app.use('/monitor', monitor());
+	app.use('/monitor', monitorMiddleware, monitor());
 };

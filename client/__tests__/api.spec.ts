@@ -11,14 +11,14 @@ test('testSignal: /api/auth/test', async ({ request }) => {
 		},
 	});
 
-	expect(response.ok()).toBeTruthy();
-
 	const data = await response.json();
 	console.log('Данные от /api/auth/test:', data);
+
+	expect(response.ok()).toBeTruthy();
 });
 
-test('testRoomCreation: /api/rooms/create', async ({ request }) => {
-	const response = await request.post('/api/rooms/create', {
+test('testRoomCreation: /api/protected/rooms/create', async ({ request }) => {
+	const response = await request.post('/api/protected/rooms/create', {
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -27,8 +27,27 @@ test('testRoomCreation: /api/rooms/create', async ({ request }) => {
 		},
 	});
 
-	expect(response.ok()).toBeTruthy();
+	console.log(response.status(), response.ok());
+	const data = await response.json();
+	console.log('Данные от /api/protected/rooms/create:', data);
+
+	expect(response.ok()).toBeFalsy();
+});
+
+test('registration: /api/auth/registration', async ({ request }) => {
+	const response = await request.post('/api/auth/registration', {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+
+		data: {
+			login: 'tohue',
+			password: '3120',
+		},
+	});
 
 	const data = await response.json();
-	console.log('Данные от /api/rooms/create:', data);
+	console.log('Данные от /api/auth/registration', data);
+
+	expect(response.ok()).toBeFalsy();
 });

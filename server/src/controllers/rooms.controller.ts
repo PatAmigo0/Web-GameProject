@@ -26,13 +26,14 @@ export const createRoom = async (req: Request, res: Response) => {
 		});
 
 		await db.core?.insertRoom(shortCode, room.roomId); // ждем пока не обновим дб
-
 		res.status(200).json({ code: shortCode, roomId: room.roomId });
+		console.log(`Успешно создал новую комнату [${room.shortCode}]:[${room.roomId}]`);
 	} catch (e) {
 		res.status(500).json({ error: (e as Error)?.message });
-		console.log(e);
-		console.log('Ошибка во время запроса:', (e as Error).message);
+		console.log('Ошибка во время запроса:', (e as Error).message, e);
 	}
 };
 
-export const joinRoom = (req: Request, res: Response) => {};
+export const joinRoom = (req: Request, res: Response) => {
+	console.log('ПЫТАЮСЬ ПРИСОЕДИНИТЬ ИГРОКА!');
+};

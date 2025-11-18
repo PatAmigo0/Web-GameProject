@@ -3,7 +3,7 @@
 	"name": "server",
 	"version": "1.0.0",
 	"type": "module",
-	"description": "npm init template for bootstrapping an empty Colyseus project",
+	"description": "Серверная часть проекта",
 	"main": "dist/app.js",
 	"engines": {
 		"node": ">= 20.9.0"
@@ -12,9 +12,9 @@
 		"dev": "cross-env NODE_ENV=development tsx watch src/app.ts",
 		"start": "cross-env NODE_ENV=production node --enable-source-maps dist/app.js",
 		"build": "tsup",
-		"prisma:generate": "dotenv -e .env.development npx prisma generate",
-		"prisma:dev": "dotenv -e .env.development npx prisma migrate dev",
-		"prisma:deploy": "dotenv -e .env.production npx prisma migrate deploy",
+		"prisma:generate": "dotenv -e .env.development prisma generate",
+		"prisma:dev": "dotenv -e .env.development prisma migrate dev",
+		"prisma:deploy": "dotenv -e .env.production prisma migrate deploy",
 		"loadtest": "tsx __tests__/loadtest/example.spec.ts  --room baseGameRoom --numClients 8",
 		"test": "mocha -r tsx __tests__/spec/**.test.ts --exit --timeout 15000"
 	},
@@ -44,17 +44,26 @@
 		"typescript": "^5.0.4"
 	},
 	"dependencies": {
+		"@colyseus/core": "^0.16.23",
 		"@colyseus/monitor": "^0.16.0",
 		"@colyseus/playground": "^0.16.0",
 		"@colyseus/redis-driver": "^0.16.1",
+		"@colyseus/schema": "^3.0.68",
 		"@colyseus/tools": "^0.16.0",
 		"@colyseus/ws-transport": "^0.16.5",
+		"@game/shared": "workspace:*",
 		"@prisma/client": "^6.19.0",
+		"@prisma/extension-accelerate": "^2.0.2",
+		"@types/jsonwebtoken": "^9.0.10",
 		"bcrypt": "^6.0.0",
 		"colyseus": "^0.14.17",
+		"colyseus.js": "^0.16.22",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^4.18.2",
-		"mongoose": "^8.19.4"
+		"express-basic-auth": "^1.2.1",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.19.4",
+		"zod": "^4.1.12"
 	}
 }

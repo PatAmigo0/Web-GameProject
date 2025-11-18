@@ -1,13 +1,10 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
-import { TEST_SCENE } from '@config/scene.config';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
-import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.HTMLScene, { to: SceneKeys.CharacterTestPlace })
 export class MainMenuScene extends BaseHtmlScene {
 	//#region CLASS ATTRIBUTES
-	private createGameLocal!: HTMLButtonElement;
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
@@ -30,14 +27,8 @@ export class MainMenuScene extends BaseHtmlScene {
 	//#endregion
 
 	//#region INITIALIZERS
-	private _init_class_attributes() {
-		this.createGameLocal = this.div.querySelector('.play-button') as HTMLButtonElement;
-	}
+	private _init_class_attributes() {}
 
-	private _init_click_events() {
-		this.createGameLocal.addEventListener('click', () => {
-			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, TEST_SCENE);
-		});
-	}
+	private _init_click_events() {}
 	//#endregion
 }

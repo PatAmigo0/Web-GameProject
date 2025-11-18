@@ -1,20 +1,34 @@
 <div>
-	<div class="background-container">
-		<img
-			src="/assets/images/html/cave.jpg"
-			alt="Игровой фон"
-			class="background-image"
-		/>
-		<div class="overlay"></div>
-	</div>
+	<div class="mainmenu-wrapper">
+		<div class="logo">АЛИБИ</div>
 
-	<!-- Основное меню -->
-	<div class="menu-container">
-		<h1 class="game-title">Trust Issues</h1>
+		<div class="main-buttons">
+			<button class="btn" id="play-btn">ИГРАТЬ</button>
+			<div class="expanded-container" id="expanded-buttons">
+				<button class="sub-btn create-btn" id="create-btn">СОЗДАТЬ ИГРУ</button>
+				<button class="sub-btn join-btn" id="join-btn">ПОДКЛЮЧИТЬСЯ</button>
+			</div>
+		</div>
 
-		<div class="buttons-container">
-			<button class="menu-button play-button">ИГРАТЬ</button>
-			<button class="menu-button settings-button">НАСТРОЙКИ</button>
+		<button class="settings-btn" id="settings-btn">⚙️</button>
+
+		<div class="nickname-box" id="nickname-box">Игрок: <span id="player-nickname">Гость</span></div>
+
+		<div class="name-input-overlay" id="name-input-overlay">
+			<div class="name-input-container">
+				<h2>Введите ваше имя</h2>
+				<input
+					type="text"
+					class="name-input"
+					id="name-input"
+					maxlength="15"
+					placeholder="Введите ваше имя"
+				/>
+				<div class="name-input-buttons">
+					<button class="name-input-btn confirm" id="confirm-name-btn">Подтвердить</button>
+					<button class="name-input-btn" id="cancel-name-btn">Отмена</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

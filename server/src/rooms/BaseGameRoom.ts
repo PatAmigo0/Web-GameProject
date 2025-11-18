@@ -13,7 +13,9 @@ export class BaseGameRoom extends Room<BaseGameRoomState> {
 		return true;
 	}
 
-	onCreate(options: any) {
+	public onCreate(options: any) {
+		this.autoDispose = true;
+
 		if (options.shortCode) {
 			this.shortCode = options.shortCode as string;
 		}

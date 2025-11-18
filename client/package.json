@@ -1,26 +1,28 @@
 {
-  "name": "game-webproject",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "predev": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
-    "dev": "vite",
-    "prebuild": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
-    "build": "tsc && vite build",
-    "test_build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.56.1",
-    "@types/node": "^24.10.1",
-    "terser": "^5.44.1",
-    "typescript": "~5.9.3",
-    "vite": "^7.1.7"
-  },
-  "dependencies": {
-    "colyseus.js": "^0.16.22",
-    "phaser": "^3.90.0",
-    "phaser3-rex-plugins": "^1.80.17"
-  }
+	"name": "client",
+	"private": true,
+	"version": "0.1.0",
+	"description": "Клиентская часть проекта",
+	"type": "module",
+	"scripts": {
+		"predev": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
+		"dev": "vite",
+		"prebuild": "node scripts/buildMapManifest.mjs && node scripts/buildHtmlManifest.mjs",
+		"build": "tsc && vite build",
+		"test_build": "vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.56.1",
+		"@types/node": "^24.10.1",
+		"terser": "^5.44.1",
+		"typescript": "~5.9.3",
+		"vite": "^7.1.7"
+	},
+	"dependencies": {
+		"@game/shared": "workspace:*",
+		"colyseus.js": "^0.16.22",
+		"phaser": "^3.90.0",
+		"phaser3-rex-plugins": "^1.80.17"
+	}
 }

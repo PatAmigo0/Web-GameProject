@@ -8,13 +8,21 @@
 		<div class="auth-form">
 			<h2>Вход в игру</h2>
 
-			<div class="input-group">
-				<input type="email" id="email" placeholder="Введите email" required />
-			</div>
+			<form>
+				<div class="input-group">
+					<input type="email" id="email" placeholder="Введите nickname" required />
+				</div>
 
-			<div class="input-group">
-				<input type="password" id="password" placeholder="Введите пароль" required />
-			</div>
+				<div class="input-group">
+					<input
+						type="password"
+						id="password"
+						autocomplete="true"
+						placeholder="Введите пароль"
+						required
+					/>
+				</div>
+			</form>
 
 			<button class="btn" id="loginBtn">Войти в игру</button>
 

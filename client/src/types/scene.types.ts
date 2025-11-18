@@ -3,9 +3,11 @@
 //#region SCENE KEYS
 export enum SceneKeys {
 	BootScene = 'BootScene',
+	OfflineScene = 'OfflineScene',
 	LoginScene = 'Login',
 	SignupScene = 'Signup',
 	MainMenu = 'MainMenu',
+	ServerList = 'ServerList',
 	TestPlace = 'TestPlace',
 	CharacterTestPlace = 'CharacterTestPlace',
 }
