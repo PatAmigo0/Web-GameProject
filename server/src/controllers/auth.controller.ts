@@ -1,60 +1,43 @@
-import { db } from '@/instances/db.instance';
-import { SALT_ROUNDS } from '@config/user.config';
+import { ErrorCode, HttpStatus, OkCode, type LoginDto, type RegisterDto } from '@game/shared';
+import { db } from '@instances/db.instance';
+import { HttpError } from '@utils/httpError.util'; // Твой класс ошибки
+import { sendSuccess } from '@utils/httpSuccess.util';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import type { Request, Response } from 'express';
-import type { LoginDto, RegisterDto } from '../../../packages/shared/dist';
 
-export const test = async (req: Request, res: Response) => {
-	console.log('[TEST] Тело запроса:', req.body);
-
-	res.status(200).json({
-		message: 'Тест пройден',
-		receivedData: req.body,
-		token: crypto.randomUUID(),
-	});
-};
-
+// Контроллер регистрации
 export const registration = async (req: Request, res: Response) => {
-	const body = req.body as RegisterDto;
-	const login = body.login;
-	const password = body.password;
+	const { login, password } = req.body as RegisterDto;
 
-	try {
-		const db_entry = await db.core!.findUniqueUser(login);
-		if (db_entry) {
-			throw new Error('BAD_REGISRTATION');
-		}
-
-		const saltedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-		const userUUID = crypto.randomUUID();
-
-		await db.core!.insertUser(login, saltedPassword, userUUID);
-
-		console.log(`Успешно создал нового пользователя! Username: ${login}, Password: ${password}`);
-		res.status(200).json('SUCCESS'); // !!! update later (return a jwt token)
-	} catch (e) {
-		res.status(400).json({ error: (e as Error).message ?? 'null' });
+	const existingUser = await db.core!.findUniqueUser(login);
+	if (existingUser) {
+		throw new HttpError(HttpStatus.Conflict, ErrorCode.LoginTaken);
 	}
+
+	const saltedPassword = await bcrypt.hash(password, 10);
+	const userUUID = crypto.randomUUID();
+
+	await db.core!.insertUser(login, saltedPassword, userUUID);
+
+	console.log(`New user: ${login}`);
+	sendSuccess(res, HttpStatus.OK, OkCode.SuccessRegistration);
 };
 
+// Контроллер входа
 export const login = async (req: Request, res: Response) => {
-	const body = req.body as LoginDto;
-	const login = body?.login;
-	const password = body?.password;
+	const { login, password } = req.body as LoginDto;
 
-	try {
-		const db_entry = await db.core!.findUniqueUser(login);
-		if (!db_entry) {
-			throw new Error('BAD_LOGIN');
-		}
-
-		if (!bcrypt.compareSync(password, db_entry.passwordHash)) {
-			throw new Error('BAD_PASSWORD');
-		}
-
-		console.log('Пользователь успешно вошел в меня (ах ~)!');
-		res.status(200).json({ message: 'SUCCESS' }); // !!! update later (return a jwt token)
-	} catch (e) {
-		res.status(400).json({ error: (e as Error).message ?? 'null' });
+	const user = await db.core!.findUniqueUser(login);
+	if (!user) {
+		throw new HttpError(HttpStatus.NotFound, ErrorCode.UserNotFound);
 	}
+
+	const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+	if (!isPasswordValid) {
+		throw new HttpError(HttpStatus.Unauthorized, ErrorCode.UserWrongPassword);
+	}
+
+	console.log(`User logged in: ${login}`);
+	sendSuccess(res, HttpStatus.OK, OkCode.SuccesLogin);
 };

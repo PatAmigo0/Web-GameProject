@@ -1,7 +1,7 @@
 import { ColyseusTestServer, boot } from '@colyseus/testing';
 import assert from 'assert';
 
-import appConfig from '@config/app.config';
+import appConfig from '@/app/app.enty';
 import { BaseGameRoomState } from '@schema/BaseGameRoomState';
 
 describe('testing your Colyseus app', () => {

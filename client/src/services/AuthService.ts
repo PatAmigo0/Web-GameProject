@@ -3,7 +3,6 @@ import { CacheComponent } from '@components/shared/CacheComponent';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import { GameEvents } from '@gametypes/event.types';
-import { StatusCodes } from '@gametypes/network.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import type { Logger } from '@utils/Logger.util';
 import type { LoginDto, RegisterDto } from '../../../packages/shared/dist';
@@ -38,7 +37,7 @@ export class AuthService extends StandaloneService {
 			const response = await this[method](info);
 			if (response.ok) {
 				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MainMenu);
-			} else if (response.status == StatusCodes.BAD_REQUEST) {
+			} else if (this.networkService.isSafeResponse(response.status)) {
 				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
 			}
 		}

@@ -4,13 +4,13 @@ import { TRANSFER_HOST } from '@config/core.config';
 import { REQUEST_TIMEOUT } from '@config/network.config';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
+import { HttpStatus, type LoginDto, type RegisterDto } from '@game/shared';
 import { GameEvents } from '@gametypes/event.types';
 import { StatusCodes } from '@gametypes/network.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import type { SceneManager } from '@managers/SceneManager';
 import type { Logger } from '@utils/Logger.util';
 import { ObjectUtils } from '@utils/Object.util';
-import type { LoginDto, RegisterDto } from '../../../packages/shared/dist';
 import type { GameService } from './GameService';
 
 @injectLogger()
@@ -74,6 +74,10 @@ export class NetworkService extends BaseService {
 		return new Response(null, { status: StatusCodes.BAD_REQUEST });
 	}
 
+	public isSafeResponse(status: Number) {
+		return status !== HttpStatus.InternalServerError;
+	}
+
 	/**
 	 * Полное имя - Secure Fetch
 	 * - Инкапсулирует логику обработки запроса
@@ -94,6 +98,9 @@ export class NetworkService extends BaseService {
 		try {
 			init.signal = AbortSignal.timeout(REQUEST_TIMEOUT); // ставим максимальное время ожидания запроса
 			response = await fetch(input, init);
+			if (response.status == HttpStatus.InternalServerError) {
+				throw new Error('Server Error');
+			}
 			return response;
 		} catch (e) {
 			this.logger.warn('Ошибка во время запроса: ', e);

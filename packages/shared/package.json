@@ -5,8 +5,8 @@
 	"description": "Общие типы и утилиты",
 	"type": "module",
 	"scripts": {
-		"dev": "tsup src/index.ts --format esm --dts --watch",
-		"build": "tsup src/index.ts --format esm --dts"
+		"dev": "tsup --watch",
+		"build": "tsup"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@types/jsonwebtoken": "^9.0.10",
+		"dotenv": "^17.2.3",
 		"zod": "^4.1.12"
 	}
 }

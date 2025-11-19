@@ -1,5 +1,5 @@
+import app from '@/app/app.enty';
 import { db } from '@/instances/db.instance';
-import app from '@app';
 import { Server } from '@colyseus/core';
 import { listen } from '@colyseus/tools';
 import { DatabasePostgreSQL } from '@database/database';

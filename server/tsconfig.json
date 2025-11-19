@@ -27,12 +27,13 @@
 		"baseUrl": ".", // "Корень" проекта, от которого строятся пути ниже
 		"paths": {
 			// Алиасы для импортов (чтобы не писать ../../../)
-			"@app": ["src/configuration/app.config.ts"],
+			"@app": ["src/app/app.enty.ts"],
 			"@apiroutes": ["src/api/index.ts"],
 			"@schema/*": ["src/rooms/schema/*"],
 			"@routes/*": ["src/api/routes/*"],
 			"@rooms/*": ["src/rooms/*"],
 			"@api/*": ["src/api/*"],
+			"@instances/*": ["src/instances/*"],
 			"@database/*": ["src/database/*"],
 			"@servertypes/*": ["src/types/*"],
 			"@middlewares/*": ["src/middlewares/*"],

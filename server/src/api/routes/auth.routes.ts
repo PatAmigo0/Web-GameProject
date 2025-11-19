@@ -5,7 +5,6 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.post('/test', AuthController.test);
 router.post('/registration', validate(registerSchema), AuthController.registration);
 router.post('/login', validate(loginSchema), AuthController.login);
 

@@ -1,6 +1,6 @@
 import { db } from '@/instances/db.instance';
 import { matchMaker } from '@colyseus/core';
-import { CODE_GENERATION_MAX_RETRIES } from '@config/codegeneration.config';
+import { CODE_GENERATION_MAX_RETRIES } from '@config/generation.config';
 import { generateRoomCode } from '@utils/codegen.util';
 import type { Request, Response } from 'express';
 

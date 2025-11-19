@@ -1,4 +1,4 @@
-import { CODE_LENGTH } from '@config/codegeneration.config';
+import { CODE_LENGTH } from '@config/generation.config';
 
 const CHARACTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 

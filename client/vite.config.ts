@@ -1,3 +1,4 @@
+import { VITE_PORT } from '@game/shared';
 import * as path from 'path';
 import { defineConfig } from 'vite';
 
@@ -54,6 +55,6 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: {
-		port: 666,
+		port: VITE_PORT,
 	},
 }));

@@ -1,7 +1,8 @@
 // playwright.config.ts
+import { SERVER_HOST } from '@game/shared';
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = `http://${process.env.VITE_SERVER_HOST || 'localhost:2567'}`;
+const baseURL = `http://${SERVER_HOST || 'localhost:2567'}`;
 
 console.log(`Using base URL for tests: ${baseURL}`);
 

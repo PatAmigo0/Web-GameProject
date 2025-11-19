@@ -2,16 +2,29 @@ import type { Request } from 'express';
 import type { JwtPayload } from 'jsonwebtoken';
 import z, { email } from 'zod';
 
+//#region USER SPECIAL
+
+export const MIN_PASSWORD_LENGTH = 6;
+export const MIN_LOGIN_LENGTH = 3;
+export const MAX_LOGIN_LENGTH = 16;
+export const MAX_PASSWORD_LENGTH = 18;
+export const INVITE_CODE_LENGTH = 12;
+
+//#endregion
+
 //#region AUTH TYPES
 export const credentialsBase = z.object({
-	login: z.string().min(3, 'Login is too short').max(12, 'Login is too long'),
-	password: z.string().min(6, 'Password is too short').max(20, 'Password is too long'),
+	login: z.string().min(MIN_LOGIN_LENGTH, 'Login is too short').max(MAX_LOGIN_LENGTH, 'Login is too long'),
+	password: z
+		.string()
+		.min(MIN_PASSWORD_LENGTH, 'Password is too short')
+		.max(MAX_PASSWORD_LENGTH, 'Password is too long'),
 });
 
 export const registerSchema = z.object({
 	body: credentialsBase.extend({
 		email: email().optional(),
-		inviteCode: z.string().max(12).optional(),
+		inviteCode: z.string().length(INVITE_CODE_LENGTH, 'Wrong invite code').optional(),
 	}),
 });
 
@@ -35,7 +48,10 @@ export enum HttpStatus {
 	BadRequest = 400,
 	Unauthorized = 401,
 	Forbidden = 403,
+	NotFound = 404,
+	Conflict = 409,
 	ZodValidationError = 422,
+	TooManyRequests = 429,
 	InternalServerError = 500,
 }
 
@@ -44,20 +60,34 @@ export enum ErrorCode {
 	AuthExpired = 'AUTH_ERROR_TOKEN_EXPIRED',
 
 	InformationCorrupted = 'INFORMATION_CORRUPTED', // Означает что переданная информация не подходит / неверна
+	BadJson = 'BAD_JSON',
 	LoginTaken = 'LOGIN_TAKEN',
 
 	UserNotFound = 'USER_NOT_FOUND',
 	UserNotAllowed = 'USER_NOT_ALLOWED',
+	UserWrongPassword = 'USER_WRONG_PASSWORD',
 	UserBanned = 'USER_BANNED',
 
+	CorsNotAllowed = 'CORS_NOT_ALLOWED',
+
 	// Critical
-	CriticalServerError = 'CriticalServerError',
+	CriticalServerError = 'CRITICAL_SERVER_ERROR',
+	RateLimitExceed = 'RATE_LIMIT_EXCEED',
+}
+
+export enum OkCode {
+	SuccessRegistration = 'SUCCESS_REGISTRATION',
+	SuccesLogin = 'SUCCESS_LOGIN',
+	NoDataSpecified = 'NO_DATA',
+}
+
+export interface QueryError {
+	code: ErrorCode;
+	message?: string;
 }
 
 export interface ApiResponse {
-	status: HttpStatus;
-	error?: ErrorCode;
-	message?: string;
+	error?: QueryError;
 	data?: unknown;
 }
 
@@ -65,8 +95,12 @@ export interface AuthRequest extends Request {
 	user?: string | JwtPayload;
 }
 
-export interface AuthResponse extends ApiResponse {
-	jwt_token: string;
-}
+//#endregion
+
+//#region ENV
+
+const envValue = typeof process !== 'undefined' ? process.env.VITE_SERVER_HOST : undefined;
+export const SERVER_HOST = envValue || 'localhost:2567';
+export const VITE_PORT = 1234;
 
 //#endregion
