@@ -6,7 +6,6 @@ import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import { HttpStatus, type LoginDto, type RegisterDto } from '@game/shared';
 import { GameEvents } from '@gametypes/event.types';
-import { StatusCodes } from '@gametypes/network.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import type { SceneManager } from '@managers/SceneManager';
 import type { Logger } from '@utils/Logger.util';
@@ -16,6 +15,13 @@ import type { GameService } from './GameService';
 @injectLogger()
 @injectInitializator((service: NetworkService) => {
 	service.online = true;
+	try {
+		service.ping().then((res) => {
+			console.log(res.status);
+		});
+	} catch (e) {
+		console.error(e);
+	}
 })
 export class NetworkService extends BaseService {
 	private declare logger: Logger;
@@ -63,7 +69,7 @@ export class NetworkService extends BaseService {
 	 * @returns Экзэмпляр упавшего запроса (статус - 500)
 	 */
 	public failedResponse() {
-		return new Response(null, { status: StatusCodes.SERVER_OFFLINE });
+		return new Response(null, { status: HttpStatus.InternalServerError });
 	}
 
 	/**
@@ -71,7 +77,7 @@ export class NetworkService extends BaseService {
 	 * @returns Экзэмпляр плохого запроса (статус - 400)
 	 */
 	public badResponse() {
-		return new Response(null, { status: StatusCodes.BAD_REQUEST });
+		return new Response(null, { status: HttpStatus.BadRequest });
 	}
 
 	public isSafeResponse(status: Number) {
@@ -105,7 +111,7 @@ export class NetworkService extends BaseService {
 		} catch (e) {
 			this.logger.warn('Ошибка во время запроса: ', e);
 
-			if (!response || response.status == StatusCodes.SERVER_OFFLINE) {
+			if (!response || response.status == HttpStatus.InternalServerError) {
 				this.logger.warn('Going offline...');
 				this.online = false;
 				ObjectUtils.freezeProperty(this, 'online');

@@ -11,8 +11,11 @@ import { staticMiddleware } from '@middlewares/static.middleware';
 import express from 'express';
 
 export const initializeExpress = (app: express.Express) => {
+	app.set('trust proxy', 1);
+
 	app.use(helmetMiddleware);
 	app.use(corsMiddleware);
+
 	app.use('/api', [apiLimiter, express.json({ limit: '10kb' }), apiRoutes]);
 	app.use('/monitor', monitorMiddleware, monitor());
 	app.use('/', staticMiddleware);

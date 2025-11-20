@@ -10,4 +10,7 @@ export const ALLOWED_ORIGINS = new Set([
 	`http://127.0.0.1:${VITE_PORT}`,
 	`http://${SERVER_HOST}`,
 	`https://${SERVER_HOST}`,
+	`https://recallingly-toilsome-abdullah.ngrok-free.dev`,
 ]);
+
+console.log(ALLOWED_ORIGINS);

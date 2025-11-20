@@ -99,8 +99,7 @@ export interface AuthRequest extends Request {
 
 //#region ENV
 
-const envValue = typeof process !== 'undefined' ? process.env.VITE_SERVER_HOST : undefined;
-export const SERVER_HOST = envValue || 'localhost:2567';
+export const SERVER_HOST = 'localhost:2567';
 export const VITE_PORT = 1234;
 
 //#endregion
