@@ -1,34 +1,19 @@
-<div>
-	<div class="mainmenu-wrapper">
+<video class="bg-video" autoplay loop muted playsinline>
+	<source src="/assets/videos/html/base.bg.mp4" type="video/mp4" />
+</video>
+
+<div class="bg-overlay"></div>
+
+<div class="mainmenu-container">
+	<button class="settings-btn" id="settings-btn">⚙️</button>
+
+	<div class="nickname-box" id="nickname-box">Игрок: <span id="player-nickname">Гость</span></div>
+
+	<div class="center-content">
 		<div class="logo">АЛИБИ</div>
 
-		<div class="main-buttons">
+		<div class="main-buttons-wrapper">
 			<button class="btn" id="play-btn">ИГРАТЬ</button>
-			<div class="expanded-container" id="expanded-buttons">
-				<button class="sub-btn create-btn" id="create-btn">СОЗДАТЬ ИГРУ</button>
-				<button class="sub-btn join-btn" id="join-btn">ПОДКЛЮЧИТЬСЯ</button>
-			</div>
-		</div>
-
-		<button class="settings-btn" id="settings-btn">⚙️</button>
-
-		<div class="nickname-box" id="nickname-box">Игрок: <span id="player-nickname">Гость</span></div>
-
-		<div class="name-input-overlay" id="name-input-overlay">
-			<div class="name-input-container">
-				<h2>Введите ваше имя</h2>
-				<input
-					type="text"
-					class="name-input"
-					id="name-input"
-					maxlength="15"
-					placeholder="Введите ваше имя"
-				/>
-				<div class="name-input-buttons">
-					<button class="name-input-btn confirm" id="confirm-name-btn">Подтвердить</button>
-					<button class="name-input-btn" id="cancel-name-btn">Отмена</button>
-				</div>
-			</div>
 		</div>
 	</div>
 </div>

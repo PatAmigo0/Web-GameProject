@@ -1,6 +1,5 @@
 import { VITE_PORT } from '@game/shared';
 import * as path from 'path';
-// 1. Добавьте loadEnv в импорт
 import { defineConfig, loadEnv } from 'vite';
 
 import { fileURLToPath } from 'url';
@@ -64,5 +63,12 @@ export default defineConfig(({ mode }) => {
 		server: {
 			port: VITE_PORT,
 		},
+		css: {
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler',
+				},
+			},
+		} as any,
 	};
 });

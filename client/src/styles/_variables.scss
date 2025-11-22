@@ -1,0 +1,22 @@
+// Глобальные переменные стилей
+
+// --- ЦВЕТА ---
+$text-color: #e0e0e0;
+$accent-color: rgb(0, 225, 255);
+$bg-dark: rgba(30, 30, 30, 0.8);
+$bg-darker: rgba(0, 0, 0, 0.8);
+$border-light: #fff;
+$font-stack: 'Courier New', monospace;
+
+// --- SAFE ZONE (БЕЗОПАСНАЯ ЗОНА) ---
+// Меняйте эти значения, чтобы отодвинуть интерфейс от краев
+// 10-12% по вертикали хорошо спасает от обрезки в режиме ENVELOP на широких экранах
+$safe-padding-y: 12%;
+$safe-padding-x: 8%;
+
+// --- Z-INDEX SLOYS ---
+$z-video: 0;
+$z-overlay: 1;
+$z-content: 10;
+$z-ui-top: 20;
+$z-modal: 100;

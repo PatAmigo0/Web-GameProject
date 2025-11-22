@@ -6,7 +6,7 @@ import cors from 'cors';
 export const corsMiddleware = cors({
 	origin: (origin, callback) => {
 		if (!origin) return callback(null, true);
-		if (ALLOWED_ORIGINS.has(origin)) {
+		if (ALLOWED_ORIGINS.has(origin) || origin.endsWith('.loclx.io')) {
 			callback(null, true);
 		} else {
 			callback(new HttpError(HttpStatus.InternalServerError, ErrorCode.CorsNotAllowed));

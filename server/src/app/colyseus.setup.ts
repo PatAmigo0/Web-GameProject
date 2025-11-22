@@ -1,5 +1,5 @@
-import { colyseus } from '@/instances/colyseus.instance';
 import type { Server } from '@colyseus/core';
+import { colyseus } from '@instances/colyseus.instance';
 import { BaseGameRoom } from '@rooms/BaseGameRoom';
 
 export const initializeGameServer = (gameServer: Server) => {

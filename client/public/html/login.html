@@ -1,43 +1,42 @@
-<div>
-	<div class="pns">
-		<div class="game-title">
-			<h1>placeholder</h1>
-			<p>short_description</p>
+<!-- ГЛАВНЫЙ КОНТЕЙНЕР -->
+<div class="pns">
+	<div class="game-title">
+		<h1>placeholder</h1>
+		<p>short_description</p>
+	</div>
+
+	<div class="auth-form">
+		<h2>Вход в игру</h2>
+
+		<form>
+			<div class="input-group">
+				<input type="email" id="email" placeholder="Введите nickname" required />
+			</div>
+
+			<div class="input-group">
+				<input
+					type="password"
+					id="password"
+					autocomplete="true"
+					placeholder="Введите пароль"
+					required
+				/>
+			</div>
+		</form>
+
+		<button class="btn" id="loginBtn">Войти в игру</button>
+
+		<div class="social-buttons">
+			<button class="btn btn-social" id="githubBtn">Войти через GitHub</button>
+
+			<button class="btn btn-social" id="googleBtn">Войти через Google</button>
 		</div>
 
-		<div class="auth-form">
-			<h2>Вход в игру</h2>
-
-			<form>
-				<div class="input-group">
-					<input type="email" id="email" placeholder="Введите nickname" required />
-				</div>
-
-				<div class="input-group">
-					<input
-						type="password"
-						id="password"
-						autocomplete="true"
-						placeholder="Введите пароль"
-						required
-					/>
-				</div>
-			</form>
-
-			<button class="btn" id="loginBtn">Войти в игру</button>
-
-			<div class="social-buttons">
-				<button class="btn btn-social" id="githubBtn">Войти через GitHub</button>
-
-				<button class="btn btn-social" id="googleBtn">Войти через Google</button>
-			</div>
-
-			<div class="form-switch">
-				<p>
-					Нет аккаунта?
-					<button id="l">Зарегистрироваться</button>
-				</p>
-			</div>
+		<div class="form-switch">
+			<p>
+				Нет аккаунта?
+				<button id="l">Зарегистрироваться</button>
+			</p>
 		</div>
 	</div>
 </div>

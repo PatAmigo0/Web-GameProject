@@ -1,5 +1,15 @@
-<div>
-	<div class="serverlist-pns-wrapper">
+<!-- ВИДЕО ФОН -->
+<video class="bg-video" autoplay loop muted playsinline>
+	<source src="/assets/videos/html/base.bg.mp4" type="video/mp4" />
+</video>
+
+<!-- ЗАТЕМНЕНИЕ -->
+<div class="bg-overlay"></div>
+
+<!-- Обертка Safe Zone -->
+<div class="server-list-pns">
+	<!-- Внутренний контейнер для ограничения ширины -->
+	<div class="server-list-container">
 		<button class="back-btn">← НАЗАД</button>
 
 		<div class="serverlist-content-box">
@@ -8,7 +18,9 @@
 				<div class="subtitle">ВЫБЕРИТЕ СЕРВЕР ДЛЯ ПОДКЛЮЧЕНИЯ</div>
 			</div>
 
-			<div class="servers-list" id="servers-list"></div>
+			<div class="servers-list" id="servers-list">
+				<!-- Сюда JS будет добавлять .server-item -->
+			</div>
 
 			<div class="notification" id="notification"></div>
 		</div>

@@ -13,12 +13,12 @@ export const CHARACTER_SPRITESHEET_CONFIG: Phaser.Types.Loader.FileTypes.ImageFr
 };
 
 export const MAIN_DIV_STYLE = `
-			display: flex; flex-direction: 
-			column; justify-content: center; 
-			align-items: center; text-align: center; 
-			width: ${GAME_WIDTH}px; 
-			height: ${GAME_HEIGHT}px;
-			`.replace(/\s/g, '');
+    width: ${GAME_WIDTH}px;
+    height: ${GAME_HEIGHT}px;
+    display: block;           
+    position: relative;       
+    pointer-events: none;     
+`.replace(/\s/g, '');
 
 export const TRANSITION_CANVAS_STYLE = `
 			position: fixed;

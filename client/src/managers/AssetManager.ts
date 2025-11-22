@@ -38,7 +38,7 @@ export class AssetManager extends BaseService {
 	 *
 	 * Это словарь, сопоставляющий ключ сцены (например, 'Login') с хранилищем путей (по одному) к HTML и CSS файлам
 	 */
-	public readonly stylesManifest: Record<string, IMapAssetManifest> = {};
+	public readonly stylesManifest: Record<string, IHtmlAssetManifest> = {};
 
 	/**
 	 *  Флаг, что манифест собран, чтобы случайно не начать грузить ассеты раньше времени
@@ -111,7 +111,11 @@ export class AssetManager extends BaseService {
 		if (!scene.cache.html.has(scene.sceneKey)) {
 			scene.load.html(scene.sceneKey, manifestEntry.HTML);
 		}
-		this.styleManager.preloadStyle(scene, manifestEntry.CSS);
+
+		let url = manifestEntry.CSS;
+		if (!__PRODUCTION__) url = `${url}?direct`;
+
+		this.styleManager.preloadStyle(scene, url);
 	}
 
 	/**

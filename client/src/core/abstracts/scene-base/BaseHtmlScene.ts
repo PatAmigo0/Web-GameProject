@@ -10,10 +10,10 @@ export abstract class BaseHtmlScene extends AbstractBaseScene {
 	}
 
 	public setupScene(): void {
-		this.div = this.add.dom(0, 0).createFromCache(this.sceneKey).setOrigin(0, 0).node
-			.firstElementChild as HTMLElement; // firstElementChild -> наш главынй контенер из <имя>.html файла
-		this.div.setAttribute('style', MAIN_DIV_STYLE);
-		this.div.id = `${this.sceneKey}`;
+		const rawHtml = this.cache.html.get(this.sceneKey);
+		const wrappedHtml = `<div style=${MAIN_DIV_STYLE}, id=${this.sceneKey}>${rawHtml}</div>`;
+		this.div = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(wrappedHtml).node
+			.firstElementChild as HTMLElement;
 		this.onCreate();
 	}
 

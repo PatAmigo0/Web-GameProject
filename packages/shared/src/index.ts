@@ -13,12 +13,21 @@ export const INVITE_CODE_LENGTH = 12;
 //#endregion
 
 //#region AUTH TYPES
+const ENGLISH_REGEX = /^[a-zA-Z0-9_]+$/;
+
 export const credentialsBase = z.object({
-	login: z.string().min(MIN_LOGIN_LENGTH, 'Login is too short').max(MAX_LOGIN_LENGTH, 'Login is too long'),
+	login: z
+		.string()
+		.trim()
+		.min(MIN_LOGIN_LENGTH, 'Login is too short')
+		.max(MAX_LOGIN_LENGTH, 'Login is too long')
+		.regex(ENGLISH_REGEX, 'Only english allowed'),
 	password: z
 		.string()
+		.trim()
 		.min(MIN_PASSWORD_LENGTH, 'Password is too short')
-		.max(MAX_PASSWORD_LENGTH, 'Password is too long'),
+		.max(MAX_PASSWORD_LENGTH, 'Password is too long')
+		.regex(ENGLISH_REGEX, 'Only english allowed'),
 });
 
 export const registerSchema = z.object({
@@ -99,7 +108,9 @@ export interface AuthRequest extends Request {
 
 //#region ENV
 
-export const SERVER_HOST = 'localhost:2567';
 export const VITE_PORT = 1234;
+export const HOST_PORT = 2567;
+export const SERVER_HOST = `localhost:${HOST_PORT}`;
+export const CLIENT_LOCAL_HOST = `localhost:${VITE_PORT}`;
 
 //#endregion

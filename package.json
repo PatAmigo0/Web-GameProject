@@ -4,7 +4,8 @@
 	"description": "Корень проекта",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"...\" && exit 1"
+		"build": "pnpm --filter @game/shared build && pnpm --filter server build && pnpm --filter client build",
+		"start": "pnpm --filter server start"
 	},
 	"keywords": [],
 	"author": "",

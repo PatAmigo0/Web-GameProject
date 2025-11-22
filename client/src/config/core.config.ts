@@ -1,6 +1,6 @@
 // src/config/core.config.ts
 
-import { SERVER_HOST } from '@game/shared';
+import { HOST_PORT } from '@game/shared';
 
 /**
  * Ключ для пользовательского кэша
@@ -12,7 +12,7 @@ export const CUSTOM_CACHE_KEY = '__custom_cache__';
  */
 export const SHAKING_ALLOWED = true;
 
-export const VITE_SERVER_HOST = __PRODUCTION__ ? window.location.origin : `http://${SERVER_HOST}`;
+export const VITE_SERVER_HOST = __PRODUCTION__ ? window.location.origin : `http://localhost:${HOST_PORT}`;
 
 const WEB_SOCKET_PROTOCOL = __PRODUCTION__ ? 'wss' : 'ws';
 // const TRANSFER_PROTOCOL = __PRODUCTION__ ? 'https' : 'http';

@@ -1,6 +1,6 @@
-import { initializeGameServer } from '@/app/colyseus.setup';
-import { initializeExpress } from '@/app/express.setup';
-import { beforeListen } from '@/app/hooks';
+import { initializeGameServer } from '@app/colyseus.setup';
+import { initializeExpress } from '@app/express.setup';
+import { beforeListen } from '@app/hooks';
 import config from '@colyseus/tools';
 
 import { RedisDriver } from '@colyseus/redis-driver';

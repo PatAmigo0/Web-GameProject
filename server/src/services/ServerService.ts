@@ -3,6 +3,7 @@ import { db } from '@/instances/db.instance';
 import { Server } from '@colyseus/core';
 import { listen } from '@colyseus/tools';
 import { DatabasePostgreSQL } from '@database/database';
+import { HOST_PORT } from '@game/shared';
 import { loadenv } from '@utils/loadenv.util';
 
 export class ServerService {
@@ -15,7 +16,7 @@ export class ServerService {
 			throw new Error('Попытка запуска уже включенного сервера');
 		}
 		this.init();
-		this.gameServer = await listen(app);
+		this.gameServer = await listen(app, HOST_PORT);
 		this.initalized = true;
 		return this;
 	}
