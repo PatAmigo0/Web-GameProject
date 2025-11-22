@@ -1,7 +1,8 @@
 import { HOST_PORT, VITE_PORT } from '@game/shared';
 
 export const HTTP_DEV_HOST = `http://localhost:${HOST_PORT}`;
-export const HTTPS_HOST = process.env.PRODUCTION_HOST as string;
+export const HTTPS_HOST = process.env.PRODUCTION_HOST!;
+console.log(process.env.PRODUCTION_HOST);
 export const WS_DEV_HOST = HTTP_DEV_HOST.replace('http', 'ws');
 export const WSS_HOST = HTTPS_HOST.replace('https', 'wss');
 

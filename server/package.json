@@ -15,6 +15,7 @@
 		"prisma:generate": "prisma generate",
 		"prisma:dev": "prisma migrate dev",
 		"prisma:deploy": "prisma migrate deploy",
+		"prisma:reset": "prisma migrate reset",
 		"loadtest": "tsx __tests__/loadtest/example.spec.ts  --room baseGameRoom --numClients 8",
 		"test": "mocha -r tsx __tests__/spec/**.test.ts --exit --timeout 15000"
 	},
@@ -32,11 +33,12 @@
 		"@types/express": "^4.17.1",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.10.1",
+		"@types/pg": "^8.15.6",
 		"cross-env": "^10.1.0",
 		"dotenv-cli": "^11.0.0",
 		"esbuild-plugin-copy": "^2.1.1",
 		"mocha": "^10.2.0",
-		"prisma": "^6.19.0",
+		"prisma": "^7.0.0",
 		"rimraf": "^5.0.0",
 		"tsc-alias": "^1.8.16",
 		"tsup": "^8.5.1",
@@ -52,7 +54,8 @@
 		"@colyseus/tools": "^0.16.0",
 		"@colyseus/ws-transport": "^0.16.5",
 		"@game/shared": "workspace:*",
-		"@prisma/client": "^6.19.0",
+		"@prisma/adapter-pg": "^7.0.0",
+		"@prisma/client": "^7.0.0",
 		"@prisma/extension-accelerate": "^2.0.2",
 		"@types/jsonwebtoken": "^9.0.10",
 		"bcrypt": "^6.0.0",
@@ -67,6 +70,7 @@
 		"helmet": "^8.1.0",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.19.4",
+		"pg": "^8.16.3",
 		"zod": "^4.1.12"
 	}
 }

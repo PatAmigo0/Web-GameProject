@@ -1,10 +1,16 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import { Pool } from 'pg';
 
 export class DatabasePostgreSQL {
 	public prisma;
 
 	constructor() {
-		this.prisma = new PrismaClient();
+		const connectionString = process.env.DATABASE_URL;
+		const pool = new Pool({ connectionString });
+		const adapter = new PrismaPg(pool);
+
+		this.prisma = new PrismaClient({ adapter });
 	}
 
 	public clearRoomCodes() {

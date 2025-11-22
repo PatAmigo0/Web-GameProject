@@ -40,3 +40,4 @@ client/playwright/.auth/
 client/.github
 
 loclx.config.yaml
+generated/client

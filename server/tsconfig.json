@@ -19,6 +19,8 @@
 		"allowJs": true,
 		"strictNullChecks": true,
 
+		"types": ["node"],
+
 		"baseUrl": ".",
 		"paths": {
 			"@app": ["src/app/app.enty.ts"],
@@ -41,6 +43,6 @@
 		}
 	},
 
-	"include": ["src", "__tests__"],
+	"include": ["src", "__tests__", "prisma.config.ts", "prisma"],
 	"references": [{ "path": "../packages/shared" }]
 }
