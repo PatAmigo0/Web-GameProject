@@ -42,7 +42,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 */
 	constructor(
 		public sceneKey: SceneKeys,
-		public sceneType: SceneTypes = SceneTypes.Undefined,
+		public sceneType: SceneTypes[] = [SceneTypes.Undefined],
 		public config?: SceneConfig,
 		private __launchedScenes = new Set<CoreScene>(),
 	) {
@@ -80,7 +80,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 * @override
 	 */
 	public create(): void {
-		this.wake();
+		this.events.emit(SceneEvents.SCENE_IS_READY_TO_RUN, this);
 	}
 
 	/**
@@ -100,7 +100,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	}
 
 	public wake(): void {
-		this.events.emit(SceneEvents.SCENE_IS_READY_TO_RUN);
+		this.events.emit(SceneEvents.SCENE_IS_READY_TO_RUN, this);
 	}
 
 	/**

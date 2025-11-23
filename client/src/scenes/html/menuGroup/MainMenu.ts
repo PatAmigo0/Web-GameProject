@@ -4,7 +4,7 @@ import { CacheKeys, CacheNames } from '@config/cache.config';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import type { UserBaseInfo } from '@gametypes/cache.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { subSceneChange } from '@utils/routing.util';
+import { subSceneChange } from '@utils/ui-utils/routing.util';
 
 @SceneInfo(SceneKeys.MainMenu, SceneTypes.HTMLScene, { to: [SceneKeys.ServerList] })
 export class MainMenuScene extends BaseHtmlScene {

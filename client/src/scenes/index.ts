@@ -6,6 +6,7 @@ import { MenuWrapperScene } from './html/menuGroup/MenuWrapper';
 import { ServerListScene } from './html/menuGroup/ServerList';
 import { RegistrationScene } from './html/Registration';
 import { BootScene } from './system-scenes/BootScene';
+import { NotificationScene } from './system-scenes/Notifications';
 import { ServerOfflineScene } from './system-scenes/ServerOffline';
 
 export const scenes = [
@@ -19,4 +20,5 @@ export const scenes = [
 	CreateRoomScene,
 	CharacterTestPlace,
 	MenuWrapperScene,
+	NotificationScene,
 ];

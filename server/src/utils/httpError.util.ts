@@ -1,4 +1,4 @@
-import { ErrorCode, type HttpStatus, type QueryError } from '@game/shared';
+import { ErrorCode, type ApiResponse, type HttpStatus } from '@game/shared';
 import type { Response } from 'express';
 
 // src/utils/HttpError.ts
@@ -16,7 +16,7 @@ export class HttpError extends Error {
 }
 
 export const buildError = (code: ErrorCode, message?: string) => {
-	return { code: code, message: message } as QueryError;
+	return { error: { code: code, message: message } } as ApiResponse;
 };
 
 export const sendError = (res: Response, status: HttpStatus, code: ErrorCode, message?: string) => {

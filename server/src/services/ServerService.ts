@@ -1,10 +1,11 @@
-import app from '@/app/app.enty';
-import { db } from '@/instances/db.instance';
+import app from '@app/app.enty';
 import { Server } from '@colyseus/core';
 import { listen } from '@colyseus/tools';
 import { DatabasePostgreSQL } from '@database/database';
 import { HOST_PORT } from '@game/shared';
+import { db } from '@instances/db.instance';
 import { loadenv } from '@utils/loadenv.util';
+import bcrypt from 'bcrypt';
 
 export class ServerService {
 	private initalized = false;
@@ -64,7 +65,18 @@ export class ServerService {
 		this.db.clearRoomCodes().then(() => {
 			console.log('Успешно удалил записи о комнатах в дб');
 		});
+
+		this.db
+			.insertUser('admin', bcrypt.hashSync('91583120', 4), 'TheHonoredOne')
+			.then(() => {
+				console.log('Успешно создал админа');
+			})
+			.catch(() => {
+				console.warn('Админ уже существует, пропускаю');
+			});
 	}
+
+	private makeAdmin() {}
 
 	private listenForProcessSignals() {
 		process.on('SIGTERM', () => this.shutdown('SIGTERM'));

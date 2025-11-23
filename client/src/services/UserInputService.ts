@@ -10,7 +10,7 @@ import { GameEvents, KeyboardEvents } from '@gametypes/event.types';
 import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
-@injectInitializator((service: UserInputService) => {
+@injectInitializator(async (service: UserInputService) => {
 	service.initAttributes();
 	service.initKeys();
 	service.initEvents();

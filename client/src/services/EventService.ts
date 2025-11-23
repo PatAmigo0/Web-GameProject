@@ -7,7 +7,7 @@ import { GameEvents } from '@gametypes/event.types';
 /**
  * Сервис событий, который обрабатывает базовые события
  */
-@injectInitializator((service: EventService) => {
+@injectInitializator(async (service: EventService) => {
 	service.setupCommonListeners();
 })
 export class EventService extends StandaloneService {

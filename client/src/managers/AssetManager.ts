@@ -1,6 +1,7 @@
 //#region IMPORTS
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import { BaseService } from '@abstracts/service-base/BaseService';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
@@ -21,7 +22,7 @@ import type { StyleManager } from './StyleManager';
  * и за загрузку нужных ассетов для каждой конкретной сцены
  */
 @injectLogger()
-@injectInitializator(() => {})
+@injectInitializator(async () => {})
 export class AssetManager extends BaseService {
 	protected declare logger: Logger;
 
@@ -59,26 +60,25 @@ export class AssetManager extends BaseService {
 	}
 
 	//#region PUBLIC METHODS
-	public declare init: () => void;
+	public declare init: () => Promise<void>;
 
 	/**
 	 * Метод AssetManager, который сам выбирает как ему загружать ассеты в сцену
 	 * @param scene поддерживаемый тип сцены
 	 */
 	public loadAssets(scene: CoreScene): void {
-		switch (scene.sceneType) {
-			case SceneTypes.GameScene:
-				this.loadMapAssets(scene);
-				break;
-			case SceneTypes.HTMLScene:
-				if (!(scene instanceof BaseHtmlScene)) {
-					throw 'Не HTML сцена имеет тип HTML, ошибка';
-				}
-				this.loadHtmlAssets(scene);
-				break;
-			default:
-				this.logger.warn('Тип сцены не поддерживается для загрузки ассетов');
-		}
+		scene.sceneType.forEach((type) => {
+			switch (type) {
+				case SceneTypes.GameScene:
+					this.loadMapAssets(scene);
+					break;
+				case SceneTypes.HTMLScene:
+					this.loadHtmlAssets(scene);
+					break;
+				default:
+					this.logger.warn('Тип сцены не поддерживается для загрузки ассетов');
+			}
+		});
 	}
 
 	/**
@@ -107,9 +107,14 @@ export class AssetManager extends BaseService {
 	 * @param scene Сцена, в которую нужно загрузить ассеты
 	 */
 	@resolveManifestEntry
-	public loadHtmlAssets(scene: BaseHtmlScene, manifestEntry?: IHtmlAssetManifest): void {
-		if (!scene.cache.html.has(scene.sceneKey)) {
+	public loadHtmlAssets(
+		scene: WithPhaserLifecycle | BaseHtmlScene,
+		manifestEntry?: IHtmlAssetManifest,
+	): void {
+		if (scene instanceof BaseHtmlScene && !scene.cache.html.has(scene.sceneKey)) {
 			scene.load.html(scene.sceneKey, manifestEntry.HTML);
+		} else {
+			this.logger.debug(`Not loading html for ${scene.sceneKey}`);
 		}
 
 		let url = manifestEntry.CSS;

@@ -9,20 +9,21 @@ import { SceneManager } from '@managers/SceneManager';
 import { StyleManager } from '@managers/StyleManager';
 import { TransitionManager } from '@managers/TransitionManager';
 import { BootScene } from '@scenes/system-scenes/BootScene';
+import { AuthService } from '@services/AuthService';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
+import { NotificationService } from '@services/NotificationService';
 import { PlayerService } from '@services/PlayerService';
 import { SceneDisposalService } from '@services/SceneDisposalService';
 import { UserInputService } from '@services/UserInputService';
+import { ValidatorService } from '@services/ValidatorService';
 import type { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
-import { AuthService } from './AuthService';
-import { ValidatorService } from './ValidatorService';
 
 //#region GAME CLASS DEFINITION
 @injectLogger()
-@injectInitializator((service: GameService) => {
-	service.initAttributes();
+@injectInitializator(async (service: GameService) => {
+	await service.initAttributes();
 	service.__boot__();
 })
 export class GameService extends Phaser.Game {
@@ -44,8 +45,9 @@ export class GameService extends Phaser.Game {
 	public networkService!: NetworkService;
 	public authService!: AuthService;
 	public validatorService!: ValidatorService;
-	private eventService!: EventService;
+	public eventService!: EventService;
 	public sceneDisposalService!: SceneDisposalService;
+	public notificationService!: NotificationService;
 	//#endregion
 
 	//#region CONSTRUCTOR
@@ -56,19 +58,16 @@ export class GameService extends Phaser.Game {
 	//#endregion
 
 	//#region PRIVATE INITIALIZATION
-	private declare init: () => void;
+	private declare init: () => Promise<void>;
 
-	private initAttributes() {
+	private async initAttributes() {
 		this.setNewPrototypes();
 
 		this.createServices();
-		this.initServices();
+		await this.initServices();
 
 		this.createManagers();
-		this.initManagers();
-
-		this.networkService;
-		this.eventService;
+		await this.initManagers();
 	}
 
 	private setNewPrototypes() {
@@ -77,23 +76,31 @@ export class GameService extends Phaser.Game {
 	}
 
 	private createServices() {
-		this.playerService = new PlayerService(this);
+		// все сервисы создаются здесь, с прокидыванием зависимостей
+
+		this.playerService = new PlayerService();
 		this.validatorService = new ValidatorService();
 		this.userInputService = new UserInputService(this.input.keyboard, this.events);
-		this.networkService = new NetworkService(this, this.events, this.scene);
+		this.notificationService = new NotificationService(this.scene, this.events);
+		this.networkService = new NetworkService(this.events, this.scene, this.notificationService);
 		this.eventService = new EventService(this.events, this.domContainer);
 		this.sceneDisposalService = new SceneDisposalService(this.scene);
 		this.authService = new AuthService(this.networkService, this.events);
 	}
 
-	private initServices() {
+	private async initServices() {
 		// инициализируем все сервисы автоматически
+		const promises: Promise<any>[] = [];
+
 		Object.values(this).forEach((propertyValue) => {
 			if (this.isService(propertyValue)) {
 				this.logger.debug('calling init on:', propertyValue);
-				propertyValue.init();
+				promises.push(propertyValue.init());
 			}
 		});
+
+		await Promise.all(promises);
+		this.logger.debug('Закончил загрузку сервисов');
 	}
 
 	private createManagers() {
@@ -102,8 +109,9 @@ export class GameService extends Phaser.Game {
 		this.assetManager = new AssetManager(this, this.styleManager);
 	}
 
-	private initManagers() {
-		this.scene.init(this.transitionManager, this.sceneDisposalService);
+	private async initManagers() {
+		await this.scene.init(this.transitionManager, this.sceneDisposalService, this.notificationService);
+		await this.assetManager.init();
 	}
 
 	private isService(propertyValue: any): propertyValue is IInitializiable {
@@ -123,7 +131,10 @@ export class GameService extends Phaser.Game {
 		BootScene.shutdown();
 		if (BootScene) {
 			this.scene.changeMainScene(BootScene.sceneKey);
-			BootScene.loadAssets().then(() => BootScene.handleStartup());
+			BootScene.loadAssets().then(() => {
+				this.scene.start(SceneKeys.Notifications);
+				BootScene.handleStartup();
+			});
 		} else this.logger.error('Не удалось загрузить boot сцену');
 	}
 	//#endregion

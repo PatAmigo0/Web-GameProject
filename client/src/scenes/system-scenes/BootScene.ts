@@ -1,12 +1,11 @@
 // src/scenes/system/BootScene.ts
 
-import { CoreScene } from '@abstracts/scene-base/CoreScene';
-import { withPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
+import { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.BootScene, SceneTypes.SystemScene, { to: SceneKeys.LoginScene })
-export class BootScene extends withPhaserLifecycle(CoreScene) {
+export class BootScene extends WithPhaserLifecycle {
 	private loadingText!: Phaser.GameObjects.Text;
 
 	public preload() {
@@ -17,8 +16,6 @@ export class BootScene extends withPhaserLifecycle(CoreScene) {
 			})
 			.setOrigin(0.5);
 	}
-
-	public heartbeat() {}
 
 	public shutdown() {
 		this.loadingText.destroy();

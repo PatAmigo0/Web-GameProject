@@ -34,7 +34,7 @@ const optionFormater = (
 	message?: string | undefined;
 } => {
 	return {
-		abort: true,
+		abort: false,
 		error: error,
 	};
 };

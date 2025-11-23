@@ -1,5 +1,6 @@
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { IHtmlAssetManifest, IMapAssetManifest } from '@gametypes/assets.types';
+import { SceneTypes } from '@gametypes/scene.types';
 import type { AssetManager } from '@managers/AssetManager';
 
 const styleModules = import.meta.glob('/src/styles/*.scss', {
@@ -22,8 +23,12 @@ export function resolveManifestEntry<T extends AssetManager>(
 		}
 
 		const scene = args[0] as CoreScene;
-		const manifestEntry: IMapAssetManifest | IHtmlAssetManifest | undefined =
+		let manifestEntry: IMapAssetManifest | IHtmlAssetManifest | undefined =
 			this.assetManifest[scene.sceneKey] || this.stylesManifest[scene.sceneKey];
+
+		if (scene.sceneType.includes(SceneTypes.SystemScene)) {
+			manifestEntry = { HTML: '__NONE__', CSS: '__PLACEHOLDER__' } as IHtmlAssetManifest;
+		}
 
 		if (!manifestEntry) {
 			this.logger.error(`Не найдена запись в манифесте для сцены: ${scene.sceneKey}`);

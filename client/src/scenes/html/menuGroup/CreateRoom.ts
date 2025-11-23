@@ -1,7 +1,7 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { subSceneChange } from '@utils/routing.util';
+import { subSceneChange } from '@utils/ui-utils/routing.util';
 
 @SceneInfo(SceneKeys.CreateRoom, SceneTypes.HTMLScene)
 export class CreateRoomScene extends BaseHtmlScene {

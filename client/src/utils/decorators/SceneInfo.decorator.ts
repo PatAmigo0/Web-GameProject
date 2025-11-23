@@ -4,7 +4,11 @@ import type { BaseClass } from '@gametypes/core.types';
 import type { SceneConfig, SceneConfigDecorator, SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { copyClassMetadata } from '@utils/copyClassMetadata.util';
 
-export function SceneInfo(sceneKey: SceneKeys, sceneType: SceneTypes, config?: SceneConfigDecorator) {
+export function SceneInfo(
+	sceneKey: SceneKeys,
+	sceneType: SceneTypes | SceneTypes[],
+	config?: SceneConfigDecorator,
+) {
 	return function <T extends BaseClass>(constructor: T) {
 		return copyClassMetadata(
 			constructor,
@@ -23,7 +27,7 @@ export function SceneInfo(sceneKey: SceneKeys, sceneType: SceneTypes, config?: S
 						}
 					}
 
-					super(sceneKey, sceneType, normalizedConfig, ...args);
+					super(sceneKey, [].concat(sceneType), normalizedConfig, ...args);
 				}
 			},
 		);

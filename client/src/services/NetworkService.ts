@@ -1,5 +1,5 @@
 // src/services/NetworkService.ts
-import { BaseService } from '@abstracts/service-base/BaseService';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import { TRANSFER_HOST } from '@config/core.config';
 import { REQUEST_TIMEOUT } from '@config/network.config';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
@@ -8,36 +8,27 @@ import { HttpStatus, type LoginDto, type RegisterDto } from '@game/shared';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import type { SceneManager } from '@managers/SceneManager';
+import type { NotificationService } from '@services/NotificationService';
 import type { Logger } from '@utils/Logger.util';
 import { ObjectUtils } from '@utils/Object.util';
-import type { GameService } from './GameService';
 
 @injectLogger()
-@injectInitializator((service: NetworkService) => {
-	service.online = true;
-	try {
-		service.ping().then((res) => {
-			console.log(res.status);
-		});
-	} catch (e) {
-		console.error(e);
-	}
-})
-export class NetworkService extends BaseService {
+@injectInitializator(async (_: NetworkService) => {})
+export class NetworkService extends StandaloneService {
 	private declare logger: Logger;
 	public declare init: () => void;
-	private online: boolean;
+	private online = true;
 
 	constructor(
-		game: GameService,
 		private events: Phaser.Events.EventEmitter,
 		private sceneManager: SceneManager,
+		/** @ts-ignore */
+		private notificationService: NotificationService,
 	) {
-		super(game);
+		super();
 	}
 
 	/**
-	 *
 	 * @returns Pong!
 	 */
 	public ping() {
@@ -99,8 +90,8 @@ export class NetworkService extends BaseService {
 		}
 
 		if (!init) init = {};
-
 		let response;
+
 		try {
 			init.signal = AbortSignal.timeout(REQUEST_TIMEOUT); // ставим максимальное время ожидания запроса
 			response = await fetch(input, init);
@@ -117,11 +108,21 @@ export class NetworkService extends BaseService {
 				ObjectUtils.freezeProperty(this, 'online');
 
 				this.sceneManager.scenes.forEach((scene) => {
-					this.game.scene.stop(scene);
+					this.sceneManager.stop(scene);
 				});
 
 				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.OfflineScene);
 			}
+			// else {
+			// 	switch (response.status) {
+			// 		case HttpStatus.TooManyRequests:
+			// 			this.notificationService.show(
+			// 				'Слишком много запросов на сервер, подождите немного...',
+			// 				'error',
+			// 			);
+			// 			break;
+			// 	}
+			// }
 
 			return this.failedResponse(); // отправляем пустой ответ с кодом 500 (::ERR_FAILURE)
 		}

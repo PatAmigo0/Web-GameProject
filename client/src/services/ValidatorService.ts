@@ -9,10 +9,10 @@ export class ValidatorService {
 
 	public validateData(data: any, schema: ZodType<any, any>): boolean {
 		try {
-			schema.parse(data, {});
+			schema.parse(data);
 			return true;
 		} catch (e) {
-			this.logger.warn('Ошибка валидации:', (e as ZodError).issues[0].message);
+			// this.logger.warn('Ошибка валидации:', (e as ZodError).issues);
 			this.lastError = e as ZodError;
 			return false;
 		}
@@ -24,6 +24,6 @@ export class ValidatorService {
 			return;
 		}
 
-		return this.lastError.issues[0].message;
+		return this.lastError;
 	}
 }

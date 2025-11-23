@@ -7,16 +7,23 @@ import { GameEvents } from '@gametypes/event.types';
 import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
+import { NotificationService } from '@services/NotificationService';
 import type { SceneDisposalService } from '@services/SceneDisposalService';
 import type { Logger } from '@utils/Logger.util';
 import { TransitionManager } from './TransitionManager';
 
 @injectLogger()
 @injectInitializator(
-	(manager: SceneManager, transitionManager: TransitionManager, SDS: SceneDisposalService) => {
+	async (
+		manager: SceneManager,
+		transitionManager: TransitionManager,
+		SDS: SceneDisposalService,
+		notificationService: NotificationService,
+	) => {
 		manager.currentMainScene = null;
 		manager.transitionManager = transitionManager;
 		manager.sceneDisposalService = SDS;
+		manager.notificationService = notificationService;
 		manager.listenEvents();
 	},
 )
@@ -28,14 +35,20 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	protected currentMainScene: WithPhaserLifecycle;
 	protected transitionManager!: TransitionManager;
 	protected sceneDisposalService!: SceneDisposalService;
+	protected notificationService!: NotificationService;
 
-	public declare init: (service: TransitionManager, service2: SceneDisposalService) => void;
+	public declare init: (
+		service: TransitionManager,
+		service2: SceneDisposalService,
+		service3: NotificationService,
+	) => Promise<void>;
 
 	public changeMainScene(sceneKey: string): void {
 		this.logger.debug(`Меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`);
 
 		const newScene = this.getScene(sceneKey);
 		this.handleSceneType(newScene);
+		this.notificationService.clearAll();
 
 		if (this.currentMainScene) {
 			this.transitionManager.swapScenes(this.currentMainScene, newScene, () =>
@@ -57,6 +70,11 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	}
 
 	public start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
+		if (!__PRODUCTION__)
+			this.notificationService.show(
+				`[DEBUG] Scene \'${this.getScene(key).sceneKey}\' has started!`,
+				'success',
+			);
 		super.start(key, data);
 		return this;
 	}
@@ -64,11 +82,16 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	public wake<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
 		const scene = this.getScene(key);
 
-		// Making sure that event SceneEvents.SCENE_IS_READY_TO_RUN is going to be emitted after waking up
+		// Making sure that the event SceneEvents.SCENE_IS_READY_TO_RUN is going to be emitted after waking up
 		scene.sys.events.once(Phaser.Scenes.Events.WAKE, () => {
+			if (!__PRODUCTION__)
+				this.notificationService.show(
+					`[DEBUG] Scene \'${this.getScene(key).sceneKey}\' has woken up!`,
+					'success',
+				);
 			scene.wake();
 		});
-		super.wake(key, data); // Calls Phaser.Scenes.Events.WAKE on sys.events
+		super.wake(key, data); // Calls the Phaser.Scenes.Events.WAKE event on the sys.events
 		return this;
 	}
 
@@ -77,6 +100,11 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 		if (this.isActive(scene)) {
 			scene.events.once(PhaserEvents.SHUTDOWN, () => {
 				scene.shutdown();
+				if (!__PRODUCTION__)
+					this.notificationService.show(
+						`[DEBUG] Scene ${scene.sceneKey} has successfully stopped!`,
+						'success',
+					);
 			});
 			super.stop(scene, data);
 		}
@@ -84,16 +112,18 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	}
 
 	private handleSceneType(scene: WithPhaserLifecycle): void {
-		switch (scene.sceneType) {
-			case SceneTypes.GameScene:
-				this.game.userInputService.lockMainKeys();
-				break;
-			case SceneTypes.HTMLScene:
-				this.game.userInputService.unlockMainKeys();
-				break;
-			default:
-				this.logger.warn(`Неподдерживаемый тип сцены [${scene.sceneType}]`);
-		}
+		scene.sceneType.forEach((type) => {
+			switch (type) {
+				case SceneTypes.GameScene:
+					this.game.userInputService.lockMainKeys();
+					break;
+				case SceneTypes.HTMLScene:
+					this.game.userInputService.unlockMainKeys();
+					break;
+				default:
+					this.logger.warn(`Неподдерживаемый тип сцены [${scene.sceneType}]`);
+			}
+		});
 	}
 
 	private getSceneStatus<T extends CoreScene>(key: string | T): number {

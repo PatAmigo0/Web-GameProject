@@ -30,7 +30,7 @@ export const registration = async (req: Request, res: Response) => {
 
 	await db.core!.insertUser(login, saltedPassword, userUuid);
 
-	console.log(`New user ${login}, uuid: ${userUuid}, password: ${password}`);
+	console.log(`New user ${login}, uuid: ${userUuid}, password: ${password}, ip: ${req.ip}, ${req.ips}`);
 	successAuth(res, OkCode.SuccessRegistration, userUuid, login);
 };
 
@@ -48,6 +48,6 @@ export const login = async (req: Request, res: Response) => {
 		throw new HttpError(HttpStatus.Unauthorized, ErrorCode.UserWrongPassword);
 	}
 
-	console.log(`User logged in: ${login}, his uuid is ${user.uuid}`);
+	console.log(`User logged in: ${login}, his uuid is ${user.uuid}, ip: ${req.ip}, ${req.ips}`);
 	successAuth(res, OkCode.SuccesLogin, user.uuid, login);
 };

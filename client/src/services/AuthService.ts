@@ -11,7 +11,7 @@ import type { NetworkService } from '@services/NetworkService';
 import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
-@injectInitializator((service: AuthService) => {
+@injectInitializator(async (service: AuthService) => {
 	service.userCache = new CacheComponent(CacheNames.User).setSettings({ alwaysSave: true });
 	// service.userCache.add(CacheKeys.AuthInfo, { login: 'tohue', password: '312000' } as LoginDto);
 })
@@ -69,8 +69,8 @@ export class AuthService extends StandaloneService {
 	public async login(info: LoginDto) {
 		const response = await this.networkService.sendLoginRequest(info);
 		if (response.ok) {
-			if (!this.userCache.exists('login')) {
-				this.userCache.add('login', info);
+			if (!this.userCache.exists(CacheKeys.AuthInfo)) {
+				this.userCache.add(CacheKeys.AuthInfo, info);
 			}
 		}
 		return response;

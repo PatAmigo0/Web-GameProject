@@ -1,0 +1,94 @@
+@use 'components/variables' as *;
+@use 'components/mixins' as *;
+
+.notification-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 9999; // Самый верхний слой
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	pointer-events: none;
+}
+
+.notification-toast {
+	// Базовый стиль
+	min-width: 250px;
+	max-width: 350px;
+	padding: 15px 20px;
+	background: rgba(30, 30, 30, 0.95);
+	border-left: 4px solid #fff; // Цветная полоска слева
+	border-radius: 4px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+
+	color: #fff;
+	font-family: $font-stack;
+	font-size: 14px;
+	pointer-events: auto; // Само уведомление можно закрыть кликом
+	cursor: pointer;
+
+	// Анимация появления
+	animation: slideIn 0.3s ease forwards;
+
+	// ТИП: ОШИБКА
+	&.error {
+		border-left-color: $error-color;
+		box-shadow: 0 0 10px rgba($error-color, 0.2);
+
+		.title {
+			color: $error-color;
+		}
+	}
+
+	// ТИП: УСПЕХ
+	&.success {
+		border-left-color: $success-color;
+		box-shadow: 0 0 10px rgba($success-color, 0.2);
+
+		.title {
+			color: $success-color;
+		}
+	}
+
+	&.hiding {
+		animation: fadeOut 0.3s ease forwards;
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.title {
+		font-weight: bold;
+		text-transform: uppercase;
+		font-size: 12px;
+		letter-spacing: 1px;
+	}
+
+	.message {
+		color: #e0e0e0;
+		line-height: 1.4;
+	}
+}
+
+// Анимации
+@keyframes slideIn {
+	from {
+		transform: translateX(100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	to {
+		transform: translateX(10px);
+		opacity: 0;
+	}
+}

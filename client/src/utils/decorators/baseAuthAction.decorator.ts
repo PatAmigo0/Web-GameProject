@@ -8,6 +8,10 @@ export function baseAuthAction<T extends AuthService>(_: T, __: string, descript
 
 	descriptor.value = async function (this: T, ...args: any[]) {
 		const response = (await originalMethod.call(this, ...args)) as Response;
+		if (!response.ok) {
+			this.logger.debug('baseAuthAction failure.');
+			return response;
+		}
 		const data = await response.json();
 		this.userCache.add(CacheKeys.UserBaseInfo, {
 			token: data.data.token,
