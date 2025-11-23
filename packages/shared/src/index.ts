@@ -12,28 +12,68 @@ export const INVITE_CODE_LENGTH = 12;
 
 //#endregion
 
-//#region AUTH TYPES
+//#region ZOD ERROR MESSAGES
+export enum ValidationMessage {
+	LoginTooShort = 'Login is too short',
+	LoginTooLong = 'Login is too long',
+	PasswordTooShort = 'Password is too short',
+	PasswordTooLong = 'Password is too long',
+	OnlyEnglish = 'Only english allowed',
+	InvalidEmail = 'Invalid email',
+	InvalidInviteCode = 'Wrong invite code',
+	Required = 'Field is required',
+}
+//#endregion
+
+//#region AUTH RULES (INDIVIDUAL)
+const optionFormater = (
+	error: string,
+): {
+	abort?: boolean | undefined;
+	error?: string | undefined;
+	message?: string | undefined;
+} => {
+	return {
+		abort: true,
+		error: error,
+	};
+};
+
 const ENGLISH_REGEX = /^[a-zA-Z0-9_]+$/;
 
+export const loginSchemaRule = z
+	.string(optionFormater(ValidationMessage.Required))
+	.trim()
+	.min(MIN_LOGIN_LENGTH, optionFormater(ValidationMessage.LoginTooShort))
+	.max(MAX_LOGIN_LENGTH, optionFormater(ValidationMessage.LoginTooLong))
+	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
+
+export const passwordSchemaRule = z
+	.string(optionFormater(ValidationMessage.Required))
+	.trim()
+	.min(MIN_PASSWORD_LENGTH, optionFormater(ValidationMessage.PasswordTooShort))
+	.max(MAX_PASSWORD_LENGTH, optionFormater(ValidationMessage.PasswordTooLong))
+	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
+
+export const emailSchemaRule = email(ValidationMessage.InvalidEmail).optional();
+
+export const inviteCodeSchemaRule = z
+	.string()
+	.length(INVITE_CODE_LENGTH, optionFormater(ValidationMessage.InvalidInviteCode))
+	.optional();
+
+//#endregion
+
+//#region AUTH SCHEMAS (OBJECTS)
 export const credentialsBase = z.object({
-	login: z
-		.string()
-		.trim()
-		.min(MIN_LOGIN_LENGTH, 'Login is too short')
-		.max(MAX_LOGIN_LENGTH, 'Login is too long')
-		.regex(ENGLISH_REGEX, 'Only english allowed'),
-	password: z
-		.string()
-		.trim()
-		.min(MIN_PASSWORD_LENGTH, 'Password is too short')
-		.max(MAX_PASSWORD_LENGTH, 'Password is too long')
-		.regex(ENGLISH_REGEX, 'Only english allowed'),
+	login: loginSchemaRule,
+	password: passwordSchemaRule,
 });
 
 export const registerSchema = z.object({
 	body: credentialsBase.extend({
-		email: email().optional(),
-		inviteCode: z.string().length(INVITE_CODE_LENGTH, 'Wrong invite code').optional(),
+		email: emailSchemaRule,
+		inviteCode: inviteCodeSchemaRule,
 	}),
 });
 
@@ -47,7 +87,6 @@ export type LoginDto = z.infer<typeof loginSchema>['body'];
 //#endregion
 
 //#region HTTP QUERIES TYPES
-
 export interface AuthQueryHeader {
 	Authorization: string;
 }

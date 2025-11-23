@@ -1,25 +1,14 @@
-// Импортируем переменные
-@use 'variables' as *;
+@use 'components/variables' as *;
+@use 'components/mixins' as *;
 
-// --- ГЛАВНЫЙ КОНТЕЙНЕР ---
 .mainmenu-container {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	display: block;
+	@include fullscreen-pns;
+	pointer-events: auto; // Меню должно быть кликабельным везде
+	display: block; // Для абсолютного позиционирования элементов внутри
 
-	font-family: $font-stack;
-	color: $text-color;
-	box-sizing: border-box;
-	pointer-events: auto;
-
-	// === ПРИМЕНЯЕМ SAFE ZONE ИЗ ПЕРЕМЕННЫХ ===
-	padding: $safe-padding-y $safe-padding-x;
-
-	// --- 1. НАСТРОЙКИ ---
+	// --- НАСТРОЙКИ ---
 	.settings-btn {
 		position: absolute;
-		// Используем те же значения, что и в padding, чтобы было ровно
 		top: $safe-padding-y;
 		right: $safe-padding-x;
 
@@ -38,33 +27,132 @@
 		}
 	}
 
-	// --- 2. НИКНЕЙМ ---
+	// --- НИКНЕЙМ ---
 	.nickname-box {
 		position: absolute;
 		bottom: $safe-padding-y;
 		left: $safe-padding-x;
+		z-index: $z-ui-top;
 
+		// Оформление самого блока с ником
 		background: $bg-darker;
-		padding: 10px 16px;
-		border-radius: 8px;
-		font-size: 18px;
 		border: 2px solid rgb(82, 82, 82);
+		border-radius: 8px;
+		min-width: 200px; // Фиксируем мин. ширину, чтобы меню не было узким
 		cursor: pointer;
 		transition: all 0.2s;
-		z-index: $z-ui-top;
-		white-space: nowrap;
 
+		// --- ЛОГИКА HOVER (ПОКАЗАТЬ МЕНЮ) ---
 		&:hover {
 			border-color: $accent-color;
+
+			// Показываем меню при наведении на весь блок
+			.user-dropdown {
+				opacity: 1;
+				pointer-events: auto;
+				transform: translateY(0);
+			}
+
+			.dropdown-arrow {
+				color: $accent-color;
+				transform: rotate(180deg); // Переворачиваем стрелку
+			}
 		}
-		span {
-			font-weight: bold;
-			color: $accent-color;
-			margin-left: 5px;
+
+		// Внутренний контент (текст ника)
+		.current-user-content {
+			padding: 10px 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			color: $text-color;
+			font-size: 18px;
+
+			#player-nickname {
+				@include neon-text;
+				margin-left: 5px;
+			}
+
+			.dropdown-arrow {
+				font-size: 12px;
+				color: #888;
+				margin-left: 10px;
+				transition: transform 0.3s;
+			}
+		}
+
+		// --- ВЫПАДАЮЩЕЕ ОКНО ---
+		.user-dropdown {
+			$gap: 12px;
+
+			position: absolute;
+			// Меню "растет" вверх от родителя
+			bottom: 100%;
+			left: -2px; // Компенсация border родителя (-2px)
+			width: calc(100% + 4px); // Компенсация border (100% + 4px)
+
+			gap: $gap; // Отступ от основного блока
+			margin-bottom: $gap;
+
+			background: rgba(30, 30, 30, 0.95);
+			border: 2px solid #555;
+			border-radius: 8px;
+			padding: 5px;
+
+			display: flex;
+			flex-direction: column;
+
+			// Анимация появления
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY($gap);
+			transition: all 0.3s ease;
+
+			box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+
+			// Кнопки внутри меню
+			.dropdown-btn {
+				width: 100%;
+				background: transparent;
+				border: none;
+				color: #fff;
+				padding: 10px;
+				text-align: left;
+				font-family: $font-stack;
+				font-size: 16px;
+				cursor: pointer;
+				border-radius: 4px;
+				transition: background 0.2s;
+				font-weight: bold;
+
+				&:hover {
+					background: rgba(255, 255, 255, 0.1);
+					color: $accent-color;
+				}
+
+				// Кнопка "Выйти" с красноватым оттенком при наведении
+				&.logout:hover {
+					color: $error-color;
+					background: rgba(255, 68, 68, 0.1);
+				}
+			}
+
+			&::after {
+				content: '';
+				position: absolute;
+
+				top: 100%;
+				left: 0;
+				width: 100%;
+
+				height: $gap;
+
+				background: transparent;
+			}
 		}
 	}
 
-	// --- 3. ЦЕНТРАЛЬНЫЙ БЛОК ---
+	// --- ЦЕНТРАЛЬНЫЙ БЛОК ---
 	.center-content {
 		position: absolute;
 		top: 50%;
@@ -96,6 +184,7 @@
 			flex-direction: column;
 			align-items: center;
 			min-height: 200px;
+			gap: 20px; // Отступ между кнопками
 
 			.btn {
 				width: 100%;
@@ -109,6 +198,7 @@
 				cursor: pointer;
 				transition: all 0.3s ease;
 				z-index: 10;
+
 				&:hover {
 					background: rgba(50, 50, 50, 0.9);
 					transform: scale(1.05);

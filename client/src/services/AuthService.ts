@@ -13,6 +13,7 @@ import type { Logger } from '@utils/Logger.util';
 @injectLogger()
 @injectInitializator((service: AuthService) => {
 	service.userCache = new CacheComponent(CacheNames.User).setSettings({ alwaysSave: true });
+	// service.userCache.add(CacheKeys.AuthInfo, { login: 'tohue', password: '312000' } as LoginDto);
 })
 export class AuthService extends StandaloneService {
 	public declare logger: Logger;
@@ -42,6 +43,11 @@ export class AuthService extends StandaloneService {
 				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
 			}
 		}
+	}
+
+	public logout() {
+		this.userCache.clear();
+		window.location.reload();
 	}
 
 	@baseAuthAction

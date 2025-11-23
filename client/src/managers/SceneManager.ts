@@ -68,7 +68,7 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 		scene.sys.events.once(Phaser.Scenes.Events.WAKE, () => {
 			scene.wake();
 		});
-		super.wake(key, data);
+		super.wake(key, data); // Calls Phaser.Scenes.Events.WAKE on sys.events
 		return this;
 	}
 

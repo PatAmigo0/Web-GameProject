@@ -1,19 +1,8 @@
-@use 'variables' as *;
+@use 'components/variables' as *;
+@use 'components/mixins' as *;
 
 .pns {
-	width: 100%;
-	height: 100%;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-
-	// Также применяем Safe Zone, чтобы контент не прилипал к краям на супер-узких экранах
-	padding: $safe-padding-y $safe-padding-x;
-
-	pointer-events: none;
-	box-sizing: border-box;
+	@include fullscreen-pns;
 }
 
 .game-title {
@@ -23,10 +12,8 @@
 
 	h1 {
 		font-size: 3em;
-		font-weight: bold;
-		color: #8b0000;
+		@include neon-text($login-accent); // Красный неон
 		margin-bottom: 5px;
-		text-shadow: 0 0 10px rgba(139, 0, 0, 0.4);
 	}
 	p {
 		color: #cccccc;
@@ -47,7 +34,7 @@
 	h2 {
 		text-align: center;
 		margin-bottom: 15px;
-		color: #8b0000;
+		color: $login-accent;
 		font-size: 1.5em;
 		text-transform: uppercase;
 	}
@@ -64,9 +51,20 @@
 		color: #ffffff;
 		font-size: 14px;
 		box-sizing: border-box;
+
+		// Подключаем логику успеха/ошибки (классы .success и .error)
+		@include input-validation-states;
+
+		// При наведении (без ошибки) просто чуть светлее рамка
+		&:hover {
+			border-color: #666;
+		}
+
+		// При клике (фокусе) - БЕЛАЯ рамка, а не красная
 		&:focus {
 			outline: none;
-			border-color: #8b0000;
+			border-color: #ffffff;
+			box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 		}
 	}
 }
@@ -74,7 +72,7 @@
 .btn {
 	width: 100%;
 	padding: 10px;
-	background: #8b0000;
+	background: $login-accent;
 	color: white;
 	border: none;
 	border-radius: 4px;
@@ -83,8 +81,9 @@
 	cursor: pointer;
 	margin-bottom: 0;
 	transition: transform 0.2s, background 0.3s;
+
 	&:hover {
-		background: #a00;
+		background: $login-accent-hover;
 		transform: scale(1.02);
 	}
 }
@@ -108,6 +107,7 @@
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background 0.2s;
+
 	&:hover {
 		background: #444444;
 	}
@@ -119,17 +119,18 @@
 	color: #cccccc;
 	font-size: 13px;
 
-	#l {
+	#change-to-login {
 		background-color: transparent;
-		color: #8b0000;
+		color: $login-accent;
 		border: none;
 		font-size: 13px;
 		font-weight: bold;
 		padding: 0 5px;
 		cursor: pointer;
 		text-decoration: underline;
+
 		&:hover {
-			color: #ff4444;
+			color: $error-color;
 		}
 	}
 }

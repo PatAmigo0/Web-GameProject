@@ -1,101 +1,52 @@
-@use 'variables' as *;
+@use 'components/variables' as *;
+@use 'components/mixins' as *;
+@use 'components/components' as *;
 
-// --- ГЛАВНЫЙ WRAPPER (FULL SCREEN) ---
-// Занимает весь экран и создает безопасные отступы
+// --- ГЛАВНЫЙ WRAPPER ---
 .server-list-pns {
-	width: 100%;
-	height: 100%;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-
-	// Применяем Safe Zone из переменных
-	padding: $safe-padding-y $safe-padding-x;
-
-	pointer-events: none; // Клики сквозь пустоту
-	box-sizing: border-box;
-	// Важно: поднимаем контент над видео
-	position: relative;
-	z-index: $z-content;
+	@include fullscreen-pns;
 }
 
-// --- ВНУТРЕННИЙ КОНТЕЙНЕР ---
-// Ограничивает ширину и выстраивает кнопку и окно
+// --- КОНТЕЙНЕР ---
 .server-list-container {
 	width: 100%;
-	max-width: 700px; // Чуть шире для удобства
-	height: 100%; // Занимаем всю высоту безопасной зоны
-
+	max-width: 700px;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
 
 // --- КНОПКА НАЗАД ---
 .back-btn {
-	display: inline-block;
-	width: fit-content;
-	margin-bottom: 15px;
-
-	background: rgba(30, 30, 30, 0.9);
-	border: 2px solid #9c9c9c;
-	padding: 8px 15px;
-	border-radius: 8px;
-
-	font-family: $font-stack;
-	font-size: 16px;
-	color: $text-color;
-	cursor: pointer;
-	transition: all 0.2s;
-
-	pointer-events: auto; // Включаем клики
-	z-index: 2;
-	letter-spacing: 1px;
-
-	&:hover {
-		background: rgba(60, 60, 60, 0.9);
-		border-color: $accent-color;
-		transform: translateX(-5px); // Небольшая анимация влево
-	}
+	@extend .ui-back-btn;
 }
 
 // --- ОКНО СО СПИСКОМ ---
 .serverlist-content-box {
 	position: relative;
 	width: 100%;
-	// Важно: flex: 1 заставляет окно занять всё оставшееся место по высоте
 	flex: 1;
-	min-height: 0; // Разрешаем сжатие, если экран очень маленький
+	min-height: 0;
 
-	background: rgba(40, 40, 40, 0.85);
-	border-radius: 12px;
+	@include glass-panel;
 	padding: 25px;
-	box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-	border: 2px solid #444;
 
 	display: flex;
 	flex-direction: column;
-
-	font-family: $font-stack;
-	color: $text-color;
-	pointer-events: auto; // Включаем клики
+	pointer-events: auto;
 }
 
 // --- ЗАГОЛОВОК ---
 .header {
 	text-align: center;
 	margin-bottom: 20px;
-	flex-shrink: 0; // Не сжимать заголовок
+	flex-shrink: 0;
 }
 
 .title {
 	font-size: 30px;
-	font-weight: bold;
-	color: $accent-color;
-	text-shadow: 0 0 10px rgba(0, 225, 255, 0.7);
+	@include neon-text;
 	margin-bottom: 10px;
-	letter-spacing: 1px;
 }
 
 .subtitle {
@@ -104,33 +55,18 @@
 	letter-spacing: 1px;
 }
 
-// --- СПИСОК СЕРВЕРОВ (SCROLLABLE) ---
+// --- СПИСОК СЕРВЕРОВ ---
 .servers-list {
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 
-	overflow-y: auto; // Скролл только внутри списка
-	flex: 1; // Растягиваем список
-	min-height: 0; // Важно для Firefox/Flexbox
+	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
+	padding-right: 10px;
 
-	padding-right: 10px; // Отступ для скроллбара
-}
-
-// Стили скроллбара
-.servers-list::-webkit-scrollbar {
-	width: 8px;
-}
-.servers-list::-webkit-scrollbar-track {
-	background: rgba(30, 30, 30, 0.8);
-	border-radius: 4px;
-}
-.servers-list::-webkit-scrollbar-thumb {
-	background: $accent-color;
-	border-radius: 4px;
-}
-.servers-list::-webkit-scrollbar-thumb:hover {
-	background: #00b8d4;
+	@include custom-scroll;
 }
 
 // --- ЭЛЕМЕНТ СЕРВЕРА ---
@@ -145,7 +81,7 @@
 	transition: all 0.3s ease;
 	position: relative;
 	cursor: pointer;
-	flex-shrink: 0; // Чтобы элементы не сплющивались
+	flex-shrink: 0;
 
 	&:hover {
 		background: rgba(40, 40, 40, 0.95);
@@ -219,6 +155,6 @@
 
 	&.error {
 		color: #ffffff;
-		border-color: #ff4444;
+		border-color: $error-color;
 	}
 }

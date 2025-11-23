@@ -1,0 +1,77 @@
+@use 'variables' as *;
+
+// --- КНОПКА "НАЗАД" (Общая для всех экранов) ---
+.ui-back-btn {
+	display: inline-block;
+	width: fit-content;
+	margin-bottom: 15px;
+	background: rgba(30, 30, 30, 0.9);
+	border: 2px solid #9c9c9c;
+	padding: 8px 15px;
+	border-radius: 8px;
+	font-family: $font-stack;
+	font-size: 16px;
+	color: $text-color;
+	cursor: pointer;
+	transition: all 0.2s;
+	pointer-events: auto;
+	z-index: 2;
+	letter-spacing: 1px;
+
+	&:hover {
+		background: rgba(60, 60, 60, 0.9);
+		border-color: $accent-color;
+		transform: translateX(-5px);
+	}
+}
+
+// --- СТАНДАРТНЫЙ INPUT (Для форм) ---
+.ui-input {
+	background: rgba(20, 20, 20, 0.6);
+	border: 2px solid #555;
+	border-radius: 8px;
+	padding: 12px 15px;
+	color: white;
+	font-family: $font-stack;
+	font-size: 18px;
+	outline: none;
+	transition: all 0.3s;
+	width: 100%; // По умолчанию на всю ширину
+	box-sizing: border-box;
+
+	&::placeholder {
+		color: #666;
+	}
+	&:focus {
+		border-color: $accent-color;
+		box-shadow: 0 0 10px rgba(0, 225, 255, 0.2);
+	}
+}
+
+// --- ОСНОВНАЯ КНОПКА ДЕЙСТВИЯ (Создать, Войти) ---
+.ui-action-btn {
+	width: 100%;
+	padding: 15px;
+	background: $bg-dark;
+	border: 2px solid $border-light;
+	color: #fff;
+	font-family: $font-stack;
+	font-size: 22px;
+	font-weight: bold;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s;
+	text-transform: uppercase;
+	text-align: center;
+
+	&:hover {
+		background: $accent-color;
+		border-color: $accent-color;
+		color: #000;
+		box-shadow: 0 0 20px rgba(0, 225, 255, 0.4);
+		transform: scale(1.02);
+	}
+	&:active {
+		transform: scale(0.98);
+	}
+}

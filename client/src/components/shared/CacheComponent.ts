@@ -49,6 +49,12 @@ export class CacheComponent {
 		return this.cache.exists(key);
 	}
 
+	public clear(): void {
+		Object.entries(this.cache.entries.entries).forEach(([key, _]) => {
+			this.remove(key);
+		});
+	}
+
 	public save(): CacheComponent {
 		// делаем снимок нашего кэша и сохраняем его в localstorage (перезаписываем то что было до этого в localstorage)
 		localStorage.setItem(this.cacheKey, JSON.stringify(this.cache.entries.entries));

@@ -1,0 +1,27 @@
+// Глобальные переменные стилей
+
+// ЦВЕТА
+$text-color: #e0e0e0;
+$accent-color: rgb(0, 225, 255); // Голубой неон
+$success-color: #00e676; // Зеленый неон
+$error-color: #ff4444; // Для ошибок
+$bg-dark: rgba(30, 30, 30, 0.8);
+$bg-darker: rgba(0, 0, 0, 0.8);
+$border-light: #fff;
+
+// Цвета для Login/Signup (Красная тема)
+$login-accent: #8b0000;
+$login-accent-hover: #a00;
+
+$font-stack: 'Courier New', monospace;
+
+// SAFE ZONE
+$safe-padding-y: 12%;
+$safe-padding-x: 8%;
+
+// Z-INDEX
+$z-video: 0;
+$z-overlay: 1;
+$z-content: 10;
+$z-ui-top: 20;
+$z-modal: 100;

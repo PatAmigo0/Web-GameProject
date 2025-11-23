@@ -8,6 +8,7 @@ export enum SceneKeys {
 	SignupScene = 'Signup',
 	MainMenu = 'MainMenu',
 	ServerList = 'ServerList',
+	CreateRoom = 'CreateRoom',
 	TestPlace = 'TestPlace',
 	CharacterTestPlace = 'CharacterTestPlace',
 	MenuWrapper = 'MenuWrapper',

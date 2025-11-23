@@ -1,0 +1,194 @@
+@use 'components/variables' as *;
+@use 'components/mixins' as *;
+@use 'components/components' as *;
+
+// --- ГЛАВНЫЙ WRAPPER ---
+.create-room-pns {
+	@include fullscreen-pns;
+}
+
+// --- КОНТЕЙНЕР ---
+.create-room-container {
+	width: 100%;
+	max-width: 600px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+// --- КНОПКА НАЗАД ---
+.back-btn {
+	@extend .ui-back-btn;
+}
+
+// --- ОСНОВНОЕ ОКНО ---
+.createroom-content-box {
+	position: relative;
+	width: 100%;
+	height: auto;
+	max-height: 100%;
+
+	@include glass-panel;
+	padding: 30px;
+
+	display: flex;
+	flex-direction: column;
+	pointer-events: auto;
+
+	// Скролл
+	overflow-y: auto;
+	overflow-x: hidden; // Убираем горизонтальные линии
+	@include custom-scroll;
+}
+
+// --- ЗАГОЛОВОК ---
+.header {
+	text-align: center;
+	margin-bottom: 30px;
+	.title {
+		font-size: 30px;
+		@include neon-text;
+		margin-bottom: 5px;
+	}
+	.subtitle {
+		font-size: 14px;
+		color: #aaa;
+		letter-spacing: 1px;
+	}
+}
+
+// --- ФОРМА ---
+.form-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
+	margin-bottom: 30px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	label {
+		font-size: 16px;
+		font-weight: bold;
+		color: #fff;
+		letter-spacing: 1px;
+	}
+}
+
+.input-hint {
+	font-size: 12px;
+	color: #888;
+	margin-top: -5px;
+	margin-left: 35px;
+}
+
+// --- INPUT TEXT (Наследуем компонент) ---
+.input-field {
+	@extend .ui-input;
+}
+
+// --- RANGE SLIDER (Специфичный стиль) ---
+.range-container {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	background: rgba(20, 20, 20, 0.6);
+	padding: 10px 15px;
+	border-radius: 8px;
+	border: 2px solid #555;
+
+	span {
+		font-weight: bold;
+		color: #888;
+	}
+}
+
+.range-slider {
+	flex: 1;
+	-webkit-appearance: none;
+	appearance: none;
+	height: 6px;
+	background: #444;
+	border-radius: 3px;
+	outline: none;
+
+	&::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		background: $accent-color;
+		border-radius: 50%;
+		cursor: pointer;
+		box-shadow: 0 0 10px $accent-color;
+		transition: transform 0.1s;
+
+		&:hover {
+			transform: scale(1.2);
+		}
+	}
+}
+
+// --- CUSTOM CHECKBOX ---
+.checkbox-group {
+	.checkbox-label {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		user-select: none;
+		position: relative;
+		padding-left: 35px;
+		font-size: 18px;
+
+		input {
+			position: absolute;
+			opacity: 0;
+			cursor: pointer;
+			height: 0;
+			width: 0;
+		}
+
+		.custom-checkbox {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 24px;
+			width: 24px;
+			background-color: rgba(20, 20, 20, 0.6);
+			border: 2px solid #555;
+			border-radius: 6px;
+			transition: all 0.2s;
+
+			&:after {
+				content: '';
+				position: absolute;
+				display: none;
+				left: 7px;
+				top: 3px;
+				width: 6px;
+				height: 12px;
+				border: solid $bg-darker;
+				border-width: 0 3px 3px 0;
+				transform: rotate(45deg);
+			}
+		}
+
+		input:checked ~ .custom-checkbox {
+			background-color: $accent-color;
+			border-color: $accent-color;
+			box-shadow: 0 0 10px rgba(0, 225, 255, 0.4);
+
+			&:after {
+				display: block;
+			}
+		}
+	}
+}
+
+// --- BUTTON CREATE ---
+.action-btn {
+	@extend .ui-action-btn;
+}

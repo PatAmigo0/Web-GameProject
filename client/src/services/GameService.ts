@@ -17,6 +17,7 @@ import { UserInputService } from '@services/UserInputService';
 import type { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
 import { AuthService } from './AuthService';
+import { ValidatorService } from './ValidatorService';
 
 //#region GAME CLASS DEFINITION
 @injectLogger()
@@ -33,7 +34,7 @@ export class GameService extends Phaser.Game {
 
 	//#region MANAGERS
 	public assetManager!: AssetManager;
-	private transitionManager!: TransitionManager;
+	public transitionManager!: TransitionManager;
 	private styleManager!: StyleManager;
 	//#endregion
 
@@ -42,6 +43,7 @@ export class GameService extends Phaser.Game {
 	public userInputService!: UserInputService;
 	public networkService!: NetworkService;
 	public authService!: AuthService;
+	public validatorService!: ValidatorService;
 	private eventService!: EventService;
 	public sceneDisposalService!: SceneDisposalService;
 	//#endregion
@@ -76,6 +78,7 @@ export class GameService extends Phaser.Game {
 
 	private createServices() {
 		this.playerService = new PlayerService(this);
+		this.validatorService = new ValidatorService();
 		this.userInputService = new UserInputService(this.input.keyboard, this.events);
 		this.networkService = new NetworkService(this, this.events, this.scene);
 		this.eventService = new EventService(this.events, this.domContainer);

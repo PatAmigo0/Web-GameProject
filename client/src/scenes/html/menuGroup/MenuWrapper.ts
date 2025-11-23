@@ -11,24 +11,20 @@ export class MenuWrapperScene extends BaseHtmlScene {
 	public onPreload(): void {}
 
 	public onCreate(): void {
-		this.transitionManager = new TransitionManager(this.game.scene);
-		this.launchScene(SceneKeys.MainMenu, true);
+		this.transitionManager = this.game.transitionManager;
+		this.launchScene(SceneKeys.MainMenu);
 	}
 
 	public heartbeat(): void {}
 
 	public onShutdown(): void {}
 
-	private launchScene(key: SceneKeys, first?: boolean) {
-		this.game.events.once(GameEvents.SUB_SCENE_CHANGE, (_: SceneKeys) => {
-			this.launchScene(this.getOppositeScene(key));
+	private launchScene(to: SceneKeys, from?: SceneKeys) {
+		this.game.events.once(GameEvents.SUB_SCENE_CHANGE, (_: SceneKeys, target: SceneKeys) => {
+			this.logger.warn(`Launching ${to} -> ${target}`);
+			this.launchScene(target, to); // to is now reffers to 'from' scene
 		});
 
-		this.transitionManager.swapSubScenes(this, (!first && this.getOppositeScene(key)) || undefined, key);
-	}
-
-	private getOppositeScene(key: SceneKeys) {
-		if (key == SceneKeys.MainMenu) return SceneKeys.ServerList;
-		return SceneKeys.MainMenu;
+		this.transitionManager.swapSubScenes(this, from, to);
 	}
 }

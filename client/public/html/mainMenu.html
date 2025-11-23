@@ -1,13 +1,24 @@
 <div class="mainmenu-container">
 	<button class="settings-btn" id="settings-btn">⚙️</button>
 
-	<div class="nickname-box" id="nickname-box">Игрок: <span id="player-nickname">Гость</span></div>
+	<div class="nickname-box" id="nickname-box">
+		<div class="current-user-content">
+			Игрок: <span id="player-nickname">Гость</span>
+			<span class="dropdown-arrow">▲</span>
+		</div>
+
+		<div class="user-dropdown">
+			<button class="dropdown-btn" id="profile-btn">ПРОФИЛЬ</button>
+			<button class="dropdown-btn logout" id="logout-btn">ВЫЙТИ</button>
+		</div>
+	</div>
 
 	<div class="center-content">
 		<div class="logo">АЛИБИ</div>
 
 		<div class="main-buttons-wrapper">
-			<button class="btn" id="play-btn">ИГРАТЬ</button>
+			<button class="btn" id="join-btn">ПРИСОЕДИНИТЬСЯ К КОМНАТЕ</button>
+			<button class="btn" id="create-btn">СОЗДАТЬ КОМНАТУ</button>
 		</div>
 	</div>
 </div>
