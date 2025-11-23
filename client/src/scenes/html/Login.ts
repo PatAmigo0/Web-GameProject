@@ -29,7 +29,7 @@ export class LoginScene extends BaseHtmlScene {
 		});
 
 		this.loginButton.addEventListener('click', () => {
-			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MainMenu);
+			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MenuWrapper);
 		});
 	}
 }

@@ -95,12 +95,12 @@ export class GameService extends Phaser.Game {
 
 	private createManagers() {
 		this.styleManager = new StyleManager();
-		this.transitionManager = new TransitionManager(this.scene, this.sceneDisposalService);
+		this.transitionManager = new TransitionManager(this.scene);
 		this.assetManager = new AssetManager(this, this.styleManager);
 	}
 
 	private initManagers() {
-		this.scene.init(this.transitionManager);
+		this.scene.init(this.transitionManager, this.sceneDisposalService);
 	}
 
 	private isService(propertyValue: any): propertyValue is IInitializiable {

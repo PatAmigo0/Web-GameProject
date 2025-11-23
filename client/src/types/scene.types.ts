@@ -10,6 +10,7 @@ export enum SceneKeys {
 	ServerList = 'ServerList',
 	TestPlace = 'TestPlace',
 	CharacterTestPlace = 'CharacterTestPlace',
+	MenuWrapper = 'MenuWrapper',
 }
 //#endregion
 

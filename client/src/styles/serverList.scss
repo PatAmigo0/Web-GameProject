@@ -1,29 +1,5 @@
 @use 'variables' as *;
 
-// --- ФОН: ВИДЕО ---
-.bg-video {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	z-index: $z-video;
-	pointer-events: none;
-}
-
-// --- ФОН: ЗАТЕМНЕНИЕ ---
-.bg-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: $z-overlay;
-	pointer-events: none;
-}
-
 // --- ГЛАВНЫЙ WRAPPER (FULL SCREEN) ---
 // Занимает весь экран и создает безопасные отступы
 .server-list-pns {

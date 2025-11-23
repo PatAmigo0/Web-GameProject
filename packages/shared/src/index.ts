@@ -5,7 +5,7 @@ import z, { email } from 'zod';
 //#region USER SPECIAL
 
 export const MIN_PASSWORD_LENGTH = 6;
-export const MIN_LOGIN_LENGTH = 3;
+export const MIN_LOGIN_LENGTH = 4;
 export const MAX_LOGIN_LENGTH = 16;
 export const MAX_PASSWORD_LENGTH = 18;
 export const INVITE_CODE_LENGTH = 12;
@@ -102,6 +102,13 @@ export interface ApiResponse {
 
 export interface AuthRequest extends Request {
 	user?: string | JwtPayload;
+}
+
+export interface AuthResponse extends ApiResponse {
+	data: {
+		token: string;
+		uuid: string;
+	};
 }
 
 //#endregion

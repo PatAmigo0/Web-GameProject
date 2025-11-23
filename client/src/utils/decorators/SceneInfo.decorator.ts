@@ -1,10 +1,10 @@
 // SceneInfo.decorator.ts
 
 import type { BaseClass } from '@gametypes/core.types';
-import type { SceneConfig, SceneConfigDecorator, SceneKeys } from '@gametypes/scene.types';
+import type { SceneConfig, SceneConfigDecorator, SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import { copyClassMetadata } from '@utils/copyClassMetadata.util';
 
-export function SceneInfo(sceneKey: string, sceneType: string, config?: SceneConfigDecorator) {
+export function SceneInfo(sceneKey: SceneKeys, sceneType: SceneTypes, config?: SceneConfigDecorator) {
 	return function <T extends BaseClass>(constructor: T) {
 		return copyClassMetadata(
 			constructor,

@@ -35,7 +35,7 @@ export abstract class AbstractBaseScene extends withAppLifecycle(withPhaserLifec
 	 *
 	 * @abstract
 	 */
-	abstract prepareAssets(): void;
+	public abstract prepareAssets(): void;
 
 	/**
 	 * Абстрактный "шаг" для настройки сцены.
@@ -47,7 +47,12 @@ export abstract class AbstractBaseScene extends withAppLifecycle(withPhaserLifec
 	 *
 	 * @abstract
 	 */
-	abstract setupScene(): void;
+	public abstract setupScene(): void;
+
+	/**
+	 * Закрывает сцену
+	 */
+	public abstract closeScene(): void;
 
 	/**
 	 * [!] **НЕ ИСПОЛЬЗОВАТЬ В ДОЧЕРНИХ КЛАССАХ.**
@@ -73,5 +78,15 @@ export abstract class AbstractBaseScene extends withAppLifecycle(withPhaserLifec
 	public create(): void {
 		this.setupScene();
 		super.create();
+	}
+
+	/**
+	 * [!] **НЕ ИСПОЛЬЗОВАТЬ В ДОЧЕРНИХ КЛАССАХ.**
+	 *
+	 * Вызывает closeScene у дочернего класса
+	 */
+	public shutdown(): void {
+		super.shutdown();
+		this.closeScene();
 	}
 }

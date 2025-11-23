@@ -21,8 +21,8 @@ export abstract class BaseHtmlScene extends AbstractBaseScene {
 		this.heartbeat();
 	}
 
-	public shutdown(): void {
-		this.onShutdown();
+	public closeScene(): void {
+		this.onShutdown(); // <class extends BaseHtmlScene>.shutdown()
 		this.div.remove();
 	}
 	//#endregion

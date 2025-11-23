@@ -5,6 +5,16 @@ import { sendSuccess } from '@utils/httpSuccess.util';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import type { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+
+// отправляет JWT токен клиенту
+const successAuth = (res: Response, code: OkCode, uuid: string, username: string) => {
+	const token = jwt.sign({ uuid: uuid, username: username }, process.env.JWT_SECRET!, {
+		expiresIn: '7d',
+	});
+
+	sendSuccess(res, HttpStatus.OK, code, { data: { token: token, uuid: uuid } });
+};
 
 // Контроллер регистрации
 export const registration = async (req: Request, res: Response) => {
@@ -15,13 +25,13 @@ export const registration = async (req: Request, res: Response) => {
 		throw new HttpError(HttpStatus.Conflict, ErrorCode.LoginTaken);
 	}
 
-	const saltedPassword = await bcrypt.hash(password, 10);
-	const userUUID = crypto.randomUUID();
+	const saltedPassword = await bcrypt.hash(password, 4);
+	const userUuid = crypto.randomUUID();
 
-	await db.core!.insertUser(login, saltedPassword, userUUID);
+	await db.core!.insertUser(login, saltedPassword, userUuid);
 
-	console.log(`New user: ${login}`);
-	sendSuccess(res, HttpStatus.OK, OkCode.SuccessRegistration);
+	console.log(`New user ${login}, uuid: ${userUuid}, password: ${password}`);
+	successAuth(res, OkCode.SuccessRegistration, userUuid, login);
 };
 
 // Контроллер входа
@@ -33,11 +43,11 @@ export const login = async (req: Request, res: Response) => {
 		throw new HttpError(HttpStatus.NotFound, ErrorCode.UserNotFound);
 	}
 
-	const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+	const isPasswordValid = await bcrypt.compare(password, user.passwordHash!);
 	if (!isPasswordValid) {
 		throw new HttpError(HttpStatus.Unauthorized, ErrorCode.UserWrongPassword);
 	}
 
-	console.log(`User logged in: ${login}`);
-	sendSuccess(res, HttpStatus.OK, OkCode.SuccesLogin);
+	console.log(`User logged in: ${login}, his uuid is ${user.uuid}`);
+	successAuth(res, OkCode.SuccesLogin, user.uuid, login);
 };

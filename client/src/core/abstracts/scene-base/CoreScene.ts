@@ -2,6 +2,7 @@
 import { SceneEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes, type SceneConfig } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
+import { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
 
 /**
@@ -33,6 +34,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 * (e.g., `this.game.assetManager`, `this.game.userInputService`).
 	 */
 	declare game: GameService;
+	protected logger!: Logger;
 
 	/**
 	 * @param sceneKey Ключ этой сцены из `SceneKeys`
@@ -42,8 +44,10 @@ export abstract class CoreScene extends Phaser.Scene {
 		public sceneKey: SceneKeys,
 		public sceneType: SceneTypes = SceneTypes.Undefined,
 		public config?: SceneConfig,
+		private __launchedScenes = new Set<CoreScene>(),
 	) {
 		super(sceneKey);
+		this.logger = new Logger(this.sceneKey);
 	}
 
 	/**
@@ -76,6 +80,63 @@ export abstract class CoreScene extends Phaser.Scene {
 	 * @override
 	 */
 	public create(): void {
+		this.wake();
+	}
+
+	/**
+	 * Базовая реализация `shutdown`
+	 *
+	 * Останавливает все сцены, запущенные через `this.launchLinked(...)`
+	 *
+	 * [!] **ПРАВИЛО НАСЛЕДОВАНИЯ:**
+	 * При переопределении в дочерних классах (e.g., `AbstractBaseScene`)
+	 * **обязательно** вызывайте `super.shutdown()` в **начале** метода
+	 */
+	public shutdown(): void {
+		this.__launchedScenes.forEach((scene) => {
+			this.game.scene.stop(scene);
+		});
+		this.__launchedScenes.clear();
+	}
+
+	public wake(): void {
 		this.events.emit(SceneEvents.SCENE_IS_READY_TO_RUN);
+	}
+
+	/**
+	 * Запускает сцену в паралельном режиме с текущей сценой
+	 *
+	 * [!] **Обязательно** будет удалено при остановке родительской сцены (той, что запустила через этот метод)
+	 *
+	 * @param key Ключ сцены / сама сцена
+	 * @param data Дополнительные данные для сцены (опционально)
+	 */
+	public launchLinked<T extends CoreScene>(key: string | T, data?: object) {
+		const scene = this.scene.get(key);
+		if (this.scene.isSleeping(scene)) {
+			this.game.scene.wake(scene, data);
+		} else {
+			this.__launchedScenes.add(scene);
+			this.scene.launch(scene, data);
+		}
+	}
+
+	/**
+	 * Останавливает паралельную сцену
+	 * @param key Ключ сцены или сама сцена
+	 */
+	public stopLinked<T extends CoreScene>(key: string | T) {
+		const scene = this.scene.get(key);
+		if (this.__launchedScenes.has(scene)) {
+			this.__launchedScenes.delete(scene);
+			this.game.scene.stop(key);
+		}
+	}
+
+	public sleepLinked<T extends CoreScene>(key: string | T) {
+		const scene = this.scene.get(key);
+		if (this.__launchedScenes.has(scene)) {
+			this.game.scene.sleep(key);
+		}
 	}
 }

@@ -29,7 +29,7 @@ export class CacheComponent {
 		return this;
 	}
 
-	public add<T>(key: string, data: T): CacheComponent {
+	public add<T extends object>(key: string, data: T): CacheComponent {
 		this.cache.add(key, data);
 		if (this.alwaysSave) this.save();
 		return this;
@@ -41,7 +41,7 @@ export class CacheComponent {
 		return this;
 	}
 
-	public get<T>(key: string): T | undefined {
+	public get<T extends object>(key: string): T | undefined {
 		return this.cache.get(key) as T;
 	}
 

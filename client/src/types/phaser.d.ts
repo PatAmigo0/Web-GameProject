@@ -43,6 +43,7 @@ declare global {
 				scenes: WithPhaserLifecycle[];
 				getScene<T extends WithPhaserLifecycle>(key: string): T;
 				start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
+				wake<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
 				stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
 				isShutdown<T extends CoreScene>(key: string | T): boolean;
 				isInitialized<T extends CoreScene>(key: string | T): boolean;

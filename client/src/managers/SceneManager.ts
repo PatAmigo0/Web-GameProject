@@ -7,15 +7,19 @@ import { GameEvents } from '@gametypes/event.types';
 import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
+import type { SceneDisposalService } from '@services/SceneDisposalService';
 import type { Logger } from '@utils/Logger.util';
 import { TransitionManager } from './TransitionManager';
 
 @injectLogger()
-@injectInitializator((manager: SceneManager, transitionManager: TransitionManager) => {
-	manager.currentMainScene = null;
-	manager.transitionManager = transitionManager;
-	manager.listenEvents();
-})
+@injectInitializator(
+	(manager: SceneManager, transitionManager: TransitionManager, SDS: SceneDisposalService) => {
+		manager.currentMainScene = null;
+		manager.transitionManager = transitionManager;
+		manager.sceneDisposalService = SDS;
+		manager.listenEvents();
+	},
+)
 export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSceneManager, IInitializiable {
 	declare scenes: WithPhaserLifecycle[];
 	declare game: GameService;
@@ -23,8 +27,9 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	protected declare logger: Logger;
 	protected currentMainScene: WithPhaserLifecycle;
 	protected transitionManager!: TransitionManager;
+	protected sceneDisposalService!: SceneDisposalService;
 
-	public declare init: (service: TransitionManager) => void;
+	public declare init: (service: TransitionManager, service2: SceneDisposalService) => void;
 
 	public changeMainScene(sceneKey: string): void {
 		this.logger.debug(`Меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`);
@@ -33,7 +38,9 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 		this.handleSceneType(newScene);
 
 		if (this.currentMainScene) {
-			this.transitionManager.swapScenes(this.currentMainScene, newScene);
+			this.transitionManager.swapScenes(this.currentMainScene, newScene, () =>
+				this.sceneDisposalService.shake(),
+			);
 		} else {
 			this.start(newScene);
 		}
@@ -46,11 +53,22 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	}
 
 	public isInitialized<T extends CoreScene>(key: string | T): boolean {
-		return this.getSceneStatus(key) == Phaser.Scenes.INIT;
+		return this.getSceneStatus(key) !== Phaser.Scenes.INIT;
 	}
 
 	public start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
 		super.start(key, data);
+		return this;
+	}
+
+	public wake<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
+		const scene = this.getScene(key);
+
+		// Making sure that event SceneEvents.SCENE_IS_READY_TO_RUN is going to be emitted after waking up
+		scene.sys.events.once(Phaser.Scenes.Events.WAKE, () => {
+			scene.wake();
+		});
+		super.wake(key, data);
 		return this;
 	}
 
@@ -62,7 +80,6 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 			});
 			super.stop(scene, data);
 		}
-
 		return this;
 	}
 
@@ -83,7 +100,7 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 		return this.getScene(key).sys.getStatus();
 	}
 
-	protected listenEvents() {
+	private listenEvents() {
 		this.game.events.addListener(GameEvents.MAIN_SCENE_CHANGE, (sceneKey: string) => {
 			if (!this.currentMainScene || sceneKey != this.currentMainScene.sceneKey) {
 				this.changeMainScene(sceneKey);

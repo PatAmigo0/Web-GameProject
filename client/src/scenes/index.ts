@@ -1,6 +1,7 @@
 import { CharacterTestPlace } from './game/CharacterTestPlace';
 import { LoginScene } from './html/Login';
 import { MainMenuScene } from './html/MainMenu';
+import { MenuWrapperScene } from './html/MenuWrapper';
 import { RegistrationScene } from './html/Registration';
 import { ServerListScene } from './html/ServerList';
 import { BootScene } from './system-scenes/BootScene';
@@ -14,4 +15,5 @@ export const scenes = [
 	MainMenuScene,
 	ServerListScene,
 	CharacterTestPlace,
+	MenuWrapperScene,
 ];

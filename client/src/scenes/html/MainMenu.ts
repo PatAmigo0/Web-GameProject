@@ -1,5 +1,8 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
+import { CacheComponent } from '@components/shared/CacheComponent';
+import { CacheKeys, CacheNames } from '@config/cache.config';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
+import type { UserBaseInfo } from '@gametypes/cache.types';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
@@ -7,14 +10,14 @@ import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 export class MainMenuScene extends BaseHtmlScene {
 	//#region CLASS ATTRIBUTES
 	private playButton!: HTMLButtonElement;
+	private playerNickname!: HTMLSpanElement;
+	private userCache!: CacheComponent;
 	//#endregion
 
 	//#region PHASER LIFECYCLE METHODS
 	public onPreload(): void {}
 
 	public onCreate(): void {
-		this._build_bg();
-		this._build_face();
 		this._init_class_attributes();
 		this._init_click_events();
 	}
@@ -23,19 +26,18 @@ export class MainMenuScene extends BaseHtmlScene {
 
 	//#endregion
 
-	//#region BUILDERS
-	private _build_bg() {}
-	private _build_face() {}
-	//#endregion
-
 	//#region INITIALIZERS
 	private _init_class_attributes() {
+		this.userCache = new CacheComponent(CacheNames.User);
 		this.playButton = this.div.querySelector('#play-btn');
+		this.playerNickname = this.div.querySelector('#player-nickname');
+
+		this.playerNickname.innerText = (this.userCache.get(CacheKeys.UserBaseInfo) as UserBaseInfo).login;
 	}
 
 	private _init_click_events() {
 		this.playButton.addEventListener('click', () => {
-			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.ServerList);
+			this.game.events.emit(GameEvents.SUB_SCENE_CHANGE, this.sceneKey);
 		});
 	}
 	//#endregion

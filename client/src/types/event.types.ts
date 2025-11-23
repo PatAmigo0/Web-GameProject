@@ -3,6 +3,7 @@
 export const GameEvents = {
 	BOOT: 'BOOT',
 	MAIN_SCENE_CHANGE: 'MAIN_SCENE_CHANGE',
+	SUB_SCENE_CHANGE: 'SUB_SCENE_CHANGE', // при вызове этого события обязательно передавать ключ исходной сцены
 	INPUT_RESET: 'INPUT_RESET',
 } as const;
 

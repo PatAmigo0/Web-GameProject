@@ -45,8 +45,8 @@ export abstract class BaseGameScene extends AbstractBaseScene {
 		this.heartbeat(time, delta);
 	}
 
-	public shutdown(): void {
-		this.onShutdown();
+	public closeScene(): void {
+		this.onShutdown(); // <class extends BaseGameScene>.shutdown()
 	}
 	//#endregion
 }
