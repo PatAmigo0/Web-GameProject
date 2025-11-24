@@ -3,9 +3,9 @@ import {
 	credentialsBase,
 	MAX_LOGIN_LENGTH,
 	MAX_PASSWORD_LENGTH,
+	MAX_ROOM_NAME_LENGTH,
 	ValidationMessage,
-	type LoginDto,
-	type RegisterDto,
+	type AuthCredentials,
 } from '@game/shared';
 import type { ZodType } from 'zod';
 
@@ -58,6 +58,10 @@ export function handleInputFormation<T extends CoreScene>(
 						lengthError = true;
 						clampInput(input, MAX_PASSWORD_LENGTH);
 						break;
+					case ValidationMessage.RoomNameTooLong:
+						lengthError = true;
+						clampInput(input, MAX_ROOM_NAME_LENGTH);
+						break;
 					case ValidationMessage.OnlyEnglish:
 						englishError = true;
 						break;
@@ -67,7 +71,7 @@ export function handleInputFormation<T extends CoreScene>(
 			if (lengthError && !englishError) {
 				toggle(input, true);
 			} else if (lengthError && englishError) {
-				// trying againg after first one (after the main data formation)
+				// trying againg after the first one (after the main data formation)
 				success = this.game.validatorService.validateData(input.value, check);
 				if (success) toggle(input, true);
 			}
@@ -77,7 +81,7 @@ export function handleInputFormation<T extends CoreScene>(
 	return success;
 }
 
-export function validateDto<T extends CoreScene>(this: T, dto: LoginDto | RegisterDto): boolean {
+export function validateAuthDto<T extends CoreScene>(this: T, dto: AuthCredentials): boolean {
 	const success = this.game.validatorService.validateData(dto, credentialsBase);
 	return success;
 }

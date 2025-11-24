@@ -4,10 +4,18 @@ import z, { email } from 'zod';
 
 //#region USER SPECIAL
 
-export const MIN_PASSWORD_LENGTH = 6;
 export const MIN_LOGIN_LENGTH = 4;
 export const MAX_LOGIN_LENGTH = 16;
+
+export const MIN_PASSWORD_LENGTH = 6;
 export const MAX_PASSWORD_LENGTH = 18;
+
+export const MIN_ROOM_NAME_LENGTH = 3;
+export const MAX_ROOM_NAME_LENGTH = 12;
+
+export const MIN_ROOM_PLAYERS = 3;
+export const MAX_ROOM_PLAYERS = 12;
+
 export const INVITE_CODE_LENGTH = 12;
 
 //#endregion
@@ -18,6 +26,8 @@ export enum ValidationMessage {
 	LoginTooLong = 'Login is too long',
 	PasswordTooShort = 'Password is too short',
 	PasswordTooLong = 'Password is too long',
+	RoomNameTooShort = 'Room name is too short',
+	RoomNameTooLong = 'Room name is too long',
 	OnlyEnglish = 'Only english allowed',
 	InvalidEmail = 'Invalid email',
 	InvalidInviteCode = 'Wrong invite code',
@@ -55,6 +65,20 @@ export const passwordSchemaRule = z
 	.max(MAX_PASSWORD_LENGTH, optionFormater(ValidationMessage.PasswordTooLong))
 	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
 
+export const roomNameSchemaRule = z
+	.string(optionFormater(ValidationMessage.Required))
+	.trim()
+	.min(MIN_ROOM_NAME_LENGTH, optionFormater(ValidationMessage.RoomNameTooShort))
+	.max(MAX_ROOM_NAME_LENGTH, optionFormater(ValidationMessage.RoomNameTooLong))
+	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
+
+export const roomPlayersAmountRule = z
+	.number(optionFormater(ValidationMessage.Required))
+	.min(MIN_ROOM_PLAYERS)
+	.max(MAX_ROOM_PLAYERS);
+
+export const roomPrivateShemaRule = z.boolean(optionFormater(ValidationMessage.Required));
+
 export const emailSchemaRule = email(ValidationMessage.InvalidEmail).optional();
 
 export const inviteCodeSchemaRule = z
@@ -84,6 +108,18 @@ export const loginSchema = z.object({
 export type AuthCredentials = z.infer<typeof credentialsBase>;
 export type RegisterDto = z.infer<typeof registerSchema>['body'];
 export type LoginDto = z.infer<typeof loginSchema>['body'];
+//#endregion
+
+//#region GAME SCHEMAS (OBJECTS)
+export const roomCreateSchema = z.object({
+	body: z.object({
+		roomName: roomNameSchemaRule,
+		playersAmount: roomPlayersAmountRule,
+		isPrivate: roomPrivateShemaRule,
+	}),
+});
+
+export type CreateRoomDto = z.infer<typeof roomCreateSchema>['body'];
 //#endregion
 
 //#region HTTP QUERIES TYPES

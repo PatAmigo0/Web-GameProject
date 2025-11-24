@@ -9,7 +9,7 @@ import {
 } from '@game/shared';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { handleInputFormation, validateDto } from '@utils/ui-utils/forms.util';
+import { handleInputFormation, validateAuthDto } from '@utils/ui-utils/forms.util';
 
 @SceneInfo(SceneKeys.SignupScene, SceneTypes.HTMLScene, { to: [SceneKeys.MainMenu, SceneKeys.LoginScene] })
 export class RegistrationScene extends BaseHtmlScene {
@@ -49,54 +49,74 @@ export class RegistrationScene extends BaseHtmlScene {
 			});
 		};
 
-		this.changeToLoginButton.addEventListener('click', () => {
-			this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
+		this.listenEvent({
+			element: this.changeToLoginButton,
+			event: 'click',
+			callback: () => {
+				this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
+			},
 		});
 
-		this.registrationButton.addEventListener('click', async () => {
-			if (this.locked) return;
-			const registerDto = {
-				login: this.loginInput.value,
-				password: this.passwordInput.value,
-			} as RegisterDto;
+		this.listenEvent({
+			element: this.registrationButton,
+			event: 'click',
+			callback: async () => {
+				if (this.locked) return;
+				const registerDto = {
+					login: this.loginInput.value,
+					password: this.passwordInput.value,
+				} as RegisterDto;
 
-			if (!this.passwordConfirm || !validateDto.call(this, registerDto)) {
-				this.game.notificationService.show('Неверные данные для регистрации', 'error');
-				return;
-			}
-
-			this.locked = true;
-			const response = await this.game.authService.register(registerDto);
-			if (response.ok) this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MenuWrapper);
-			else {
-				const data = (await response.json()) as ApiResponse;
-				this.game.notificationService.show(`Ошибка регистрации: ${data.error.code}`, 'error');
-
-				switch (data.error.code) {
-					case ErrorCode.LoginTaken:
-						this.loginInput.value = '';
-						handleInputFormation.call(this, this.loginInput, loginSchemaRule);
-						break;
-					case ErrorCode.RateLimitExceed:
-						this.logger.debug('Мы в муте сервером');
-						break;
-					default:
-						this.logger.warn('Мне пришла доволи неизвестная ошибка, почему?');
+				if (!this.passwordConfirm || !validateAuthDto.call(this, registerDto)) {
+					this.game.notificationService.show('Неверные данные для регистрации', 'error');
+					return;
 				}
-			}
-			this.locked = false;
+
+				this.locked = true;
+				const response = await this.game.authService.register(registerDto);
+				if (response.ok) this.game.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MenuWrapper);
+				else {
+					const data = (await response.json()) as ApiResponse;
+					this.game.notificationService.show(`Ошибка регистрации: ${data.error.code}`, 'error');
+
+					switch (data.error.code) {
+						case ErrorCode.LoginTaken:
+							this.loginInput.value = '';
+							handleInputFormation.call(this, this.loginInput, loginSchemaRule);
+							break;
+						case ErrorCode.RateLimitExceed:
+							this.logger.debug('Мы в муте сервером');
+							break;
+						default:
+							this.logger.warn('Мне пришла доволи неизвестная ошибка, почему?');
+					}
+				}
+				this.locked = false;
+			},
 		});
 
-		this.loginInput.addEventListener('input', () => {
-			handleInputFormation.call(this, this.loginInput, loginSchemaRule);
+		this.listenEvent({
+			element: this.loginInput,
+			event: 'input',
+			callback: () => {
+				handleInputFormation.call(this, this.loginInput, loginSchemaRule);
+			},
 		});
 
-		this.passwordInput.addEventListener('input', () => {
-			passwordValidator('password');
+		this.listenEvent({
+			element: this.passwordInput,
+			event: 'input',
+			callback: () => {
+				passwordValidator('password');
+			},
 		});
 
-		this.confirmPassowrdInput.addEventListener('input', () => {
-			passwordValidator('confirm');
+		this.listenEvent({
+			element: this.confirmPassowrdInput,
+			event: 'input',
+			callback: () => {
+				passwordValidator('confirm');
+			},
 		});
 	}
 }

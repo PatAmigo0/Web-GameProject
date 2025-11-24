@@ -48,9 +48,9 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 
 		const newScene = this.getScene(sceneKey);
 		this.handleSceneType(newScene);
-		this.notificationService.clearAll();
 
 		if (this.currentMainScene) {
+			this.notificationService.clearAll();
 			this.transitionManager.swapScenes(this.currentMainScene, newScene, () =>
 				this.sceneDisposalService.shake(),
 			);

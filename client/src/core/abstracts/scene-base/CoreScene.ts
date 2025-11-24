@@ -1,9 +1,15 @@
 // src/game/utils/ABC/CoreScene.ts
-import { SceneEvents } from '@gametypes/event.types';
+import { SceneEvents, type IEventable } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes, type SceneConfig } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
 import { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
+
+type baseListenableConfig = {
+	element: IEventable;
+	event: string;
+	callback: (...args: any[]) => any;
+};
 
 /**
  * **Корневой** абстрактный класс для **всех** сцен в проекте.
@@ -35,6 +41,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 */
 	declare game: GameService;
 	protected logger!: Logger;
+	private __events = new Array<baseListenableConfig>();
 
 	/**
 	 * @param sceneKey Ключ этой сцены из `SceneKeys`
@@ -93,6 +100,9 @@ export abstract class CoreScene extends Phaser.Scene {
 	 * **обязательно** вызывайте `super.shutdown()` в **начале** метода
 	 */
 	public shutdown(): void {
+		this.__events.forEach((v) => {
+			v.element.removeEventListener(v.event, v.callback);
+		});
 		this.__launchedScenes.forEach((scene) => {
 			this.game.scene.stop(scene);
 		});
@@ -138,5 +148,18 @@ export abstract class CoreScene extends Phaser.Scene {
 		if (this.__launchedScenes.has(scene)) {
 			this.game.scene.sleep(key);
 		}
+	}
+
+	protected listenEvent(
+		config: baseListenableConfig & {
+			method?: 'addEventListener' | 'on';
+		},
+	) {
+		const element = config.element;
+		let method = config.method ?? 'addEventListener';
+		if (!element[method]) return;
+
+		element[method](config.event, (...args: any) => config.callback(args));
+		this.__events.push(config);
 	}
 }

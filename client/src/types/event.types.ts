@@ -27,3 +27,11 @@ export const TransitionEvents = {
 export const SceneEvents = {
 	SCENE_IS_READY_TO_RUN: 'srtr',
 } as const;
+
+type eventFunction = (event: string, callback: (...args: any[]) => any, extra?: any) => void;
+
+export interface IEventable {
+	addEventListener: eventFunction;
+	removeEventListener: eventFunction;
+	on?: Function;
+}

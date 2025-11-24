@@ -1,7 +1,7 @@
 import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import { SceneInfo } from '@decorators/sceneInfo.decorator';
 import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
-import { subSceneChange } from '@utils/ui-utils/routing.util';
+import { listenSubSceneChange } from '@utils/ui-utils/routing.util';
 
 @SceneInfo(SceneKeys.ServerList, SceneTypes.HTMLScene, { to: SceneKeys.CharacterTestPlace })
 export class ServerListScene extends BaseHtmlScene {
@@ -27,7 +27,7 @@ export class ServerListScene extends BaseHtmlScene {
 	}
 
 	private _init_click_events() {
-		subSceneChange.call(this, this.backButton, SceneKeys.MainMenu);
+		listenSubSceneChange.call(this, this.backButton, SceneKeys.MainMenu);
 	}
 	//#endregion
 }

@@ -2,12 +2,12 @@
 @use 'components/mixins' as *;
 @use 'components/components' as *;
 
-// --- ГЛАВНЫЙ WRAPPER ---
+// ГЛАВНЫЙ WRAPPER
 .create-room-pns {
 	@include fullscreen-pns;
 }
 
-// --- КОНТЕЙНЕР ---
+// КОНТЕЙНЕР
 .create-room-container {
 	width: 100%;
 	max-width: 600px;
@@ -16,12 +16,12 @@
 	flex-direction: column;
 }
 
-// --- КНОПКА НАЗАД ---
+// КНОПКА НАЗАД
 .back-btn {
 	@extend .ui-back-btn;
 }
 
-// --- ОСНОВНОЕ ОКНО ---
+// ОСНОВНОЕ ОКНО
 .createroom-content-box {
 	position: relative;
 	width: 100%;
@@ -37,11 +37,11 @@
 
 	// Скролл
 	overflow-y: auto;
-	overflow-x: hidden; // Убираем горизонтальные линии
+	overflow-x: hidden;
 	@include custom-scroll;
 }
 
-// --- ЗАГОЛОВОК ---
+// ЗАГОЛОВОК
 .header {
 	text-align: center;
 	margin-bottom: 30px;
@@ -57,7 +57,7 @@
 	}
 }
 
-// --- ФОРМА ---
+// ФОРМА
 .form-wrapper {
 	display: flex;
 	flex-direction: column;
@@ -85,12 +85,31 @@
 	margin-left: 35px;
 }
 
-// --- INPUT TEXT (Наследуем компонент) ---
+// INPUT TEXT
 .input-field {
 	@extend .ui-input;
+	@include input-validation-states;
+
+	border-color: rgba($accent-color, 0.5);
+	box-shadow: 0 0 5px rgba($accent-color, 0.1);
+	color: #ffffff;
+
+	&::placeholder {
+		color: rgba($accent-color, 0.4);
+	}
+
+	&:hover {
+		border-color: rgba($accent-color, 0.8);
+		box-shadow: 0 0 8px rgba($accent-color, 0.2);
+	}
+
+	&:focus {
+		border-color: $accent-color;
+		box-shadow: 0 0 15px rgba($accent-color, 0.4);
+	}
 }
 
-// --- RANGE SLIDER (Специфичный стиль) ---
+// RANGE SLIDER (Специфичный стиль)
 .range-container {
 	display: flex;
 	align-items: center;
@@ -132,7 +151,7 @@
 	}
 }
 
-// --- CUSTOM CHECKBOX ---
+// CUSTOM CHECKBOX
 .checkbox-group {
 	.checkbox-label {
 		display: flex;
@@ -188,7 +207,7 @@
 	}
 }
 
-// --- BUTTON CREATE ---
+// BUTTON CREATE
 .action-btn {
 	@extend .ui-action-btn;
 }

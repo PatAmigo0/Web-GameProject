@@ -24,7 +24,7 @@ import Phaser from 'phaser';
 @injectLogger()
 @injectInitializator(async (service: GameService) => {
 	await service.initAttributes();
-	service.__boot__();
+	await service.__boot__();
 })
 export class GameService extends Phaser.Game {
 	private declare logger: Logger;
@@ -126,15 +126,14 @@ export class GameService extends Phaser.Game {
 	/**
 	 * Отправная точка всей игры
 	 */
-	private __boot__() {
+	private async __boot__() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
 		BootScene.shutdown();
 		if (BootScene) {
 			this.scene.changeMainScene(BootScene.sceneKey);
-			BootScene.loadAssets().then(() => {
-				this.scene.start(SceneKeys.Notifications);
-				BootScene.handleStartup();
-			});
+			await BootScene.loadAssets();
+			this.scene.start(SceneKeys.Notifications);
+			BootScene.handleStartup();
 		} else this.logger.error('Не удалось загрузить boot сцену');
 	}
 	//#endregion

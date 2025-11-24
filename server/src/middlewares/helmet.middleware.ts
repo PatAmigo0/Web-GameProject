@@ -8,9 +8,8 @@ export const helmetMiddleware = helmet({
 
 	contentSecurityPolicy: {
 		directives: {
-			// По умолчанию: только с нашего домена
 			defaultSrc: ["'self'"],
-			scriptSrc: isDev ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"] : ["'self'"],
+			scriptSrc: isDev ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"] : ["'self'", "'unsafe-eval'"],
 			styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
 			connectSrc: ["'self'", HTTP_DEV_HOST, WS_DEV_HOST, HTTPS_HOST, WSS_HOST].filter(Boolean),
 			imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
@@ -18,7 +17,6 @@ export const helmetMiddleware = helmet({
 			mediaSrc: ["'self'", 'data:', 'blob:', 'https:'],
 			fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
 
-			// Запрещаем встраивать вашу игру в iframe на чужих сайтах (защита от Clickjacking)
 			frameAncestors: ["'self'"],
 		},
 	},
