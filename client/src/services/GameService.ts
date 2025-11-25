@@ -1,5 +1,6 @@
 import { BaseService } from '@abstracts/service-base/BaseService';
 import { StandaloneService } from '@abstracts/service-base/StandaloneService';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IInitializiable } from '@gametypes/core.types';
@@ -17,7 +18,6 @@ import { PlayerService } from '@services/PlayerService';
 import { SceneDisposalService } from '@services/SceneDisposalService';
 import { UserInputService } from '@services/UserInputService';
 import { ValidatorService } from '@services/ValidatorService';
-import type { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
 
 //#region GAME CLASS DEFINITION
@@ -82,7 +82,7 @@ export class GameService extends Phaser.Game {
 		this.validatorService = new ValidatorService();
 		this.userInputService = new UserInputService(this.input.keyboard, this.events);
 		this.notificationService = new NotificationService(this.scene, this.events);
-		this.networkService = new NetworkService(this.events, this.scene, this.notificationService);
+		this.networkService = new NetworkService(this.events);
 		this.eventService = new EventService(this.events, this.domContainer);
 		this.sceneDisposalService = new SceneDisposalService(this.scene);
 		this.authService = new AuthService(this.networkService, this.events);

@@ -1,8 +1,8 @@
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { BaseFunction } from '@gametypes/core.types';
-import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
 export class StyleManager {

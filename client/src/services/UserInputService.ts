@@ -1,5 +1,6 @@
 import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import type { Character } from '@components/entities/Character';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { ACTION_MAP } from '@config/controls.config';
 import { Keys, PHASER_KEYS } from '@config/keyboard.config';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
@@ -7,7 +8,6 @@ import { injectLogger } from '@decorators/injectLogger.decorator';
 import { UISCharacterCheck } from '@decorators/UISCharacterCheck.decorator';
 import type { Action, ActionKeyValues, InputSignal, MappedKeyInfo } from '@gametypes/controls.types';
 import { GameEvents, KeyboardEvents } from '@gametypes/event.types';
-import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
 @injectInitializator(async (service: UserInputService) => {

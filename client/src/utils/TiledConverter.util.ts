@@ -1,6 +1,6 @@
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import Phaser from 'phaser';
-import { Logger } from './Logger.util';
+import { Logger } from '../components/shared/LoggerComponent';
 
 /**
  * Утилита для преобразования координат между системами Tiled и Phaser

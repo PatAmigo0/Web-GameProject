@@ -1,15 +1,15 @@
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IInitializiable } from '@gametypes/core.types';
-import { GameEvents } from '@gametypes/event.types';
+import { GameEvents, NetworkEvents } from '@gametypes/event.types';
 import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
-import { SceneTypes } from '@gametypes/scene.types';
+import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
 import { NotificationService } from '@services/NotificationService';
 import type { SceneDisposalService } from '@services/SceneDisposalService';
-import type { Logger } from '@utils/Logger.util';
 import { TransitionManager } from './TransitionManager';
 
 @injectLogger()
@@ -67,6 +67,10 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 
 	public isInitialized<T extends CoreScene>(key: string | T): boolean {
 		return this.getSceneStatus(key) !== Phaser.Scenes.INIT;
+	}
+
+	public isSystem<T extends CoreScene>(key: string | T): boolean {
+		return this.getScene(key).sceneType.has(SceneTypes.SystemScene);
 	}
 
 	public start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
@@ -135,6 +139,19 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 			if (!this.currentMainScene || sceneKey != this.currentMainScene.sceneKey) {
 				this.changeMainScene(sceneKey);
 			}
+		});
+
+		this.game.events.addListener(NetworkEvents.CONNECTION_LOST, () => {
+			this.notificationService.show('Потеряно соединение с сервером', 'error');
+
+			this.scenes.forEach((scene) => {
+				if (!this.isSystem(scene) && this.isActive(scene)) {
+					this.stop(scene);
+				}
+			});
+
+			this.currentMainScene = null;
+			this.start(SceneKeys.OfflineScene);
 		});
 	}
 }

@@ -2,11 +2,11 @@
 import type { BaseGameScene } from '@abstracts/scene-base/BaseGameScene';
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import { Map } from '@components/phaser/scene-components/GameMap';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { LayerProperties, Layers, ObjectNames } from '@config/tiled.config';
 import { TILE_SIZE } from '@config/world.config';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { IBooleanPropertie, IPropertie } from '@gametypes/world.types';
-import type { Logger } from '@utils/Logger.util';
 //#endregion
 
 /**

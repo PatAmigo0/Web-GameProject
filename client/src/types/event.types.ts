@@ -7,6 +7,11 @@ export const GameEvents = {
 	INPUT_RESET: 'INPUT_RESET',
 } as const;
 
+export const NetworkEvents = {
+	CONNECTION_LOST: 'NETWORK_CONNECTION_LOST',
+	CONNECTION_RESTORED: 'NETWORK_CONNECTION_RESTORED',
+} as const;
+
 export const CharacterEvents = {
 	CHARACTER_ADDED: 'CHARACTER_ADDED',
 	CHARACTER_REMOVING: 'CHARACTER_REMOVING',

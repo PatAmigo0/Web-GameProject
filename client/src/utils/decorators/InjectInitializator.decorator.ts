@@ -1,6 +1,6 @@
+import { Logger } from '@components/shared/LoggerComponent';
 import type { BaseClass, IInitializiable } from '@gametypes/core.types';
 import { copyClassMetadata } from '@utils/copyClassMetadata.util';
-import { Logger } from '@utils/Logger.util';
 import { ObjectUtils } from '@utils/Object.util';
 
 export function injectInitializator(initLogic: (instance: any, ...args: any[]) => Promise<any>) {

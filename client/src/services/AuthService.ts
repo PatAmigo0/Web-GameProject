@@ -1,5 +1,6 @@
 import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import { CacheComponent } from '@components/shared/CacheComponent';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { CacheKeys, CacheNames } from '@config/cache.config';
 import { baseAuthAction } from '@decorators/baseAuthAction.decorator';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
@@ -8,12 +9,10 @@ import type { LoginDto, RegisterDto } from '@game/shared';
 import { GameEvents } from '@gametypes/event.types';
 import { SceneKeys } from '@gametypes/scene.types';
 import type { NetworkService } from '@services/NetworkService';
-import type { Logger } from '@utils/Logger.util';
 
 @injectLogger()
 @injectInitializator(async (service: AuthService) => {
 	service.userCache = new CacheComponent(CacheNames.User).setSettings({ alwaysSave: true });
-	// service.userCache.add(CacheKeys.AuthInfo, { login: 'tohue', password: '312000' } as LoginDto);
 })
 export class AuthService extends StandaloneService {
 	public declare logger: Logger;
@@ -24,22 +23,33 @@ export class AuthService extends StandaloneService {
 		super();
 	}
 
+	/**
+	 * Попытка авторизации
+	 * @param info DTO для входа или true для попытки взять из кэша
+	 * @param method Метод авторизации
+	 */
 	public async tryAuth(info: LoginDto | boolean, method: 'login' | 'register') {
 		const ping = await this.networkService.ping();
-		if (ping.ok) {
-			if (typeof info === 'boolean') {
-				info = this.userCache.get(CacheKeys.AuthInfo) as LoginDto;
-				if (!info || method == 'register') {
-					this.logger.warn('Не могу войти автоматически');
-					this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
-					return this.networkService.badResponse();
-				}
-			}
+		if (!ping.ok) return;
 
-			const response = await this[method](info);
-			if (response.ok) {
-				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MenuWrapper);
-			} else if (this.networkService.isSafeResponse(response.status)) {
+		let authData: LoginDto | RegisterDto;
+
+		if (typeof info === 'boolean') {
+			const cachedInfo = this.userCache.get(CacheKeys.AuthInfo) as LoginDto;
+
+			if (!cachedInfo || method === 'register') {
+				this.logger.warn('Не могу войти автоматически: нет данных в кэше');
+				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
+				return;
+			}
+			authData = cachedInfo;
+		} else authData = info;
+
+		const response: Response = await (this as any)[method](authData);
+		if (response.ok) {
+			this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.MenuWrapper);
+		} else {
+			if (response.status < 500) {
 				this.events.emit(GameEvents.MAIN_SCENE_CHANGE, SceneKeys.LoginScene);
 			}
 		}
@@ -51,28 +61,39 @@ export class AuthService extends StandaloneService {
 	}
 
 	@baseAuthAction
-	public async register(registerDto: RegisterDto) {
-		const response = await this.networkService.sendRegistrationRequest(registerDto);
+	public async register(registerDto: RegisterDto): Promise<Response> {
+		const response = await this.networkService.request('/api/auth/registration', {
+			method: 'POST',
+			body: JSON.stringify(registerDto),
+		});
+
 		if (response.ok) {
-			if (!this.userCache.exists(CacheKeys.AuthInfo)) {
-				this.userCache.add(CacheKeys.AuthInfo, {
-					login: registerDto.login,
-					password: registerDto.password,
-				} as LoginDto);
-			}
+			this.cacheAuthData({
+				login: registerDto.login,
+				password: registerDto.password,
+			});
 		}
 
 		return response;
 	}
 
 	@baseAuthAction
-	public async login(info: LoginDto) {
-		const response = await this.networkService.sendLoginRequest(info);
+	public async login(info: LoginDto): Promise<Response> {
+		const response = await this.networkService.request('/api/auth/login', {
+			method: 'POST',
+			body: JSON.stringify(info),
+		});
+
 		if (response.ok) {
-			if (!this.userCache.exists(CacheKeys.AuthInfo)) {
-				this.userCache.add(CacheKeys.AuthInfo, info);
-			}
+			this.cacheAuthData(info);
 		}
+
 		return response;
+	}
+
+	private cacheAuthData(info: LoginDto) {
+		if (!this.userCache.exists(CacheKeys.AuthInfo)) {
+			this.userCache.add(CacheKeys.AuthInfo, info);
+		}
 	}
 }

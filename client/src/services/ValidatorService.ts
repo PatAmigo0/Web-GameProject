@@ -1,5 +1,5 @@
+import type { Logger } from '@components/shared/LoggerComponent';
 import { injectLogger } from '@decorators/injectLogger.decorator';
-import type { Logger } from '@utils/Logger.util';
 import type { ZodError, ZodType } from 'zod';
 
 @injectLogger()

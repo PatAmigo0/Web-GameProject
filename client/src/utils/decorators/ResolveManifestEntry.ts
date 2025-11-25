@@ -26,7 +26,7 @@ export function resolveManifestEntry<T extends AssetManager>(
 		let manifestEntry: IMapAssetManifest | IHtmlAssetManifest | undefined =
 			this.assetManifest[scene.sceneKey] || this.stylesManifest[scene.sceneKey];
 
-		if (scene.sceneType.includes(SceneTypes.SystemScene)) {
+		if (scene.sceneType.has(SceneTypes.SystemScene)) {
 			manifestEntry = { HTML: '__NONE__', CSS: '__PLACEHOLDER__' } as IHtmlAssetManifest;
 		}
 

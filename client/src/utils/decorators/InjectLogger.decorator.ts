@@ -1,5 +1,5 @@
+import { Logger } from '@components/shared/LoggerComponent';
 import type { BaseClass } from '@gametypes/core.types';
-import { Logger } from '@utils/Logger.util';
 
 export function injectLogger(config?: { loggerKey?: string; static?: boolean }) {
 	return function <T extends BaseClass>(constructor: T) {

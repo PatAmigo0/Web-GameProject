@@ -27,7 +27,7 @@ export function SceneInfo(
 						}
 					}
 
-					super(sceneKey, [].concat(sceneType), normalizedConfig, ...args);
+					super(sceneKey, new Set([].concat(sceneType)), normalizedConfig, ...args);
 				}
 			},
 		);

@@ -1,8 +1,8 @@
 // src/game/utils/ABC/CoreScene.ts
+import { Logger } from '@components/shared/LoggerComponent';
 import { SceneEvents, type IEventable } from '@gametypes/event.types';
 import { SceneKeys, SceneTypes, type SceneConfig } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
-import { Logger } from '@utils/Logger.util';
 import Phaser from 'phaser';
 
 type baseListenableConfig = {
@@ -49,7 +49,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 */
 	constructor(
 		public sceneKey: SceneKeys,
-		public sceneType: SceneTypes[] = [SceneTypes.Undefined],
+		public sceneType: Set<SceneTypes> = new Set([SceneTypes.Undefined]),
 		public config?: SceneConfig,
 		private __launchedScenes = new Set<CoreScene>(),
 	) {

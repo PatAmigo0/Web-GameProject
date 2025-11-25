@@ -3,6 +3,7 @@ import { BaseHtmlScene } from '@abstracts/scene-base/BaseHtmlScene';
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
 import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import { BaseService } from '@abstracts/service-base/BaseService';
+import type { Logger } from '@components/shared/LoggerComponent';
 import { ASSET_KEYS, ASSET_URLS } from '@config/assets.config';
 import { injectInitializator } from '@decorators/injectInitializator.decorator';
 import { injectLogger } from '@decorators/injectLogger.decorator';
@@ -10,7 +11,6 @@ import { resolveManifestEntry } from '@decorators/resolveManifestEntry';
 import type { IHtmlAssetManifest, IMapAssetManifest } from '@gametypes/assets.types';
 import { SceneTypes } from '@gametypes/scene.types';
 import type { GameService } from '@services/GameService';
-import type { Logger } from '@utils/Logger.util';
 import type { StyleManager } from './StyleManager';
 //#endregion
 

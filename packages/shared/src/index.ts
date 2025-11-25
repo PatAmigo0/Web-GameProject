@@ -108,6 +108,7 @@ export const loginSchema = z.object({
 export type AuthCredentials = z.infer<typeof credentialsBase>;
 export type RegisterDto = z.infer<typeof registerSchema>['body'];
 export type LoginDto = z.infer<typeof loginSchema>['body'];
+export type AuthDto = RegisterDto | LoginDto;
 //#endregion
 
 //#region GAME SCHEMAS (OBJECTS)
@@ -137,6 +138,7 @@ export enum HttpStatus {
 	ZodValidationError = 422,
 	TooManyRequests = 429,
 	InternalServerError = 500,
+	ServiceUnavailable = 503,
 }
 
 export enum ErrorCode {

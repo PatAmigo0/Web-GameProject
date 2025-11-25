@@ -1,8 +1,8 @@
 import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { Logger } from '@components/shared/LoggerComponent';
 import { SHAKING_ALLOWED } from '@config/core.config';
 import { injectLogger } from '@decorators/injectLogger.decorator';
 import type { SceneManager } from '@managers/SceneManager';
-import { Logger } from '@utils/Logger.util';
 
 /**
  * Альфа вариант шэйкера для оптимизации
