@@ -1,17 +1,53 @@
-<!-- Обертка Safe Zone -->
 <div class="server-list-pns">
-	<!-- Внутренний контейнер для ограничения ширины -->
 	<div class="server-list-container">
 		<button class="back-btn" id="back-btn">← НАЗАД</button>
 
 		<div class="serverlist-content-box">
 			<div class="header">
 				<div class="title">СЕРВЕРА</div>
-				<div class="subtitle">ВЫБЕРИТЕ СЕРВЕР ДЛЯ ПОДКЛЮЧЕНИЯ</div>
+				<div class="subtitle">ВЫБЕРИТЕ КОМНАТУ ДЛЯ ПОДКЛЮЧЕНИЯ</div>
 			</div>
 
 			<div class="servers-list" id="servers-list">
-				<!-- Сюда JS будет добавлять .server-item -->
+				<div class="server-item">
+					<div class="server-info">
+						<div class="row-top">
+							<span class="room-name">CYBER-ARENA #1</span>
+							<span class="room-id">ID: 4592</span>
+						</div>
+						<div class="row-bottom">
+							<div class="stat-badge">
+								<span class="label">ИГРОКИ:</span>
+								<span class="value">12 / 16</span>
+							</div>
+							<div class="stat-badge">
+								<span class="label">СОЗДАНО:</span>
+								<span class="value">14:05</span>
+							</div>
+						</div>
+					</div>
+					<div class="action-icon">➜</div>
+				</div>
+
+				<div class="server-item">
+					<div class="server-info">
+						<div class="row-top">
+							<span class="room-name">DM_NIGHT_CITY</span>
+							<span class="room-id">ID: 1104</span>
+						</div>
+						<div class="row-bottom">
+							<div class="stat-badge full">
+								<span class="label">ИГРОКИ:</span>
+								<span class="value">31 / 32</span>
+							</div>
+							<div class="stat-badge">
+								<span class="label">СОЗДАНО:</span>
+								<span class="value">09:42</span>
+							</div>
+						</div>
+					</div>
+					<div class="action-icon">➜</div>
+				</div>
 			</div>
 
 			<div class="notification" id="notification"></div>

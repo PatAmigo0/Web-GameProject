@@ -11,6 +11,7 @@ export class MenuWrapperScene extends BaseHtmlScene {
 	public onPreload(): void {}
 
 	public onCreate(): void {
+		this.logger.warn('LAUNCHING');
 		this.transitionManager = this.game.transitionManager;
 		this.launchScene(SceneKeys.MainMenu);
 	}

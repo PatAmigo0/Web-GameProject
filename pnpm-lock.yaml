@@ -10,6 +10,9 @@ importers:
 
   client:
     dependencies:
+      '@colyseus/schema':
+        specifier: ^3.0.69
+        version: 3.0.69
       '@game/shared':
         specifier: workspace:*
         version: link:../packages/shared
@@ -50,6 +53,9 @@ importers:
 
   packages/shared:
     dependencies:
+      '@colyseus/schema':
+        specifier: ^3.0.69
+        version: 3.0.69
       '@types/jsonwebtoken':
         specifier: ^9.0.10
         version: 9.0.10

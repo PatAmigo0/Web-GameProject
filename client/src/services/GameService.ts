@@ -19,6 +19,8 @@ import { SceneDisposalService } from '@services/SceneDisposalService';
 import { UserInputService } from '@services/UserInputService';
 import { ValidatorService } from '@services/ValidatorService';
 import Phaser from 'phaser';
+import { ColyseusService } from './ColyseusService';
+import { RoomService } from './RoomService';
 
 //#region GAME CLASS DEFINITION
 @injectLogger()
@@ -48,6 +50,8 @@ export class GameService extends Phaser.Game {
 	public eventService!: EventService;
 	public sceneDisposalService!: SceneDisposalService;
 	public notificationService!: NotificationService;
+	public colyseusService!: ColyseusService;
+	public roomService!: RoomService;
 	//#endregion
 
 	//#region CONSTRUCTOR
@@ -86,6 +90,8 @@ export class GameService extends Phaser.Game {
 		this.eventService = new EventService(this.events, this.domContainer);
 		this.sceneDisposalService = new SceneDisposalService(this.scene);
 		this.authService = new AuthService(this.networkService, this.events);
+		this.colyseusService = new ColyseusService(this.networkService);
+		this.roomService = new RoomService(this.events, this.colyseusService);
 	}
 
 	private async initServices() {

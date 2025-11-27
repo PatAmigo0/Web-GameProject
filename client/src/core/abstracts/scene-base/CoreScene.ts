@@ -104,6 +104,7 @@ export abstract class CoreScene extends Phaser.Scene {
 			v.element.removeEventListener(v.event, v.callback);
 		});
 		this.__launchedScenes.forEach((scene) => {
+			// this.logger.quietError('STOPPING', scene.sceneKey);
 			this.game.scene.stop(scene);
 		});
 		this.__launchedScenes.clear();
@@ -123,7 +124,7 @@ export abstract class CoreScene extends Phaser.Scene {
 	 */
 	public launchLinked<T extends CoreScene>(key: string | T, data?: object) {
 		const scene = this.scene.get(key);
-		if (this.scene.isSleeping(scene)) {
+		if (this.scene.isSleeping(scene) && this.__launchedScenes.has(scene)) {
 			this.game.scene.wake(scene, data);
 		} else {
 			this.__launchedScenes.add(scene);

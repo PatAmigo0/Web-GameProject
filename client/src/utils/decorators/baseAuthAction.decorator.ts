@@ -21,7 +21,11 @@ export function baseAuthAction<T extends AuthService>(_: T, __: string, descript
 			login: (this.userCache.get(CacheKeys.AuthInfo) as LoginDto).login,
 		} as UserBaseInfo);
 
-		this.logger.debug('baseAuthAction success.', this.userCache.get(CacheKeys.UserBaseInfo));
+		this.logger.debug(
+			'baseAuthAction success.',
+			this.userCache.get(CacheKeys.UserBaseInfo),
+			`MY TOKEN IS: ${data.data.token}`,
+		);
 		return response;
 	};
 }

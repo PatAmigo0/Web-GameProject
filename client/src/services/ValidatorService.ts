@@ -6,10 +6,11 @@ import type { ZodError, ZodType } from 'zod';
 export class ValidatorService {
 	private declare logger: Logger;
 	private lastError!: ZodError;
+	private lastData!: any;
 
-	public validateData(data: any, schema: ZodType<any, any>): boolean {
+	public validateData<T = any>(data: any, schema: ZodType<any, any>): boolean {
 		try {
-			schema.parse(data);
+			this.lastData = schema.parse(data) as T;
 			return true;
 		} catch (e) {
 			// this.logger.warn('Ошибка валидации:', (e as ZodError).issues);
@@ -25,5 +26,14 @@ export class ValidatorService {
 		}
 
 		return this.lastError;
+	}
+
+	public getLastData<T = any>() {
+		if (!this.lastError) {
+			this.logger.warn('Невозможно получить последние данные');
+			return;
+		}
+
+		return this.lastData as T;
 	}
 }

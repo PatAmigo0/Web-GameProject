@@ -7,7 +7,7 @@ import { SceneKeys, SceneTypes } from '@gametypes/scene.types';
 
 @SceneInfo(SceneKeys.CharacterTestPlace, SceneTypes.GameScene, { to: [SceneKeys.MainMenu] })
 export class CharacterTestPlace extends BaseGameScene {
-	private char: Character;
+	public char!: Character;
 
 	onPreload(): void {
 		this.load.spritesheet(
@@ -24,13 +24,14 @@ export class CharacterTestPlace extends BaseGameScene {
 	}
 
 	onCreate(): void {
-		this.char = new Character(this, 0, 0, ASSET_KEYS.CHARACTER_SPRITE, 0).init();
-		this.cameras.main.startFollow(this.char);
-		this.game.userInputService.setLocalCharacter(this.char);
+		// this.char = new Character(this, 0, 0, ASSET_KEYS.CHARACTER_SPRITE, 0).init();
+		// this.cameras.main.startFollow(this.char);
+		// this.game.userInputService.setLocalCharacter(this.char);
+		this.launchLinked(SceneKeys.LobbyUIScene);
 	}
 
 	heartbeat(): void {
-		this.char.update();
+		// this.char.update();
 	}
 
 	onShutdown(): void {}

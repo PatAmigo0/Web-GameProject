@@ -16,7 +16,7 @@ export class ServerService {
 		if (this.initalized) {
 			throw new Error('Попытка запуска уже включенного сервера');
 		}
-		this.init();
+		await this.init();
 		this.gameServer = await listen(app, HOST_PORT);
 		this.initalized = true;
 		return this;
@@ -48,20 +48,20 @@ export class ServerService {
 		process.exit(0);
 	}
 
-	private init() {
+	private async init() {
 		loadenv();
 		this.listenForProcessSignals();
-		this.initDB();
+		await this.initDB();
 	}
 
-	private initDB() {
+	private async initDB() {
 		this.db = new DatabasePostgreSQL();
 		db.core = this.db; // db.core -> глобальный эзэмпляр бд
 
-		this.clearDB();
+		await this.clearDB();
 	}
 
-	private clearDB() {
+	private async clearDB() {
 		this.db.clearRoomCodes().then(() => {
 			console.log('Успешно удалил записи о комнатах в дб');
 		});
@@ -75,8 +75,6 @@ export class ServerService {
 				console.warn('Админ уже существует, пропускаю');
 			});
 	}
-
-	private makeAdmin() {}
 
 	private listenForProcessSignals() {
 		process.on('SIGTERM', () => this.shutdown('SIGTERM'));

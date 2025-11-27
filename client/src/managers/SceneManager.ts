@@ -43,19 +43,19 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 		service3: NotificationService,
 	) => Promise<void>;
 
-	public changeMainScene(sceneKey: string): void {
+	public changeMainScene(sceneKey: string, data?: object): void {
 		this.logger.debug(`Меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`);
 
 		const newScene = this.getScene(sceneKey);
 		this.handleSceneType(newScene);
 
 		if (this.currentMainScene) {
-			this.notificationService.clearAll();
+			if (__PRODUCTION__) this.notificationService.clearAll();
 			this.transitionManager.swapScenes(this.currentMainScene, newScene, () =>
 				this.sceneDisposalService.shake(),
 			);
 		} else {
-			this.start(newScene);
+			this.start(newScene, data);
 		}
 
 		this.currentMainScene = newScene;
@@ -135,9 +135,9 @@ export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSce
 	}
 
 	private listenEvents() {
-		this.game.events.addListener(GameEvents.MAIN_SCENE_CHANGE, (sceneKey: string) => {
+		this.game.events.addListener(GameEvents.MAIN_SCENE_CHANGE, (sceneKey: string, data?: object) => {
 			if (!this.currentMainScene || sceneKey != this.currentMainScene.sceneKey) {
-				this.changeMainScene(sceneKey);
+				this.changeMainScene(sceneKey, data);
 			}
 		});
 

@@ -3,133 +3,242 @@
 
 .pns {
 	@include fullscreen-pns;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2vh; // Отступ между заголовком и формой
+
+	// Фон
+	background: radial-gradient(circle at center, rgba($login-accent, 0.15) 0%, transparent 80%);
+	overflow: hidden;
 }
 
 .game-title {
+	flex-shrink: 0; // Заголовок нельзя сжимать
 	text-align: center;
-	margin-bottom: 15px;
 	pointer-events: auto;
+	z-index: 2;
+
+	// Анимация появления сверху
+	animation: fadeInDown 0.8s ease-out forwards;
 
 	h1 {
 		font-size: 3em;
-		@include neon-text($login-accent); // Красный неон
-		margin-bottom: 5px;
+		@include neon-text($login-accent);
+		margin: 0;
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 4px;
 	}
 	p {
-		color: #cccccc;
+		color: $text-color;
 		font-size: 1.1em;
+		letter-spacing: 2px;
+		margin: 10px 0 0 0;
+		opacity: 0.8;
 	}
 }
 
 .auth-form {
+	// === ЛОГИКА РАЗМЕРОВ (SAFE ZONE) ===
 	width: 100%;
-	max-width: 350px;
-	background: #2d2d2d;
-	padding: 20px 25px;
-	border-radius: 8px;
-	border: 1px solid #444444;
-	box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+	max-width: 420px;
+
+	// Разрешаем форме сжиматься по высоте, если экран узкий
+	flex-shrink: 1;
+	min-height: 0;
+
+	display: flex;
+	flex-direction: column;
+
+	// === ВИЗУАЛЬНЫЙ СТИЛЬ (СТЕКЛО) ===
+	background: rgba(30, 30, 30, 0.65);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 16px;
+	padding: 30px;
+	box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
 	pointer-events: auto;
+
+	// Анимация появления снизу
+	animation: fadeInUp 0.8s ease-out 0.2s backwards;
+
+	// Скролл, если контент не влезает в сжатую форму
+	overflow-y: auto;
+	@include glass-scroll;
 
 	h2 {
 		text-align: center;
-		margin-bottom: 15px;
-		color: $login-accent;
-		font-size: 1.5em;
+		margin: 0 0 25px 0;
+		color: #fff;
+		font-size: 1.6em;
 		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-shadow: 0 0 10px rgba($login-accent, 0.5);
+		flex-shrink: 0;
 	}
 }
 
 .input-group {
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+	flex-shrink: 0; // Инпуты не сплющиваются
+
 	input {
 		width: 100%;
-		padding: 10px;
-		background: #1a1a1a;
-		border: 1px solid #444444;
-		border-radius: 4px;
+		padding: 14px 16px;
+		background: rgba(0, 0, 0, 0.3);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 8px;
 		color: #ffffff;
-		font-size: 14px;
+		font-family: $font-stack;
+		font-size: 15px;
 		box-sizing: border-box;
+		transition: all 0.3s ease;
 
 		@include input-validation-states;
 
-		// При наведении (без ошибки) просто чуть светлее рамка
-		&:hover {
-			border-color: #666;
+		&::placeholder {
+			color: rgba(255, 255, 255, 0.3);
 		}
 
-		// При клике (фокусе) - БЕЛАЯ рамка, а не красная
+		&:hover {
+			background: rgba(0, 0, 0, 0.4);
+			border-color: rgba(255, 255, 255, 0.3);
+		}
+
 		&:focus {
 			outline: none;
-			border-color: #ffffff;
-			box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+			background: rgba(0, 0, 0, 0.5);
+			border-color: $login-accent;
+			box-shadow: 0 0 15px rgba($login-accent, 0.3);
+			transform: scale(1.01);
 		}
 	}
 }
 
 .btn {
 	width: 100%;
-	padding: 10px;
-	background: $login-accent;
+	padding: 14px;
+	background: linear-gradient(135deg, $login-accent 0%, darken($login-accent, 15%) 100%);
 	color: white;
-	border: none;
-	border-radius: 4px;
-	font-size: 14px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	font-family: $font-stack;
+	font-size: 16px;
 	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 1px;
 	cursor: pointer;
 	margin-bottom: 0;
-	transition: transform 0.2s, background 0.3s;
+	transition: all 0.2s;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	flex-shrink: 0;
 
 	&:hover {
-		background: $login-accent-hover;
-		transform: scale(1.02);
+		transform: translateY(-2px);
+		box-shadow: 0 5px 20px rgba($login-accent, 0.5);
+		border-color: rgba(255, 255, 255, 0.3);
+		background: linear-gradient(135deg, lighten($login-accent, 5%) 0%, $login-accent 100%);
+	}
+
+	&:active {
+		transform: scale(0.98);
 	}
 }
 
 .social-buttons {
-	margin: 15px 0;
-	border-top: 1px solid #444444;
-	border-bottom: 1px solid #444444;
-	padding: 12px 0;
+	margin: 20px 0;
+	padding-top: 15px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 12px;
+	flex-shrink: 0;
+	position: relative;
 }
 
 .btn-social {
-	background: #333333;
-	border: 1px solid #555555;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	color: #ccc;
+	padding: 12px;
 	font-size: 13px;
-	padding: 8px;
-	color: white;
-	border-radius: 4px;
+	border-radius: 6px;
 	cursor: pointer;
-	transition: background 0.2s;
+	transition: all 0.3s;
+	text-align: center;
+	font-family: $font-stack;
 
 	&:hover {
-		background: #444444;
+		background: rgba(255, 255, 255, 0.15);
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.3);
 	}
 }
 
 .form-switch {
 	text-align: center;
 	margin-top: 10px;
-	color: #cccccc;
+	color: #888;
 	font-size: 13px;
+	flex-shrink: 0;
 
 	#change-to-singup {
-		background-color: transparent;
-		color: $login-accent;
+		background: transparent;
 		border: none;
-		font-size: 13px;
+		color: #fff;
 		font-weight: bold;
-		padding: 0 5px;
 		cursor: pointer;
-		text-decoration: underline;
+		text-decoration: none;
+		font-family: $font-stack;
+		padding: 5px;
+		position: relative;
+		transition: color 0.3s;
+
+		// Анимация подчеркивания при наведении
+		&::after {
+			content: '';
+			position: absolute;
+			width: 0;
+			height: 2px;
+			bottom: 0;
+			left: 0;
+			background-color: $login-accent;
+			transition: width 0.3s;
+		}
 
 		&:hover {
-			color: $error-color;
+			color: $login-accent;
+			text-shadow: 0 0 5px rgba($login-accent, 0.5);
+
+			&::after {
+				width: 100%;
+			}
 		}
+	}
+}
+
+// === АНИМАЦИИ ===
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translateY(-30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }

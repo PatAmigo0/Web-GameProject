@@ -46,7 +46,7 @@ export class NotificationScene extends WithPhaserLifecycle {
 
 		this.container.appendChild(toast);
 
-		const timer = setTimeout(() => this.removeToast(toast), 4000);
+		const timer = setTimeout(() => this.removeToast(toast), (__PRODUCTION__ && 4000) || 7000);
 
 		toast.addEventListener('click', () => {
 			if (toast.classList.contains('hiding')) return;

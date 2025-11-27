@@ -102,10 +102,11 @@ export class UserInputService extends StandaloneService {
 	private handleKeyPressed(key: KeyboardEvent): void {
 		const keyInfo = this.keyMap.get(key.code as Keys);
 		if (keyInfo && !key.repeat) {
-			this.localCharacter.keyinput.changeInputState({
+			const actionObject = {
 				action: keyInfo.action,
 				state: key.type == KeyboardEvents.KEY_DOWN,
-			});
+			};
+			this.localCharacter.keyinput.changeInputState(actionObject);
 		}
 	}
 

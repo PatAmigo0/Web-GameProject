@@ -74,15 +74,18 @@ export class CreateRoomScene extends AbstractFormScene<CreateRoomDto> {
 		return dto;
 	}
 
-	protected async sendRequest(_data: CreateRoomDto): Promise<Response> {
-		return new Response(JSON.stringify({ ok: true }));
+	protected sendRequest(data: CreateRoomDto): Promise<Response> {
+		return this.game.colyseusService.createRoom(data);
 	}
 
 	protected async onSuccess(response: Response): Promise<void> {
 		const data = await response.json();
 		if (response.ok) {
+			await this.game.roomService.joinRoom(data.data.roomId);
+			this.game.notificationService.show('Успешно подключился к комнате!', 'success');
 		} else {
-			this.game.notificationService.show(`Ошибка: ${data.message}`, 'error');
+			// не должно быть
+			this.game.notificationService.show(`Ошибка: ${data.error.message}`, 'error');
 		}
 	}
 }

@@ -5,7 +5,8 @@
 		"outDir": "dist",
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
-		"useDefineForClassFields": true,
+		"emitDecoratorMetadata": true,
+		"useDefineForClassFields": false,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 
@@ -43,6 +44,6 @@
 		}
 	},
 
-	"include": ["src", "__tests__", "prisma.config.ts", "prisma"],
+	"include": ["src", "__tests__", "prisma.config.ts", "prisma", "src/rooms/schema"],
 	"references": [{ "path": "../packages/shared" }]
 }

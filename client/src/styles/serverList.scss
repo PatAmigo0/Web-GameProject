@@ -10,7 +10,7 @@
 // --- КОНТЕЙНЕР ---
 .server-list-container {
 	width: 100%;
-	max-width: 700px;
+	max-width: 800px; // Чуть шире, чтобы вместить инфо
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -39,27 +39,30 @@
 // --- ЗАГОЛОВОК ---
 .header {
 	text-align: center;
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 	flex-shrink: 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	padding-bottom: 15px;
 }
 
 .title {
-	font-size: 30px;
+	font-size: 32px;
 	@include neon-text;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .subtitle {
 	font-size: 14px;
 	color: #aaa;
-	letter-spacing: 1px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
 }
 
 // --- СПИСОК СЕРВЕРОВ ---
 .servers-list {
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
+	gap: 12px;
 
 	overflow-y: auto;
 	flex: 1;
@@ -69,92 +72,135 @@
 	@include custom-scroll;
 }
 
-// --- ЭЛЕМЕНТ СЕРВЕРА ---
+// --- КАРТОЧКА СЕРВЕРА (ОБНОВЛЕННАЯ) ---
 .server-item {
-	background: rgba(30, 30, 30, 0.9);
-	border-radius: 8px;
-	padding: 12px 15px;
+	background: linear-gradient(90deg, rgba(30, 30, 30, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+	border-radius: 6px;
+	padding: 15px 20px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border: 2px solid #555;
-	transition: all 0.3s ease;
-	position: relative;
+	border: 1px solid #555;
+	border-left: 4px solid #777; // Индикатор слева
+	transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 	cursor: pointer;
 	flex-shrink: 0;
+	position: relative;
+	overflow: hidden;
 
+	// Эффект подсветки при наведении
 	&:hover {
-		background: rgba(40, 40, 40, 0.95);
-		transform: translateY(-2px);
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-		border-color: $accent-color;
+		background: rgba(50, 50, 50, 0.95);
+		transform: translateX(5px);
+		border-color: $accent-color; // Голубая рамка
+		border-left-color: $accent-color; // Яркий левый борт
+		box-shadow: 0 0 15px rgba($accent-color, 0.2);
+
+		.room-id {
+			color: $accent-color;
+			border-color: rgba($accent-color, 0.3);
+		}
+
+		.action-icon {
+			opacity: 1;
+			transform: translateX(0);
+		}
 	}
 }
 
+// Левая часть с информацией
 .server-info {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
+	gap: 8px;
 	flex: 1;
 }
 
-.server-name {
-	font-size: 18px;
+// Верхняя строка (Имя + ID)
+.row-top {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.room-name {
+	font-size: 20px;
 	font-weight: bold;
 	color: #fff;
 	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
-.server-stats {
+.room-id {
+	font-size: 12px;
+	color: #888;
+	border: 1px solid #555;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-family: $font-stack;
+	transition: color 0.3s;
+}
+
+// Нижняя строка (Статистика)
+.row-bottom {
 	display: flex;
-	gap: 15px;
+	align-items: center;
+	gap: 20px;
+}
+
+.stat-badge {
+	display: flex;
+	align-items: center;
+	gap: 6px;
 	font-size: 14px;
-	color: #aaa;
-	letter-spacing: 1px;
+	color: #bbb;
+
+	.label {
+		font-size: 12px;
+		color: #666;
+		font-weight: bold;
+	}
+
+	.value {
+		color: $text-color;
+		font-family: $font-stack;
+	}
+
+	&.full .value {
+		color: #ffaa00;
+	}
 }
 
-.server-status {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-left: 20px;
-}
-
-.players {
-	display: flex;
-	align-items: center;
-	gap: 5px;
-}
-
-.player-icon {
-	color: #aaa;
-}
-
-.access-icon {
-	font-size: 20px;
-	transition: none;
-	pointer-events: none;
-	color: #fdd835;
+// Правая иконка действия
+.action-icon {
+	color: $accent-color;
+	font-size: 24px;
+	opacity: 0.3;
+	transform: translateX(-10px);
+	transition: all 0.3s ease;
+	font-weight: bold;
 }
 
 // --- УВЕДОМЛЕНИЯ ---
 .notification {
 	position: absolute;
-	top: 20px;
-	right: 20px;
-	background: rgba(30, 30, 30, 0.95);
-	color: #09ad17;
-	padding: 15px 20px;
-	border-radius: 8px;
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(10, 10, 10, 0.95);
+	color: $success-color;
+	padding: 10px 20px;
+	border-radius: 4px;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
 	display: none;
 	z-index: 1000;
 	font-family: $font-stack;
-	border: 2px solid #00ff73;
-	letter-spacing: 1px;
+	border: 1px solid $success-color;
+	font-size: 14px;
+	white-space: nowrap;
 
 	&.error {
-		color: #ffffff;
+		color: $error-color;
 		border-color: $error-color;
 	}
 }

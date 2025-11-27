@@ -40,6 +40,7 @@ export function handleInputFormation<T extends CoreScene>(
 
 		if (success) {
 			toggle(input, true);
+			input.value = this.game.validatorService.getLastData();
 		} else {
 			toggle(input);
 
@@ -82,6 +83,9 @@ export function handleInputFormation<T extends CoreScene>(
 }
 
 export function validateAuthDto<T extends CoreScene>(this: T, dto: AuthCredentials): boolean {
-	const success = this.game.validatorService.validateData(dto, credentialsBase);
+	const success = this.game.validatorService.validateData<AuthCredentials>(dto, credentialsBase);
+	if (success) {
+		dto = this.game.validatorService.getLastData();
+	}
 	return success;
 }

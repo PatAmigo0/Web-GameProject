@@ -65,6 +65,13 @@ export const passwordSchemaRule = z
 	.max(MAX_PASSWORD_LENGTH, optionFormater(ValidationMessage.PasswordTooLong))
 	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
 
+export const emailSchemaRule = email(ValidationMessage.InvalidEmail).optional();
+
+export const inviteCodeSchemaRule = z
+	.string()
+	.length(INVITE_CODE_LENGTH, optionFormater(ValidationMessage.InvalidInviteCode))
+	.optional();
+
 export const roomNameSchemaRule = z
 	.string(optionFormater(ValidationMessage.Required))
 	.trim()
@@ -72,19 +79,17 @@ export const roomNameSchemaRule = z
 	.max(MAX_ROOM_NAME_LENGTH, optionFormater(ValidationMessage.RoomNameTooLong))
 	.regex(ENGLISH_REGEX, optionFormater(ValidationMessage.OnlyEnglish));
 
-export const roomPlayersAmountRule = z
+export const roomPlayersAmountRule = z.coerce
 	.number(optionFormater(ValidationMessage.Required))
 	.min(MIN_ROOM_PLAYERS)
 	.max(MAX_ROOM_PLAYERS);
 
-export const roomPrivateShemaRule = z.boolean(optionFormater(ValidationMessage.Required));
+export const roomPrivateShemaRule = z.boolean(optionFormater(ValidationMessage.Required)).default(false);
 
-export const emailSchemaRule = email(ValidationMessage.InvalidEmail).optional();
-
-export const inviteCodeSchemaRule = z
-	.string()
-	.length(INVITE_CODE_LENGTH, optionFormater(ValidationMessage.InvalidInviteCode))
-	.optional();
+export const shortCodeSchemaRule = z.coerce
+	.string(optionFormater(ValidationMessage.Required))
+	.length(6)
+	.regex(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]+$/);
 
 //#endregion
 
@@ -120,7 +125,14 @@ export const roomCreateSchema = z.object({
 	}),
 });
 
+export const roomJoinSchema = z.object({
+	params: z.object({
+		code: shortCodeSchemaRule,
+	}),
+});
+
 export type CreateRoomDto = z.infer<typeof roomCreateSchema>['body'];
+export type JoinRoomDto = z.infer<typeof roomJoinSchema>['params'];
 //#endregion
 
 //#region HTTP QUERIES TYPES
@@ -154,7 +166,11 @@ export enum ErrorCode {
 	UserWrongPassword = 'USER_WRONG_PASSWORD',
 	UserBanned = 'USER_BANNED',
 
+	RoomNotFound = 'ROOM_NOT_FOUND',
+
 	CorsNotAllowed = 'CORS_NOT_ALLOWED',
+
+	ServerError = 'NON_CRITICAL_SERVER_ERROR',
 
 	// Critical
 	CriticalServerError = 'CRITICAL_SERVER_ERROR',
@@ -164,6 +180,9 @@ export enum ErrorCode {
 export enum OkCode {
 	SuccessRegistration = 'SUCCESS_REGISTRATION',
 	SuccesLogin = 'SUCCESS_LOGIN',
+	RoomCreated = 'ROOM_CREATED',
+	RoomJoin = 'ROOM_JOIN',
+	RoomsListed = 'ROOMS_LISTED',
 	NoDataSpecified = 'NO_DATA',
 }
 
@@ -171,6 +190,19 @@ export interface QueryError {
 	code: ErrorCode;
 	message?: string;
 }
+
+//#endregion
+
+//#region ETC
+
+export interface JwtAuthPayload {
+	uuid: string;
+	username: string;
+}
+
+//#endregion
+
+//#region RESPONSES
 
 export interface ApiResponse {
 	error?: QueryError;
@@ -188,6 +220,22 @@ export interface AuthResponse extends ApiResponse {
 	};
 }
 
+export interface RoomResponse extends ApiResponse {
+	data: {
+		roomId: string;
+		code?: string;
+	};
+}
+
+//#endregion
+
+//#region ROOM TYPES
+
+export enum RoomTypes {
+	BaseGameRoom = 'baseGameRoom',
+	LobbyRoom = 'lobbyRoom',
+}
+
 //#endregion
 
 //#region ENV
@@ -196,5 +244,23 @@ export const VITE_PORT = 1234;
 export const HOST_PORT = 2567;
 export const SERVER_HOST = `localhost:${HOST_PORT}`;
 export const CLIENT_LOCAL_HOST = `localhost:${VITE_PORT}`;
+
+//#endregion
+
+//#region COLYSEUS SCHEMAS
+import { MapSchema, Schema, type } from '@colyseus/schema';
+
+export class Player extends Schema {
+	@type('string') id: string = '';
+	@type('string') username: string = '';
+	@type('string') skin: string = 'default';
+	@type('number') x: number = 0;
+	@type('number') y: number = 0;
+	@type('string') anim: string = 'idle';
+}
+
+export class BaseGameRoomState extends Schema {
+	@type({ map: Player }) players = new MapSchema<Player>();
+}
 
 //#endregion

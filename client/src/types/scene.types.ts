@@ -11,6 +11,7 @@ export enum SceneKeys {
 	CreateRoom = 'CreateRoom',
 	TestPlace = 'TestPlace',
 	CharacterTestPlace = 'CharacterTestPlace',
+	LobbyUIScene = 'LobbyUI',
 	MenuWrapper = 'MenuWrapper',
 	Notifications = 'Notifications',
 }

@@ -1,18 +1,24 @@
 // src/middleware/auth.middleware.ts
 
 import { ErrorCode, HttpStatus, type AuthRequest } from '@game/shared';
-import { HttpError } from '@utils/httpError.util';
+import { sendError } from '@utils/httpError.util';
 import type { NextFunction, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
 	try {
-		throw new HttpError(HttpStatus.Unauthorized, ErrorCode.UserNotAllowed, 'User not allowed'); // Временная заглушка
-		next();
-	} catch (e) {
-		if (e instanceof HttpError) {
-			return next(e);
+		const authHeader = req.headers['authorization'];
+		const token = authHeader && authHeader.split(' ')[1];
+		if (!token) {
+			return sendError(res, HttpStatus.Unauthorized, ErrorCode.AuthInvalidToken);
 		}
 
-		return next(e);
+		const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+		req.user = decoded;
+
+		next();
+	} catch (e) {
+		console.log(e);
+		return sendError(res, HttpStatus.Unauthorized, ErrorCode.AuthInvalidToken);
 	}
 };

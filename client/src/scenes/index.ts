@@ -1,4 +1,5 @@
 import { CharacterTestPlace } from './game/CharacterTestPlace';
+import { LobbyUIScene } from './html/lobbyGroup/LobbyUI';
 import { LoginScene } from './html/Login';
 import { CreateRoomScene } from './html/menuGroup/CreateRoom';
 import { MainMenuScene } from './html/menuGroup/MainMenu';
@@ -19,6 +20,7 @@ export const scenes = [
 	ServerListScene,
 	CreateRoomScene,
 	CharacterTestPlace,
+	LobbyUIScene,
 	MenuWrapperScene,
 	NotificationScene,
 ];
