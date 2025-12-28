@@ -1,18 +1,29 @@
-import { StandaloneService } from '@abstracts/service/StandaloneService';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
 import type { Character } from '@components/entities/Character';
-import { KEYBOARD_LISTENING_KEYS } from '@config/controls.config';
-import { KEYBOARD_EVENT_TYPES } from '@config/events.config';
-import { PhaserKeys } from '@config/keyboard.config';
+import { ACTION_MAP } from '@config/controls.config';
+import { Keys, PHASER_KEYS } from '@config/keyboard.config';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { UISCharacterCheck } from '@decorators/UISCharacterCheck.decorator';
+import type { Action, InputSignal, MappedKeyInfo } from '@gametypes/controls.types';
+import { GameEvents, KeyboardEvents } from '@gametypes/event.types';
 
+@injectInitializator((service: UserInputService) => {
+	service.initAttributes();
+	service.initKeys();
+	service.initEvents();
+	service.listenEvents();
+})
 export class UserInputService extends StandaloneService {
-	private localCharacter: Character | null = null;
-	private keyMap = new Map<string, string>();
-	private keyboard!: Phaser.Input.Keyboard.KeyboardManager;
+	public localCharacter: Character | null = null;
+	private keyMap = new Map<Keys, MappedKeyInfo>();
 	private target!: EventTarget;
+	private falsyInput: InputSignal[] = [];
 
-	constructor(keyboard: Phaser.Input.Keyboard.KeyboardManager) {
+	constructor(
+		private keyboard: Phaser.Input.Keyboard.KeyboardManager,
+		private events: Phaser.Events.EventEmitter,
+	) {
 		super();
-		this.keyboard = keyboard;
 	}
 
 	public setLocalCharacter(character: Character): void {
@@ -23,70 +34,79 @@ export class UserInputService extends StandaloneService {
 		this.localCharacter = null;
 	}
 
+	public lockMainKeys(): void {
+		this.toggleKeyCapture(true);
+	}
+
+	public unlockMainKeys(): void {
+		this.toggleKeyCapture(false);
+	}
+
+	public declare init: () => void;
+
+	private initAttributes(): void {
+		this.target = this.keyboard.target;
+		for (const actionKey of Object.keys(ACTION_MAP)) {
+			this.falsyInput.push({ action: actionKey as Action, state: false });
+		}
+	}
+
+	private initKeys(): void {
+		Object.entries(ACTION_MAP).forEach(([action, keyCode]) => {
+			const phaserKeyCode = PHASER_KEYS[keyCode as keyof typeof PHASER_KEYS];
+
+			if (phaserKeyCode) {
+				this.keyMap.set(keyCode, {
+					baseKey: keyCode,
+					action: action as Action,
+					phaserKey: phaserKeyCode,
+				});
+			} else {
+				console.warn(
+					`[UserInputService] не удалось получить код клавиши (${keyCode}) из хранилища, пропуск инициализации клавиши в KeyboardManager`,
+				);
+			}
+		});
+
+		this.lockMainKeys(); // locking by default
+	}
+
+	private initEvents(): void {
+		const handler = (key: Event) => this.emit(KeyboardEvents.KEY_PRESSED, key as KeyboardEvent);
+		this.target.addEventListener(KeyboardEvents.KEY_DOWN, handler, false);
+		this.target.addEventListener(KeyboardEvents.KEY_UP, handler, false);
+	}
+
+	private listenEvents(): void {
+		this.on(KeyboardEvents.KEY_PRESSED, (key: KeyboardEvent) => {
+			if (this.keyMap.has(key.code as Keys)) {
+				this.handleKeyPressed(key);
+			}
+		});
+		this.events.on(GameEvents.INPUT_RESET, () => this.resetInput());
+	}
+
+	private toggleKeyCapture(lock: boolean): void {
+		const method = lock ? 'addCapture' : 'removeCapture';
+
+		for (const keyInfo of this.keyMap.values()) {
+			this.keyboard[method](keyInfo.phaserKey);
+		}
+	}
+
+	@UISCharacterCheck
 	private handleKeyPressed(key: KeyboardEvent): void {
-		if (this.localCharacter) {
-			const keycode = key.code as KEYBOARD_LISTENING_KEYS;
+		const keyInfo = this.keyMap.get(key.code as Keys);
+		if (keyInfo && !key.repeat) {
 			this.localCharacter.keyinput.changeInputState({
-				key: keycode,
-				state: key.type == KEYBOARD_EVENT_TYPES.KEY_DOWN, // true если key down, false если key up
-			});
-			console.log({
-				key: keycode,
-				state: key.type == KEYBOARD_EVENT_TYPES.KEY_DOWN, // true если key down, false если key up
+				action: keyInfo.action,
+				state: key.type == KeyboardEvents.KEY_DOWN,
 			});
 		}
 	}
 
-	public init(): void {
-		this.initAttributes();
-		this.initKeys();
-		this.initEvents();
-		this.listenEvents();
-	}
-
-	private initAttributes(): void {
-		this.target = this.keyboard.target;
-	}
-
-	private initKeys(): void {
-		// W, A, S, D
-		Object.entries(KEYBOARD_LISTENING_KEYS).forEach(
-			([eventName, keyCode]) => {
-				const phaserKeyCode = PhaserKeys[keyCode];
-				if (phaserKeyCode) {
-					this.keyMap.set(keyCode, eventName);
-					this.keyboard.addCapture(phaserKeyCode);
-				} else {
-					console.warn(
-						`[UserInputService] не удалось получить код клавиши (${keyCode}) из хранилища, пропуск инициализации клавиши в KeyboardManager`,
-					);
-				}
-			},
-		);
-	}
-
-	private initEvents(): void {
-		const handler = (key: Event) =>
-			this.emit(KEYBOARD_EVENT_TYPES.KEY_PRESSED, key as KeyboardEvent);
-
-		this.target.addEventListener(
-			KEYBOARD_EVENT_TYPES.KEY_DOWN,
-			handler,
-			false,
-		);
-
-		this.target.addEventListener(
-			KEYBOARD_EVENT_TYPES.KEY_UP,
-			handler,
-			false,
-		);
-	}
-
-	private listenEvents(): void {
-		this.on(KEYBOARD_EVENT_TYPES.KEY_PRESSED, (key: KeyboardEvent) => {
-			if (this.keyMap.has(key.code)) {
-				this.handleKeyPressed(key);
-			}
-		});
+	@UISCharacterCheck
+	private resetInput(): void {
+		this.localCharacter.keyinput.changeInputState(this.falsyInput);
 	}
 }

@@ -9,18 +9,12 @@ const OUTPUT_DIR = path.join(CWD, 'public/assets/manifests/map-manifest.json');
 
 const assetManifest = {};
 try {
-	const mapFiles = fs
-		.readdirSync(JSON_DIR)
-		.filter((filename) => filename.endsWith('json'));
+	const mapFiles = fs.readdirSync(JSON_DIR).filter((filename) => filename.endsWith('json'));
 
-	const mapTilesets = fs
-		.readdirSync(TILESET_DIR)
-		.filter((filename) => filename.endsWith('png'));
+	const mapTilesets = fs.readdirSync(TILESET_DIR).filter((filename) => filename.endsWith('png'));
 
 	const avaliableTilesets = {};
-	mapTilesets.forEach(
-		(filename) => (avaliableTilesets[filename.replace('.png', '')] = true),
-	);
+	mapTilesets.forEach((filename) => (avaliableTilesets[filename.replace('.png', '')] = true));
 
 	for (const mapFile of mapFiles) {
 		const sceneKey = mapFile.replace('.json', '');
@@ -35,26 +29,18 @@ try {
 				if (avaliableTilesets[tileset.name]) {
 					const webpath = `/assets/maps/tilesets/${tileset.name}.png`;
 					requiredTilesets.push(webpath);
-				} else
-					console.warn(
-						`Tileset ${tileset.name} не существует для ${sceneKey}`,
-					);
+				} else console.warn(`Tileset ${tileset.name} не существует для ${sceneKey}`);
 			}
 			assetManifest[sceneKey] = {
 				mapJsonUrl: `/assets/maps/json/${mapFile}`,
 				tilesetUrls: requiredTilesets,
 			};
-		} else
-			console.warn(
-				`${mapFile} поврежден и не подлежит правильному чтению`,
-			);
+		} else console.warn(`${mapFile} поврежден и не подлежит правильному чтению`);
 	}
 
 	fs.writeFileSync(OUTPUT_DIR, JSON.stringify(assetManifest, null, 2));
 	console.log('[ Map manifest ] был успешно создан!');
 } catch (e) {
-	console.log(
-		`[ Map manifest ] во время создания манифеста произошла ошибка: ${e}`,
-	);
+	console.log(`[ Map manifest ] во время создания манифеста произошла ошибка: ${e}`);
 	process.exit(1);
 }

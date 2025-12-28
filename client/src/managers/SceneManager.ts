@@ -1,47 +1,90 @@
-import type { TypedScene } from '@abstracts/scene/TypedScene';
-import type { WithPhaserLifecycle } from '@abstracts/scene/WithPhaserLifecycle';
-import type { IInitializiable } from '@gametypes/interface.types';
-import type { ITypedSceneManager } from '@gametypes/phaser.types';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectLogger } from '@decorators/InjectLogger.decorator';
+import type { IInitializiable } from '@gametypes/core.types';
+import { GameEvents } from '@gametypes/event.types';
+import { PhaserEvents, type ICoreSceneManager } from '@gametypes/phaser.types';
+import { SceneTypes } from '@gametypes/scene.types';
+import type { GameService } from '@services/GameService';
+import type { Logger } from '@utils/Logger';
+import { TransitionManager } from './TransitionManager';
 
-export class SceneManager
-	extends Phaser.Scenes.SceneManager
-	implements ITypedSceneManager, IInitializiable
-{
-	declare scenes: TypedScene[];
-	private _currentMainScene: WithPhaserLifecycle | undefined;
+@injectLogger()
+@injectInitializator((manager: SceneManager, transitionManager: TransitionManager) => {
+	manager.currentMainScene = null;
+	manager.transitionManager = transitionManager;
+	manager.listenEvents();
+})
+export class SceneManager extends Phaser.Scenes.SceneManager implements ICoreSceneManager, IInitializiable {
+	declare scenes: WithPhaserLifecycle[];
+	declare game: GameService;
 
-	public init() {
-		this.currentMainScene = null;
-	}
+	protected declare logger: Logger;
+	protected currentMainScene: WithPhaserLifecycle;
+	protected transitionManager!: TransitionManager;
 
-	public changeMainScene(sceneKey: string) {
-		console.debug(
-			`[SceneManager] меняю главную сцену: ${this.currentMainScene.sceneKey} -> ${sceneKey}`,
-		);
+	public declare init: (service: TransitionManager) => void;
 
-		if (this._currentMainScene) {
-			this.stop(this.currentMainScene.sceneKey);
-			this._currentMainScene.shutdown();
+	public changeMainScene(sceneKey: string): void {
+		this.logger.debug(`Меняю главную сцену: ${this.currentMainScene?.sceneKey} -> ${sceneKey}`);
+
+		const newScene = this.getScene(sceneKey);
+		this.handleSceneType(newScene);
+
+		if (this.currentMainScene) {
+			this.transitionManager.swapScenes(this.currentMainScene, newScene);
+		} else {
+			this.start(newScene);
 		}
 
-		const newScene = this.getScene<WithPhaserLifecycle>(sceneKey);
-		this.start(sceneKey);
-		this._currentMainScene = newScene;
+		this.currentMainScene = newScene;
 	}
 
-	//#region SETTERS
-	set currentMainScene(scene: WithPhaserLifecycle) {
-		if (!this._currentMainScene) this._currentMainScene = scene;
-		else {
-			throw 'Нельзя изменять currentMainScene без вызова события, если он не равен null';
+	public isShutdown<T extends CoreScene>(key: string | T): boolean {
+		return this.getSceneStatus(key) == Phaser.Scenes.SHUTDOWN;
+	}
+
+	public isInitialized<T extends CoreScene>(key: string | T): boolean {
+		return this.getSceneStatus(key) == Phaser.Scenes.INIT;
+	}
+
+	public start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
+		super.start(key, data);
+		return this;
+	}
+
+	public stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this {
+		const scene = this.getScene<WithPhaserLifecycle>(key);
+		scene.events.once(PhaserEvents.SHUTDOWN, () => {
+			scene.shutdown();
+		});
+		super.stop(scene, data);
+		return this;
+	}
+
+	private handleSceneType(scene: WithPhaserLifecycle): void {
+		switch (scene.sceneType) {
+			case SceneTypes.GameScene:
+				this.game.userInputService.lockMainKeys();
+				break;
+			case SceneTypes.HTMLScene:
+				this.game.userInputService.unlockMainKeys();
+				break;
+			default:
+				this.logger.warn('Неподдерживаемый тип сцены');
 		}
 	}
 
-	//#endregion
-
-	//#region GETTERS
-	get currentMainScene() {
-		return this._currentMainScene;
+	private getSceneStatus<T extends CoreScene>(key: string | T): number {
+		return this.getScene(key).sys.getStatus();
 	}
-	//#endregion
+
+	protected listenEvents() {
+		this.game.events.addListener(GameEvents.MAIN_SCENE_CHANGE, (sceneKey: string) => {
+			if (!this.currentMainScene || sceneKey != this.currentMainScene.sceneKey) {
+				this.changeMainScene(sceneKey);
+			}
+		});
+	}
 }

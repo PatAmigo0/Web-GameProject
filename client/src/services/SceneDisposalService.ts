@@ -1,0 +1,48 @@
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import { SHAKING_ALLOWED } from '@config/core.config';
+import { injectLogger } from '@decorators/InjectLogger.decorator';
+import type { SceneManager } from '@managers/SceneManager';
+import { Logger } from '@utils/Logger';
+
+/**
+ * Альфа вариант шэйкера для оптимизации
+ *
+ * Очень плохой и подлежит доробтке в будущем, но в целом рабочий
+ */
+@injectLogger()
+export class SceneDisposalService {
+	private scenes!: CoreScene[];
+	private declare logger: Logger;
+
+	constructor(private sceneManager: SceneManager) {
+		this.scenes = sceneManager.scenes;
+	}
+
+	public shake = SHAKING_ALLOWED
+		? () => {
+				const disposable = new Set<CoreScene>();
+				this.scenes.forEach((targetScene) => {
+					if (
+						(this.sceneManager.isShutdown(targetScene) ||
+							this.sceneManager.isInitialized(targetScene)) &&
+						this.scenes.filter((scene) => {
+							return (
+								scene != targetScene &&
+								!disposable.has(scene) &&
+								scene.sys.getStatus() != Phaser.Scenes.SHUTDOWN &&
+								scene.config?.to?.has(targetScene.sceneKey)
+							);
+						}).length == 0
+					) {
+						disposable.add(targetScene);
+					}
+				});
+
+				disposable.forEach((scene) => {
+					this.sceneManager.remove(scene.sceneKey);
+				});
+
+				this.logger.debug('Scenes after shake:', this.scenes);
+		  }
+		: () => {};
+}

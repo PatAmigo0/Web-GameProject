@@ -1,25 +1,22 @@
 //#region IMPORTS
-import { BaseService } from '@abstracts/service/BaseService';
+import { BaseService } from '@abstracts/service-base/BaseService';
 import { Player } from '@components/entities/Player';
-import type { IInitializiable } from '@gametypes/interface.types';
-import { PlayerManager } from '@managers/PlayerManager';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import type { IInitializiable } from '@gametypes/core.types';
 //#endregion
 
 //#region CLASS DEFINITION
+@injectInitializator((service: PlayerService) => {
+	service.localPlayer = new Player();
+})
 export class PlayerService extends BaseService implements IInitializiable {
 	//#region CLASS ATTRIBUTES
 	private players = new Map<string, Player>();
 	private localPlayer!: Player; // локальный игрок, т.е игрок браузера
-	private playerManager!: PlayerManager;
 	//#endregion
 
 	//#region
-	public init() {
-		this.playerManager = new PlayerManager(this.game);
-		this.localPlayer = new Player();
-		this.localPlayer;
-		this.playerManager;
-	}
+	public declare init: (service: PlayerService) => any;
 	//#endregion
 
 	//#region PUBLIC METHODS
@@ -36,10 +33,5 @@ export class PlayerService extends BaseService implements IInitializiable {
 	//#region PRIVATE METHODS
 
 	//#endregion
-
-	// TODO: добавить другие методы для управления игроками:
-	// public addPlayer(player: Player): void { ... }
-	// public removePlayer(playerID: string): void { ... }
-	// public getAllPlayers(): Player[] { ... }
 }
 //#endregion

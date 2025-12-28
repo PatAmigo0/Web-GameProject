@@ -1,28 +1,47 @@
-import { BaseService } from '@abstracts/service/BaseService';
-import { StandaloneService } from '@abstracts/service/StandaloneService';
+import { BaseService } from '@abstracts/service-base/BaseService';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { injectLogger } from '@decorators/InjectLogger.decorator';
+import type { IInitializiable } from '@gametypes/core.types';
 import { SceneKeys } from '@gametypes/scene.types';
+import { AssetManager } from '@managers/AssetManager';
 import { SceneManager } from '@managers/SceneManager';
-import { BootScene } from '@scenes/system/BootScene';
+import { StyleManager } from '@managers/StyleManager';
+import { TransitionManager } from '@managers/TransitionManager';
+import { BootScene } from '@scenes/system-scenes/BootScene';
 import { EventService } from '@services/EventService';
 import { NetworkService } from '@services/NetworkService';
 import { PlayerService } from '@services/PlayerService';
+import { UserInputService } from '@services/UserInputService';
+import type { Logger } from '@utils/Logger';
 import Phaser from 'phaser';
-import { UserInputService } from './UserInputService';
+import { SceneDisposalService } from './SceneDisposalService';
 
 //#region GAME CLASS DEFINITION
+@injectLogger()
+@injectInitializator((service: GameService) => {
+	service.initAttributes();
+	service.__boot__();
+})
 export class GameService extends Phaser.Game {
+	private declare logger: Logger;
+
 	//#region PHASER OVERRIDES
 	declare readonly scene: SceneManager;
 	//#endregion
 
-	//#region CORE SERVICES
-	public playerService = new PlayerService(this);
-	private networkService = new NetworkService(this);
-	private eventService = new EventService(this);
-	private userInputService = new UserInputService(this.input.keyboard);
+	//#region MANAGERS
+	public assetManager!: AssetManager;
+	private transitionManager!: TransitionManager;
+	private styleManager!: StyleManager;
 	//#endregion
 
-	//#region GAME CONTEXT
+	//#region CORE SERVICES
+	public playerService!: PlayerService;
+	public userInputService!: UserInputService;
+	private networkService!: NetworkService;
+	private eventService!: EventService;
+	public sceneDisposalService!: SceneDisposalService;
 	//#endregion
 
 	//#region CONSTRUCTOR
@@ -32,46 +51,57 @@ export class GameService extends Phaser.Game {
 	}
 	//#endregion
 
-	//#region PUBLIC METHODS
-
-	//#endregion
-
-	//#region PRIVATE MAIN METHODS
-	//#endregion
-
 	//#region PRIVATE INITIALIZATION
-	private init(): void {
-		this.initAttributes();
-		this.__boot__();
-	}
+	private declare init: () => void;
 
 	private initAttributes() {
 		this.setNewPrototypes();
+
+		this.createServices();
 		this.initServices();
+
+		this.createManagers();
+		this.initManagers();
 	}
 
 	private setNewPrototypes() {
 		// обновляю this.scene чтобы он поддерживал новый функционал из SceneManager (кастомный)
-		(
-			Object.setPrototypeOf(
-				this.scene,
-				SceneManager.prototype,
-			) as SceneManager
-		).init();
+		Object.setPrototypeOf(this.scene, SceneManager.prototype);
+	}
+
+	private createServices() {
+		this.playerService = new PlayerService(this);
+		this.userInputService = new UserInputService(this.input.keyboard, this.events);
+		this.networkService = new NetworkService(this);
+		this.eventService = new EventService(this.events, this.domContainer);
+		this.sceneDisposalService = new SceneDisposalService(this.scene);
 	}
 
 	private initServices() {
 		// инициализируем все сервисы автоматически
 		Object.values(this).forEach((propertyValue) => {
-			if (
-				propertyValue &&
-				(propertyValue instanceof BaseService ||
-					propertyValue instanceof StandaloneService)
-			) {
-				console.debug('Calling init on:', propertyValue);
-				(propertyValue as unknown as { init: () => void }).init();
+			if (this.isService(propertyValue)) {
+				this.logger.debug('calling init on:', propertyValue);
+				propertyValue.init();
 			}
 		});
+	}
+
+	private createManagers() {
+		this.styleManager = new StyleManager();
+		this.transitionManager = new TransitionManager(this.scene, this.sceneDisposalService);
+		this.assetManager = new AssetManager(this, this.styleManager);
+	}
+
+	private initManagers() {
+		this.scene.init(this.transitionManager);
+	}
+
+	private isService(propertyValue: any): propertyValue is IInitializiable {
+		return (
+			propertyValue &&
+			(propertyValue instanceof BaseService || propertyValue instanceof StandaloneService)
+		);
 	}
 	//#endregion
 
@@ -81,8 +111,9 @@ export class GameService extends Phaser.Game {
 	 */
 	private __boot__() {
 		const BootScene = this.scene.getScene<BootScene>(SceneKeys.BootScene);
+		BootScene.shutdown();
 		if (BootScene) {
-			this.scene.currentMainScene = BootScene;
+			this.scene.changeMainScene(BootScene.sceneKey);
 			BootScene.loadAssets();
 		} else throw 'Ошибка [game]: Не удалось загрузить boot сцену';
 	}

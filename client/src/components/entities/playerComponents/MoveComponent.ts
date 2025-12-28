@@ -1,15 +1,58 @@
-import { MOVE_SPEED } from '@config/game.config';
-import type { InputStateAggregation } from '@gametypes/player.types';
+import { MOVEMENT_MULTIPLIERS, VERTICAL_ACTIONS } from '@config/controls.config';
+import { DIAGONAL_MOVE_SPEED, MOVE_SPEED } from '@config/movement.config';
+import type { MovementState, MovementStateKey } from '@gametypes/controls.types';
+import type { IUpdatable } from '@gametypes/core.types';
 
-export class MoveComponent {
-	private body!: Phaser.Physics.Arcade.Body;
-	private speed: number = MOVE_SPEED;
+export class MoveComponent implements IUpdatable {
+	private queue = new Set<MovementStateKey>();
 
-	constructor(body: Phaser.Physics.Arcade.Body) {
-		this.body = body;
+	constructor(private targetBody: Phaser.Physics.Arcade.Body) {}
+
+	public update(movementState: MovementState): void {
+		this.updateQueue(movementState);
+		this.move();
 	}
 
-	public update(inputStateAggregation: InputStateAggregation): void {
-		console.log(inputStateAggregation);
+	private updateQueue(movementState: MovementState): void {
+		(Object.entries(movementState) as [MovementStateKey, boolean][]).forEach(([action, state]) => {
+			if (this.queue.has(action) && !state) {
+				this.queue.delete(action);
+			} else if (state) {
+				this.queue.add(action);
+			}
+		});
+	}
+
+	private move(): void {
+		let xMultiplier = 0;
+		let yMultiplier = 0;
+
+		let foundHorizontal = false;
+		let foundVertical = false;
+
+		const normalizedQueue = [...this.queue];
+		for (let i = normalizedQueue.length - 1; i >= 0; i--) {
+			const action = normalizedQueue[i];
+
+			if (VERTICAL_ACTIONS.has(action)) {
+				if (!foundVertical) {
+					foundVertical = true;
+					yMultiplier = MOVEMENT_MULTIPLIERS[action];
+				}
+			} else if (!foundHorizontal) {
+				foundHorizontal = true;
+				xMultiplier = MOVEMENT_MULTIPLIERS[action];
+			}
+
+			if (foundHorizontal && foundVertical) {
+				this.targetBody.setVelocity(
+					DIAGONAL_MOVE_SPEED * xMultiplier,
+					DIAGONAL_MOVE_SPEED * yMultiplier,
+				);
+				return;
+			}
+		}
+
+		this.targetBody.setVelocity(MOVE_SPEED * xMultiplier, MOVE_SPEED * yMultiplier);
 	}
 }

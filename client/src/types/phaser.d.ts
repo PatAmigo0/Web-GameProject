@@ -2,12 +2,34 @@
 
 import 'phaser';
 
-import { TypedScene } from '@abstracts/scene/TypedScene';
+import type { CoreScene } from '@abstracts/scene-base/CoreScene';
+import type { WithPhaserLifecycle } from '@abstracts/scene-base/WithPhaserLifecycle';
 import type { SceneManager } from '@managers/SceneManager';
 import { GameService } from '@services/GameService';
 
 declare global {
 	namespace Phaser {
+		namespace Loader {
+			type AwaitCallback = (successCallback: () => void, failureCallback: () => void) => void;
+
+			interface LoaderPlugin {
+				/**
+				 * Ставит в очередь загрузчика асинхронную задачу (Promise, fetch и т.д.).
+				 * Загрузчик Phaser приостановит выполнение, пока не будет вызван
+				 * `successCallback` или `failureCallback`.
+				 * * Требует плагин RexAwaitLoader.
+				 * @param callback Функция, выполняющая асинхронную операцию.
+				 */
+				rexAwait(callback: AwaitCallback): this;
+
+				/**
+				 * Альтернативная/старая версия маппинга плагина (на всякий случай).
+				 * @deprecated await -> rexAwait
+				 */
+				await(callback: AwaitCallback): this;
+			}
+		}
+
 		interface Game {
 			readonly scene: SceneManager;
 		}
@@ -18,13 +40,17 @@ declare global {
 
 		namespace Scenes {
 			interface SceneManager {
-				scenes: TypedScene[];
-				getScene<T extends TypedScene>(key: string): T;
+				scenes: WithPhaserLifecycle[];
+				getScene<T extends WithPhaserLifecycle>(key: string): T;
+				start<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
+				stop<T extends WithPhaserLifecycle>(key: string | T, data?: object): this;
+				isShutdown<T extends CoreScene>(key: string | T): boolean;
+				isInitialized<T extends CoreScene>(key: string | T): boolean;
 			}
 
 			interface ScenePlugin {
-				get<T extends TypedScene>(key: string): T;
-				run<T extends TypedScene>(key: string, data?: object): T;
+				get<T extends WithPhaserLifecycle>(key: string): T;
+				run<T extends WithPhaserLifecycle>(key: string, data?: object): T;
 			}
 		}
 	}

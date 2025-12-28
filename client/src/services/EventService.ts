@@ -1,45 +1,33 @@
 // src/services/EventService.ts
 
-import { BaseService } from '@abstracts/service/BaseService';
-import { GAME_EVENT_TYPES } from '@config/events.config';
-import { STARTING_MENU } from '@config/game.config';
+import { StandaloneService } from '@abstracts/service-base/StandaloneService';
+import { injectInitializator } from '@decorators/InjectInitializator.decorator';
+import { GameEvents } from '@gametypes/event.types';
 
-export class EventService extends BaseService {
-	public init() {
-		this.setupCommonListeners();
-		this.setupUncommonListeners();
+/**
+ * Сервис событий, который обрабатывает базовые события
+ */
+@injectInitializator((service: EventService) => {
+	service.setupCommonListeners();
+})
+export class EventService extends StandaloneService {
+	constructor(private events: Phaser.Events.EventEmitter, private targetDomContainer: HTMLDivElement) {
+		super();
 	}
+
+	public declare init: (service: EventService) => void;
 
 	private setupCommonListeners(): void {
-		this.game.events.on('blur', () =>
-			this.game.events.emit(GAME_EVENT_TYPES.INPUT_RESET),
-		);
-
-		// блокирует context menu в canvas (сценах)
-		this.game.canvas.addEventListener('contextmenu', (e: PointerEvent) =>
-			e.preventDefault(),
-		);
-
-		this.game.domContainer.addEventListener(
-			// блокирует context menu в domContainer (страница над phaser)
-			'contextmenu',
-			(e: PointerEvent) => e.preventDefault(),
-		);
-	}
-
-	private setupUncommonListeners(): void {
-		this.game.events.addListener(GAME_EVENT_TYPES.BOOT, () => {
-			this.game.events.emit(
-				GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-				STARTING_MENU,
-			);
+		// если игрок потерял фокус на страницу то ресетаем input
+		this.events.on('blur', () => this.events.emit(GameEvents.INPUT_RESET));
+		document.addEventListener('visibilitychange', () => {
+			if (document.hidden) this.events.emit(GameEvents.INPUT_RESET);
 		});
 
-		this.game.events.addListener(
-			GAME_EVENT_TYPES.MAIN_SCENE_CHANGE,
-			(sceneKey: string) => {
-				this.game.scene.changeMainScene(sceneKey);
-			},
-		);
+		// блокирует context menu в canvas (сценах)
+		// this.game.canvas.addEventListener('contextmenu', (e: PointerEvent) => e.preventDefault());
+
+		// блокирует context menu в domContainer (страница над phaser canvas)
+		this.targetDomContainer.addEventListener('contextmenu', (e: PointerEvent) => e.preventDefault());
 	}
 }
