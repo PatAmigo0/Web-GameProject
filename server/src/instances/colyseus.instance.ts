@@ -1,4 +1,4 @@
-// src/colyseus.instance.ts
+// src/instances/colyseus.instance.ts
 import { Server } from '@colyseus/core';
 
 export const colyseus = {
