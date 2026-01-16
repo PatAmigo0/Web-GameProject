@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 client/public/assets/manifests/*.json
+*.env
 
 # Editor directories and files
 .vscode/*
