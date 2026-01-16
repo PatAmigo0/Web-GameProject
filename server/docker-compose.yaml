@@ -1,4 +1,4 @@
-version: "3.8"
+name: web-game-project
 
 services:
   redis:
@@ -8,7 +8,44 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    restart: always
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18-trixie
+    container_name: game_database
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=3120
+      - POSTGRES_DB=game_db_prod
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d game_db_prod"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  game_server:
+    container_name: game_server
+    image: tohun/game-server:beta
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://admin:3120@postgres/game_db_prod
+      - REDIS_HOST=redis
+    ports:
+      - "2567:2567"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
 volumes:
   redis_data:
+  database:

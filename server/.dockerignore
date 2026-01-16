@@ -1,0 +1,38 @@
+# Зависимости
+node_modules
+**/node_modules
+
+# Результаты сборки
+dist
+**/dist
+dist-ssr
+generated
+
+# Логи
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Git и настройки IDE
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Переменные окружения
+.env
+*.env
+*.env.local
+
+# Тесты и отчеты
+client/test-results
+client/playwright-report
+coverage
+
+# Прочее
+loclx.config.yaml
+README.md
+.prettierrc.json

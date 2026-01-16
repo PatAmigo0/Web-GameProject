@@ -9,7 +9,10 @@ import { WebSocketTransport } from '@colyseus/ws-transport';
 // alias -> app
 export default config({
 	options: {
-		driver: new RedisDriver(),
+		driver: new RedisDriver({
+			host: process.env.REDIS_HOST || 'localhost',
+			port: 6379,
+		},),
 	},
 
 	initializeTransport: (options) => {

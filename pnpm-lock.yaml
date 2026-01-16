@@ -156,6 +156,9 @@ importers:
       pg:
         specifier: ^8.16.3
         version: 8.16.3
+      prisma:
+        specifier: ^7.0.0
+        version: 7.0.0(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -196,9 +199,6 @@ importers:
       mocha:
         specifier: ^10.2.0
         version: 10.8.2
-      prisma:
-        specifier: ^7.0.0
-        version: 7.0.0(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       rimraf:
         specifier: ^5.0.0
         version: 5.0.10
