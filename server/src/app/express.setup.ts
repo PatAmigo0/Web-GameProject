@@ -1,5 +1,3 @@
-/* ! */ import 'express-async-errors';
-
 import apiRoutes from '@apiroutes';
 import { monitor } from '@colyseus/monitor';
 import { apiLimiter } from '@middlewares/api.middleware';

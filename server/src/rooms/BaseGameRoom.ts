@@ -1,4 +1,4 @@
-import { db } from '@/instances/db.instance';
+import { db } from '@instances/db.instance';
 import { Room, type Client } from '@colyseus/core';
 import type { JwtAuthPayload } from '@game/shared';
 import { BaseGameRoomState, Player } from '@game/shared';

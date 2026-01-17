@@ -1,5 +1,5 @@
 # BUILD STAGE
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -22,7 +22,7 @@ WORKDIR /app/server
 RUN pnpm build
 RUN pnpm --filter server deploy --prod --legacy /prod/server
 COPY server/prisma /prod/server/prisma
-RUN pnpm docker:prisma:generate
+RUN DATABASE_URL="postgresql://dummy:5432/dummy" pnpm docker:prisma:generate
 
 # ----------------------------
 WORKDIR /app/client
@@ -31,7 +31,7 @@ RUN pnpm build
 ####################################################################
 
 # RUN STAGE
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 
 RUN apt-get update -y && apt-get install -y openssl
 
