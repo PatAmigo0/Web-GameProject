@@ -12,7 +12,7 @@ export default defineConfig((options: Options) => ({
 		'@colyseus/tools',
 		'@colyseus/monitor',
 		'@colyseus/playground',
-		'colyseus',
+		'@colyseus/core',
 		'cors',
 		'express',
 		'dotenv',
