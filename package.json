@@ -1,6 +1,6 @@
 {
 	"name": "game-web-project",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Корень проекта",
 	"main": "index.js",
 	"scripts": {
@@ -8,7 +8,7 @@
 		"start": "pnpm --filter server start"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Arseniy Kuskov",
 	"license": "ISC",
-	"packageManager": "pnpm@10.22.0"
+	"packageManager": "pnpm@10.28.0"
 }

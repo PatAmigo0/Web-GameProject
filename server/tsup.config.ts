@@ -1,29 +1,15 @@
 import { copy } from 'esbuild-plugin-copy';
 import { defineConfig, Options } from 'tsup';
+import packageJson from './package.json';
 
 export default defineConfig((options: Options) => ({
 	format: 'esm',
-
 	platform: 'node',
 	target: 'node22',
 	splitting: false,
 
-	external: [
-		'@colyseus/tools',
-		'@colyseus/monitor',
-		'@colyseus/playground',
-		'@colyseus/core',
-		'cors',
-		'express',
-		'dotenv',
-		'debug',
-		'nanoid',
-		'bcrypt',
-		'mongoose',
-		'@prisma/client',
-		'@colyseus/ws-transport',
-	],
-	// noExternal: ['nanoid'],
+	external: [...Object.keys(packageJson.dependencies || {}), 'ws', 'bufferutil', 'utf-8-validate'],
+	noExternal: ['@game/shared'],
 
 	entry: ['src/app.ts'],
 	outDir: 'dist',

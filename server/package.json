@@ -22,7 +22,7 @@
 		"loadtest": "tsx __tests__/loadtest/example.spec.ts  --room baseGameRoom --numClients 8",
 		"test": "mocha -r tsx __tests__/spec/**.test.ts --exit --timeout 15000"
 	},
-	"author": "",
+	"author": "Arseniy Kuskov",
 	"license": "UNLICENSED",
 	"bugs": {
 		"url": "https://github.com/colyseus/create-colyseus/issues"
@@ -37,6 +37,7 @@
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.10.9",
 		"@types/pg": "^8.16.0",
+		"colyseus.js": "^0.16.22",
 		"cross-env": "^10.1.0",
 		"dotenv-cli": "^11.0.0",
 		"esbuild-plugin-copy": "^2.1.1",
@@ -61,7 +62,7 @@
 		"@prisma/extension-accelerate": "^2.0.2",
 		"@types/jsonwebtoken": "^9.0.10",
 		"bcrypt": "^6.0.0",
-		"colyseus.js": "^0.16.22",
+		"bufferutil": "^4.1.0",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.2.1",
@@ -69,9 +70,17 @@
 		"express-rate-limit": "^8.2.1",
 		"helmet": "^8.1.0",
 		"jsonwebtoken": "^9.0.3",
-		"mongoose": "^8.21.0",
 		"pg": "^8.17.1",
 		"prisma": "^7.2.0",
+		"utf-8-validate": "^6.0.6",
+		"ws": "^8.19.0",
 		"zod": "^4.3.5"
+	},
+	"pnpm": {
+		"peerDependencyRules": {
+			"ignoreMissing": [
+				"utf-8-validate"
+			]
+		}
 	}
 }

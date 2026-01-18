@@ -8,6 +8,8 @@ onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'
   - bcrypt
+  - bufferutil
   - esbuild
   - msgpackr-extract
   - prisma
+  - utf-8-validate

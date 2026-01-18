@@ -9,41 +9,79 @@
 		"useDefineForClassFields": false,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
 		"noEmit": true,
-
 		"strict": true,
 		"allowJs": true,
 		"strictNullChecks": true,
-
-		"types": ["node"],
-
+		"types": [
+			"node"
+		],
 		"baseUrl": ".",
 		"paths": {
-			"@app": ["src/app/app.enty.ts"],
-			"@apiroutes": ["src/api/index.ts"],
-			"@schema/*": ["src/rooms/schema/*"],
-			"@routes/*": ["src/api/routes/*"],
-			"@rooms/*": ["src/rooms/*"],
-			"@api/*": ["src/api/*"],
-			"@app/*": ["src/app/*"],
-			"@instances/*": ["src/instances/*"],
-			"@database/*": ["src/database/*"],
-			"@servertypes/*": ["src/types/*"],
-			"@middlewares/*": ["src/middlewares/*"],
-			"@utils/*": ["src/utils/*"],
-			"@controllers/*": ["src/controllers/*"],
-			"@services/*": ["src/services/*"],
-			"@config/*": ["src/configuration/*"],
-
-			"@/*": ["src/*"]
+			"@app": [
+				"src/app/app.enty.ts"
+			],
+			"@apiroutes": [
+				"src/api/index.ts"
+			],
+			"@schema/*": [
+				"src/rooms/schema/*"
+			],
+			"@routes/*": [
+				"src/api/routes/*"
+			],
+			"@rooms/*": [
+				"src/rooms/*"
+			],
+			"@api/*": [
+				"src/api/*"
+			],
+			"@app/*": [
+				"src/app/*"
+			],
+			"@instances/*": [
+				"src/instances/*"
+			],
+			"@database/*": [
+				"src/database/*"
+			],
+			"@servertypes/*": [
+				"src/types/*"
+			],
+			"@middlewares/*": [
+				"src/middlewares/*"
+			],
+			"@utils/*": [
+				"src/utils/*"
+			],
+			"@controllers/*": [
+				"src/controllers/*"
+			],
+			"@services/*": [
+				"src/services/*"
+			],
+			"@config/*": [
+				"src/configuration/*"
+			],
+			"@/*": [
+				"src/*"
+			]
 		}
 	},
-
-	"include": ["src", "__tests__", "prisma.config.ts", "prisma", "src/rooms/schema"],
-	"references": [{ "path": "../packages/shared" }]
+	"include": [
+		"src",
+		"__tests__",
+		"prisma.config.ts",
+		"prisma",
+		"src/rooms/schema"
+	],
+	"references": [
+		{
+			"path": "../packages/shared"
+		}
+	]
 }
